@@ -5,7 +5,7 @@ APIs for working with course sites.
 from datetime import datetime
 from itertools import groupby
 from fastapi import Depends
-from sqlalchemy import select, or_, func
+from sqlalchemy import select, or_, func, case
 from sqlalchemy.orm import Session, joinedload
 from ...database import db_session
 from ...models.user import User
@@ -28,6 +28,7 @@ from ...models.office_hours.course_site import (
 from ...models.office_hours.course_site_details import CourseSiteDetails
 from ...models.academics.section_member import SectionMemberDraft
 from ...entities.academics.section_entity import SectionEntity
+from ...entities.academics.course_entity import CourseEntity
 from ...entities.office_hours import OfficeHoursEntity, CourseSiteEntity
 from ...entities.user_entity import UserEntity
 from ...entities.academics.section_member_entity import SectionMemberEntity
@@ -92,7 +93,8 @@ class CourseSiteService:
             # into a standard list so that we can iterate over it twice.
             memberships = list(term_memberships)
 
-            course_sites = []
+            # Determine the courses where the user is an instructor for the course but no
+            # course site yet exists for the course
             teaching_no_site = [
                 self._to_teaching_section_overview(membership.section)
                 for membership in memberships
@@ -100,26 +102,70 @@ class CourseSiteService:
                 and membership.section.course_site_id == None
             ]
 
-            for (course_site, course), course_memberships in groupby(
-                memberships,
-                lambda membership: (
-                    membership.section.course_site,
-                    membership.section.course,
-                ),
-            ):
+            # Otherwise, determine the course sites for the term by finding the unique course sites
+            # associated with each section.
+            course_sites: list[CourseSiteOverview] = []
+
+            # To start, find all of the sections that a member is in and the role they have for
+            # the section.
+            member_sections: list[tuple[SectionEntity, RosterRole]] = [
+                (membership.section, membership.member_role)
+                for membership in memberships
+            ]
+
+            # Create lookup tables indexed by a course site ID to look up:
+            # - Course site for a given course site ID
+            # - Sections for a given course site ID
+            # - Course for a given course site ID
+            # - Membership for a given course site ID
+            # Note that this can all be found in one pass for efficiency sake.
+            course_site_ids: set[int] = set()
+            course_site_for_id: dict[int, CourseSiteEntity] = {}
+            sections_for_course_site_id: dict[int, list[SectionEntity]] = {}
+            course_for_course_site_id: dict[int, CourseEntity] = {}
+            member_role_for_course_site_id: dict[int, RosterRole] = {}
+
+            for section, section_membership in member_sections:
+                course_site_id = section.course_site_id
+                course_site_ids.add(course_site_id)
+                # Fill in course sites lookup
+                if section.course_site_id not in course_site_for_id:
+                    course_site_for_id[course_site_id] = section.course_site
+                # Fill in section lookup
+                sections_for_course_site_id[course_site_id] = (
+                    sections_for_course_site_id.get(course_site_id, []) + [section]
+                )
+                # Fill in course lookup
+                if course_site_id not in course_for_course_site_id:
+                    course_for_course_site_id[course_site_id] = section.course
+                # Fill in membership lookup
+                # Note: There should be an invariant that members for sections within the same
+                # course should all have the same role.
+                if course_site_id not in member_role_for_course_site_id:
+                    member_role_for_course_site_id[course_site_id] = section_membership
+
+            # Create course site overviews for this mapping
+            for course_site_id in list(course_site_ids):
+                # Look up data from the tables
+                course_site: CourseSiteEntity = course_site_for_id[course_site_id]
                 if course_site:
-                    memberships = list(course_memberships)
+                    sections: list[SectionEntity] = sections_for_course_site_id[
+                        course_site_id
+                    ]
+                    course: CourseEntity = course_for_course_site_id[course_site_id]
+                    role: RosterRole = member_role_for_course_site_id[course_site_id]
+                    # Construct the course site overview
                     course_sites.append(
                         CourseSiteOverview(
-                            id=course_site.id,
+                            id=course_site_id,
                             term_id=course_site.term_id,
                             subject_code=course.subject_code,
                             number=course.number,
-                            title=memberships[0].section.override_title or course.title,
-                            role=memberships[0].member_role.value,
+                            title=sections[0].override_title or course.title,
+                            role=role,
                             sections=[
-                                self._to_section_overview(membership.section)
-                                for membership in memberships
+                                self._to_section_overview(section)
+                                for section in sections
                             ],
                             gtas=[],
                             utas=[],
@@ -188,6 +234,20 @@ class CourseSiteService:
             member_query = member_query.order_by(
                 getattr(UserEntity, pagination_params.order_by)
             )
+        # If no order by is provided, sort based on role in the order of:
+        # Instructors -> GTAs -> UTAs -> Students
+        # Then within each role, sort by section number
+        else:
+            member_query = member_query.order_by(
+                case(
+                    (SectionMemberEntity.member_role == RosterRole.INSTRUCTOR, 1),
+                    (SectionMemberEntity.member_role == RosterRole.GTA, 2),
+                    (SectionMemberEntity.member_role == RosterRole.UTA, 3),
+                    (SectionMemberEntity.member_role == RosterRole.STUDENT, 4),
+                    else_=5,
+                ),
+                SectionEntity.number,
+            )
 
         # Create query off of the member query for just the members matching
         # with the current user (used to determine permissions)
@@ -220,45 +280,79 @@ class CourseSiteService:
             )
             member_query = member_query.where(criteria)
 
-        # Count the number of rows before applying pagination and filter.
-        count_query = select(func.count()).select_from(member_query.subquery())
-        length = self._session.scalar(count_query)
+        # Load all entities first to handle deduplication properly
+        all_member_entities = self._session.scalars(member_query).all()
 
-        # Calculate offset and limit for pagination
-        offset = pagination_params.page * pagination_params.page_size
-        limit = pagination_params.page_size
-        member_query = (
-            member_query.offset(offset)
-            .limit(limit)
-            .order_by(SectionEntity.id)
-            .order_by(UserEntity.first_name)
-            .order_by(SectionMemberEntity.member_role)
+        # Deduplicate staff members (Instructors, GTAs, UTAs) while keeping students per section
+        seen_staff = set()
+        deduplicated_entities = []
+
+        for member in all_member_entities:
+            if member.member_role == RosterRole.STUDENT:
+                # Keep all students (they're already per section)
+                deduplicated_entities.append(member)
+            else:
+                # For staff, only keep the first occurrence
+                staff_key = (member.user_id, member.member_role)
+                if staff_key not in seen_staff:
+                    seen_staff.add(staff_key)
+                    deduplicated_entities.append(member)
+
+        # Apply the role-based ordering to deduplicated entities
+        deduplicated_entities.sort(
+            key=lambda x: (
+                # Primary sort: role priority
+                {
+                    RosterRole.INSTRUCTOR: 1,
+                    RosterRole.GTA: 2,
+                    RosterRole.UTA: 3,
+                    RosterRole.STUDENT: 4,
+                }.get(x.member_role, 5),
+                # Secondary sort: section number (only for students)
+                x.section.number if x.member_role == RosterRole.STUDENT else "",
+                # Third sort: last name (A->Z)
+                x.user.last_name,
+            )
         )
 
-        # Load the final query
-        section_member_entities = self._session.scalars(member_query).all()
+        # Calculate the correct total length after deduplication
+        total_length = len(deduplicated_entities)
+
+        # Apply pagination to the deduplicated and sorted list
+        offset = pagination_params.page * pagination_params.page_size
+        limit = pagination_params.page_size
+        paginated_entities = deduplicated_entities[offset : offset + limit]
 
         # Create paginated representation of data and return
         return Paginated(
             items=[
                 self._to_course_member_overview(member, is_student)
-                for member in section_member_entities
+                for member in paginated_entities
             ],
-            length=length,
+            length=total_length,
             params=pagination_params,
         )
 
     def _to_course_member_overview(
         self, section_member: SectionMemberEntity, is_student: bool
     ) -> CourseMemberOverview:
+        # For staff members (Instructors, GTAs, UTAs), don't show section number
+        # since they may be in multiple sections
+        section_number = (
+            section_member.section.number
+            if section_member.member_role == RosterRole.STUDENT
+            else ""
+        )
+
         return CourseMemberOverview(
+            id=section_member.user.id,
             pid=section_member.user.pid,
             first_name=section_member.user.first_name,
             last_name=section_member.user.last_name,
             email=section_member.user.email,
             pronouns=section_member.user.pronouns,
             role=section_member.member_role.value,
-            section_number=section_member.section.number,
+            section_number=section_number,
         )
 
     def get_current_office_hour_events(
@@ -568,8 +662,16 @@ class CourseSiteService:
 
         # Complete the updates
         course_site_entity.title = updated_site.title
-        course_site_entity.max_tickets_per_day = updated_site.max_tickets_per_day if updated_site.max_tickets_per_day else 100
-        course_site_entity.minimum_ticket_cooldown = updated_site.minimum_ticket_cooldown if updated_site.minimum_ticket_cooldown else 0
+        course_site_entity.max_tickets_per_day = (
+            updated_site.max_tickets_per_day
+            if updated_site.max_tickets_per_day
+            else 100
+        )
+        course_site_entity.minimum_ticket_cooldown = (
+            updated_site.minimum_ticket_cooldown
+            if updated_site.minimum_ticket_cooldown
+            else 0
+        )
 
         # Edit the selected sections
         for section in old_section_entities:

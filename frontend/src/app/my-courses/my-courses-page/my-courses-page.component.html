@@ -1,10 +1,8 @@
-<!-- eslint-disable prettier/prettier -->
-
-<div class="container">  
-  <mat-pane>
-    <mat-card-header id="pane-header">
+<div class="h-screen!">
+  <mat-card appearance="outlined" class="border-transparent! max-w-full! mb-8! mr-8! min-h-[calc(100vh-112px)]!">
+    <mat-card-header class="flex! flex-col! md:flex-row! items-start! md:items-center! pb-4!">
       <mat-card-title>{{ getActiveTermNames() }}</mat-card-title>      
-      <div class="header-buttons">
+      <div class="flex flex-col md:flex-row ml-0 md:ml-auto align-start! gap-3">
         <button mat-stroked-button color="secondary" routerLink="/catalog/offerings">
           <!-- <mat-icon>search</mat-icon> -->
           View Catalog
@@ -20,8 +18,8 @@
     <mat-card-content>
       <mat-divider />
         @if (hasInstructorCourses()) {
-          <h2 class="title-medium term-header">Instructor Courses</h2>
-          <div class="course-card-container">
+          <h2 class="title-medium my-4">Instructor Courses</h2>
+          <div class="flex flex-row flex-wrap gap-6">
             @for (course of getInstructorCourses(); track course.id) {
                 <course-card [termId]="course.termId" [course]="course" />
               
@@ -29,28 +27,35 @@
           </div>
         }
         @if (hasStudentCourses()) {
-          <h2 class="title-medium term-header">Student Courses</h2>
-          <div class="course-card-container">
+          <h2 class="title-medium my-4">Student Courses</h2>
+          <div class="flex flex-row flex-wrap gap-6">
             @for (course of getStudentCourses(); track course.id) {
                 <course-card [termId]="course.termId" [course]="course" />
               
             }
           </div>
         }
-      
+
+      @if(!hasInstructorCourses() && !hasStudentCourses()) {
+        <div class="flex flex-col p-4">
+          <p class="tertiary-color"><strong>You are not in any courses yet!</strong></p>
+          <p>If you are a student enrolled in a course that uses the CSXL site for office hours, please contact your instructor to be added into the course.</p>
+        </div>
+      }
+
       @if (showPreviousCourses()) {
         @for (term of this.myCoursesService.pastTerms(); track term.id) {
-          <h3 class="title-medium term-header">{{ term.name }}</h3>
-          <div class="course-card-container">
+          <h3 class="title-medium my-4">{{ term.name }}</h3>
+          <div class="flex flex-row flex-wrap gap-6">
             @for (course of getPastCourses(term); track course.id) {    
               <course-card [termId]="term.id" [course]="course" />    
             }
           </div>
         }
-        <button id="more-courses-button" mat-button color="secondary" (click)="showPreviousCourses.set(false)">Hide Past Courses</button>
+        <button class="mt-3" mat-button color="secondary" (click)="showPreviousCourses.set(false)">Hide Past Courses</button>
       } @else if (this.myCoursesService.pastTerms().length > 0) {
-        <button id="more-courses-button" mat-button color="secondary" (click)="showPreviousCourses.set(true)">View Past Courses</button>
+        <button class="mt-3" mat-button color="secondary" (click)="showPreviousCourses.set(true)">View Past Courses</button>
       }
     </mat-card-content>
-  </mat-pane>
+  </mat-card>
 </div>

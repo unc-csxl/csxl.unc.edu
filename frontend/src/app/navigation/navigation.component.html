@@ -17,7 +17,7 @@
           routerLink="/"
           routerLinkActive="active"
           >
-          <picture>
+          <picture class="flex flex-row items-center justify-center w-full">
             <source
               class="logo"
               srcset="/assets/lil-logo.png"
@@ -182,11 +182,11 @@
     <mat-progress-bar
       *ngIf="navigationService.loading$ | async"
       mode="query"
-      color="accent"></mat-progress-bar>
+    ></mat-progress-bar>
     <mat-progress-bar
       *ngIf="navigationService.sending$ | async"
       mode="indeterminate"
-      color="accent"></mat-progress-bar>
+    ></mat-progress-bar>
     <div>
       <router-outlet></router-outlet>
     </div>

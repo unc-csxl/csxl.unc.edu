@@ -1,6 +1,6 @@
 @if(welcomeOverview()) {
-<div class="container">
-  <div class="left-column">
+<div class="flex flex-col-reverse lg:flex-row w-full">
+  <div class="flex flex-col w-full lg:w-[70%] h-auto lg:h-[91.5vh]">
     @if (welcomeOverview()!.announcement) {
     <banner-card
       type="info"
@@ -16,19 +16,19 @@
       [linkAction]="true"
       [link]="'/article/' + welcomeOverview()!.announcement!.slug" />
     }
-    <mat-card appearance="outlined" class="news-pane">
+    <mat-card appearance="outlined" class="grow shrink basis-auto lg:flex-auto min-h-0 max-h-full max-w-full! border-transparent!">
       <mat-card-header>
         <mat-card-title>Latest News</mat-card-title>
       </mat-card-header>
-      <mat-card-content class="news-pane-content">
+      <mat-card-content class="overflow-y-auto h-full">
         @for(article of welcomeOverview()!.latest_news; track article.id) {
         <news-card [article]="article" />
         }
       </mat-card-content>
     </mat-card>
   </div>
-  <div class="right-column">
-    <mat-card appearance="outlined" class="coworking-pane">
+  <div class="flex flex-col w-full lg:w-[30%] h-auto lg:h-[91.5vh]">
+    <mat-card appearance="outlined" class="max-w-full! border-transparent!">
       <mat-card-header>
         <mat-card-title>The XL (SN156) is...</mat-card-title>
       </mat-card-header>
@@ -42,33 +42,33 @@
         [operatingHours]="welcomeOverview()!.operating_hours" />
       }
     </mat-card>
-    <mat-card appearance="outlined" class="upcoming-pane">
+    <mat-card appearance="outlined" class="grow shrink basis-0 max-h-full! max-w-full! border-transparent!">
       @if(profileService.profile() === undefined) {
-      <about-pane-content class="upcoming-pane-content" />
+      <about-pane-content class="overflow-y-auto h-full" />
       } @else {
       <mat-card-header>
-        <mat-card-title id="upcoming-title">Upcoming For You</mat-card-title>
+        <mat-card-title class="mb-2">Upcoming For You</mat-card-title>
       </mat-card-header>
-      <mat-card-content class="upcoming-pane-content">
+      <mat-card-content class="overflow-y-auto h-full">
         <mat-card-subtitle>Coworking Reservations</mat-card-subtitle>
         @if (welcomeOverview()!.upcoming_reservations.length === 0) {
-        <p class="none-text">
+        <p class="mt-4">
           You currently have no upcoming reservations in the XL Colab found on
           the first floor of Sitterson Hall. Reserve a desk or room by clicking
           the link below.
         </p>
-        <button class="none-buttons" mat-button routerLink="/coworking">
+        <button class="ml-[-10px] mb-2" mat-button routerLink="/coworking">
           Reserve Now
         </button>
         } @for (reservation of welcomeOverview()!.upcoming_reservations; track
         reservation.start) {
         <mat-card
-          class="reservation-card"
+          class="ml-0 mr-0 max-w-full hover:cursor-pointer"
           appearance="outlined"
           routerLink="/coworking/">
           <mat-card-content>
-            <div class="header-row">
-              <div class="header-column">
+            <div>
+              <div>
                 <mat-card-subtitle>{{
                   reservation.room
                     ? reservation.room!.nickname
@@ -86,10 +86,10 @@
         }
         <mat-card-subtitle>Community Events</mat-card-subtitle>
         @if (welcomeOverview()!.registered_events.length === 0) {
-        <p class="none-text">
+        <p class="mb-4">
           Register for an upcoming community event for them to show up here.
         </p>
-        <button class="none-buttons" mat-button routerLink="/events">
+        <button class="ml-[-10px] mb-2" mat-button routerLink="/events">
           View All Events
         </button>
         } @for (event of welcomeOverview()!.registered_events; track event.id) {

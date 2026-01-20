@@ -1,14 +1,14 @@
 @if (organization) {
 <mat-pane>
-  <mat-card-header>
-    <div class="header-row">
-      <img mat-card-avatar src="{{ organization.logo }}" />
+  <mat-card-header class="flex-col! w-full!">
+    <div class="flex flex-row items-center gap-3">
+      <img mat-card-avatar class="mb-0!" src="{{ organization.logo }}" />
       <mat-card-title>{{ organization.name }}</mat-card-title>
     </div>
-    <div class="links-row">
+    <div class="flex flex-row flex-wrap mt-1 mb-3 ml-12 mr-8 gap-3">
       @if (organization.website !== '') {
-      <div class="row">
-        <mat-icon class="link-icons secondary-icon">link</mat-icon>
+      <div class="flex flex-row gap-1 items-center">
+        <mat-icon class="size-6 secondary-icon">link</mat-icon>
         <p>
           <a
             class="font-secondary"
@@ -19,7 +19,7 @@
         </p>
       </div>
       } @if (organization.email !== '') {
-      <div class="row">
+      <div class="flex flex-row gap-1 items-center">
         <mat-icon class="secondary-icon">mail</mat-icon>
         <p>
           <a
@@ -31,7 +31,7 @@
         </p>
       </div>
       } @if (organization.instagram !== '') {
-      <div class="row">
+      <div class="flex flex-row gap-1 items-center">
         <mat-icon class="link-icons secondary-icon" svgIcon="instagram" />
         <p>
           <a
@@ -43,7 +43,7 @@
         </p>
       </div>
       } @if (organization.linked_in !== '') {
-      <div class="row">
+      <div class="flex flex-row gap-1 items-center">
         <mat-icon
           class="link-icons secondary-icon"
           id="linkedin-icon"
@@ -58,7 +58,7 @@
         </p>
       </div>
       } @if (organization.youtube !== '') {
-      <div class="row">
+      <div class="flex flex-row gap-1 items-center">
         <mat-icon class="link-icons secondary-icon" svgIcon="youtube" />
         <p>
           <a
@@ -75,16 +75,15 @@
   <mat-card-content>
     <p>{{ organization.long_description || organization.short_description }}</p>
     @if(eventCreationPermissions) {
-    <mat-divider />
+    <mat-divider class="mt-3! pb-1!" />
     }
   </mat-card-content>
-  <mat-card-actions>
+  <mat-card-actions class="pb-3! justify-end! gap-2!">
     @if(eventCreationPermissions) {
     <button
       mat-stroked-button
       class="primary-button"
       [routerLink]="'/events/' + this.organization.slug + '/new/edit'">
-      <mat-icon class="font-primary">calendar_add_on</mat-icon>
       Create Event
     </button>
     <button

@@ -36,7 +36,6 @@ import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-
 @Component({
   selector: 'app-offerings',
   templateUrl: './section-offerings.component.html',
-  styleUrls: ['./section-offerings.component.css'],
   animations: [
     trigger('detailExpand', [
       state('collapsed,void', style({ height: '0px', minHeight: '0' })),
@@ -46,7 +45,8 @@ import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-
         animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
       )
     ])
-  ]
+  ],
+  standalone: false
 })
 export class SectionOfferingsComponent implements OnInit {
   /** Route information to be used in Course Routing Module */

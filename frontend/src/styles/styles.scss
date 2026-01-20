@@ -1,7 +1,8 @@
 @use '@angular/material' as mat;
 @use './theme.scss' as csxl-theme;
 
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 
 /** Global CSS Styles */
 
@@ -12,6 +13,25 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
+p {
+  margin-bottom: 0;
+}
+
+.no-hover-chip-container {
+  --mat-chip-focus-state-layer-color: transparent !important;
+  --mat-chip-hover-state-layer-color: transparent !important;
+}
+
+.no-hover-no-outline-chip-container {
+  --mat-chip-focus-state-layer-color: transparent !important;
+  --mat-chip-hover-state-layer-color: transparent !important;
+  --mat-chip-outline-color: transparent !important;
+}
+
+
+
+
+
 /** Custom Material Component Styling Mixins */
 // Note: These are sorted in alphabetical oder.
 
@@ -20,8 +40,34 @@ body {
 ///
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin global-styles($theme) {
+
+  // NOTE: Refactor this to use css variables on m3 v20 upgrade
+  .mdc-linear-progress__primary-bar {
+    background-color: mat.get-theme-color($theme, surface-container) !important;
+  }
+  .mdc-linear-progress__secondary-bar {
+    background-color: mat.get-theme-color($theme, surface-container) !important;
+  }
+  .mdc-linear-progress__buffer-bar {
+    background-color: mat.get-theme-color($theme, surface-container) !important;
+  }
+  .mdc-linear-progress--indeterminate {
+    background-color: mat.get-theme-color($theme, surface-container) !important;
+  }
+  // *yes, this is really how it is implemented........*
+  .mdc-linear-progress__bar-inner {
+    border-top-color: mat.get-theme-color($theme, primary-container) !important;
+    border-left-color: mat.get-theme-color($theme, primary-container) !important;
+    border-right-color: mat.get-theme-color($theme, primary-container) !important;
+    border-bottom-color: mat.get-theme-color($theme, primary-container) !important;
+  }
+
   p {
     font: mat.get-theme-typography($theme, body-medium, font);
+  }
+
+  a {
+    color: mat.get-theme-color($theme, primary);
   }
 
   body {
@@ -123,6 +169,11 @@ body {
 
   .surface-container-high {
     background-color: mat.get-theme-color($theme, surface-container-high) !important;
+    color: mat.get-theme-color($theme, on-surface) !important;
+  }
+
+  .surface-container {
+    background-color: mat.get-theme-color($theme, surface-container) !important;
     color: mat.get-theme-color($theme, on-surface) !important;
   }
 
@@ -331,6 +382,10 @@ body {
     margin-left: 16px;
     margin-right: 16px;
   }
+
+  .mat-divider {
+    border-top-color: var(--mat-card-outlined-outline-color)
+  }
 }
 
 /// Defines a mixin that applies custom styles to material switch components
@@ -354,6 +409,20 @@ body {
   .mdc-text-field__input::-webkit-calendar-picker-indicator {
     display: block !important;
     filter: invert(1);
+  }
+}
+
+// Defines a mixin that applies custom styles to material table components
+/// to better conform to Material 3 standards.
+///
+/// @param {theme} $theme: Angular Material theme to apply styles with.
+@mixin mat-table-styles($theme) {
+  .mat-mdc-cell {
+    border-bottom-color: var(--mat-card-outlined-outline-color)
+  }
+
+  .mat-mdc-header-cell {
+    border-bottom-color: var(--mat-card-outlined-outline-color)
   }
 }
 
@@ -530,7 +599,7 @@ body {
 
   mat-filter-chip-dialog {
     @include mat.form-field-overrides((
-      container-color: mat.get-theme-color($theme, surface-container-high),
+      filled-container-color: mat.get-theme-color($theme, surface-container-high),
       hover-state-layer-opacity: 0
   ));
 
@@ -553,6 +622,7 @@ body {
   @include mat-icon-styles($theme);
   @include mat-switch-styles($theme);
   @include mat-text-field-styles($theme);
+  @include mat-table-styles($theme);
   @include font-styles($theme);
   @include widget-styles($theme);
   @include global-styles($theme);

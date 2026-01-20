@@ -28,9 +28,10 @@ const DEFAULT_PAGINATION_PARAMS = {
 } as PaginationParams;
 
 @Component({
-  selector: 'app-hiring-summary',
-  templateUrl: './hiring-summary.component.html',
-  styleUrl: './hiring-summary.component.css'
+    selector: 'app-hiring-summary',
+    templateUrl: './hiring-summary.component.html',
+    styleUrl: './hiring-summary.component.css',
+    standalone: false
 })
 export class HiringSummaryComponent {
   /** Route for the routing module */

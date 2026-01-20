@@ -46,7 +46,7 @@ const canActivateEditor: CanActivateFn = (
 @Component({
   selector: 'app-term-editor',
   templateUrl: './term-editor.component.html',
-  styleUrls: ['./term-editor.component.css']
+  standalone: false
 })
 export class TermEditorComponent {
   /** Route information to be used in the Routing Module */

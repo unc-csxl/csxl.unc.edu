@@ -5,7 +5,7 @@ import { Profile, ProfileService } from '../../profile/profile.service';
 @Component({
   selector: 'app-admin-users-roles',
   templateUrl: './admin-accounts.component.html',
-  styleUrls: ['./admin-accounts.component.css']
+  standalone: false
 })
 export class AdminUsersRolesComponent {
   public profile$: Observable<Profile | undefined>;

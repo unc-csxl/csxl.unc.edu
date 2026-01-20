@@ -26,7 +26,7 @@ import { Profile } from 'src/app/models.module';
 @Component({
   selector: 'app-welcome-page',
   templateUrl: './welcome-page.component.html',
-  styleUrl: './welcome-page.component.css'
+  standalone: false
 })
 export class WelcomePageComponent implements OnInit {
   /** Route information to be used in the routing module */

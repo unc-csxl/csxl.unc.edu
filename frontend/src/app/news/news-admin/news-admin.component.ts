@@ -23,7 +23,7 @@ import { tap } from 'rxjs';
 @Component({
   selector: 'app-news-admin',
   templateUrl: './news-admin.component.html',
-  styleUrl: './news-admin.component.css'
+  standalone: false
 })
 export class NewsAdminComponent {
   /** Articles List */

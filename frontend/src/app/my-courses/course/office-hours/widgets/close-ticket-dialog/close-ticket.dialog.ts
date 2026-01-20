@@ -8,7 +8,7 @@ import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 @Component({
   selector: 'dialog-close-ticket',
   templateUrl: './close-ticket.dialog.html',
-  styleUrl: './close-ticket.dialog.css'
+  standalone: false
 })
 export class CloseTicketDialog {
   hasConcerns = new FormControl(false);

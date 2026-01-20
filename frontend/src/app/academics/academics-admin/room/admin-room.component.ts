@@ -19,7 +19,7 @@ import { Room } from '../../academics.models';
 @Component({
   selector: 'app-admin-room',
   templateUrl: './admin-room.component.html',
-  styleUrls: ['./admin-room.component.css']
+  standalone: false
 })
 export class AdminRoomComponent {
   public static Route = {

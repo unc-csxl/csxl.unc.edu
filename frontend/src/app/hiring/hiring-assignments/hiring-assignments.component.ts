@@ -19,9 +19,10 @@ import { MyCoursesService } from 'src/app/my-courses/my-courses.service';
 import { Observable, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-hiring-assignments',
-  templateUrl: './hiring-assignments.component.html',
-  styleUrl: './hiring-assignments.component.css'
+    selector: 'app-hiring-assignments',
+    templateUrl: './hiring-assignments.component.html',
+    styleUrl: './hiring-assignments.component.css',
+    standalone: false
 })
 export class HiringAssignmentsComponent {
   /** Route for the routing module */

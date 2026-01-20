@@ -1,11 +1,11 @@
 <h2 mat-dialog-title>Import From Canvas</h2>
 <mat-dialog-content>
-  <form>
+  <form class="flex flex-col gap-2">
     <p>
       Add students to a course section by importing the roster CSV from Canvas.
     </p>
-    <p><strong class="semibold">Steps to Download Roster CSV:</strong></p>
-    <ol>
+    <p><strong class="font-medium">Steps to Download Roster CSV:</strong></p>
+    <ol class="list-decimal list-inside">
       <li>Navigate to the "Grades" tab in your Canvas course page.</li>
       <li><em>Filter</em> your gradebook to include just one section. If you have two or more sections in your class, you will want to export these from Canvas and import this into the CSXL website separately.</li>
       <li>On the top right, press the dropdown "Export".</li>
@@ -13,7 +13,7 @@
       <li>Now, fill in the prompts below to upload your roster into the CSXL site.</li>
     </ol>
 
-    <mat-form-field appearance="outline" class="section-selector">
+    <mat-form-field appearance="outline" class="w-full! my-3!">
       <mat-label>Select Section to Import Into</mat-label>
       <mat-select
         [formControl]="selectedSection"
@@ -25,16 +25,17 @@
     </mat-form-field>
 
     <input
-      id="file-input"
+      class="hidden"
       #csvInput
       placeholder="Enter the title for the course site."
       type="file"
       accept=".csv"
       (change)="uploadFile($event)" />
 
-    <div class="file-input-container">
+    <div class="flex flex-row w-full items-center pl-4">
       <p>{{ file ? file.name : 'No file selected.' }}</p>
       <button
+        class="ml-auto! mr-4!"
         id="choose-file-button"
         mat-flat-button
         color="primary"

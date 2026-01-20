@@ -13,7 +13,7 @@ import { OfficeHourTicketOverview } from '../../../../my-courses.model';
 @Component({
   selector: 'queued-ticket-card',
   templateUrl: './queued-ticket-card.widget.html',
-  styleUrls: ['./queued-ticket-card.widget.scss']
+  standalone: false
 })
 export class QueuedTicketCardWidget {
   @Input() ticket!: OfficeHourTicketOverview;

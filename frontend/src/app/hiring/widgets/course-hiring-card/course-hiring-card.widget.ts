@@ -34,9 +34,10 @@ import {
 import { ApplicationDialog } from '../../dialogs/application-dialog/application-dialog.dialog';
 
 @Component({
-  selector: 'course-hiring-card',
-  templateUrl: './course-hiring-card.widget.html',
-  styleUrl: './course-hiring-card.widget.css'
+    selector: 'course-hiring-card',
+    templateUrl: './course-hiring-card.widget.html',
+    styleUrl: './course-hiring-card.widget.css',
+    standalone: false
 })
 export class CourseHiringCardWidget implements OnInit {
   @Input() termId!: string;

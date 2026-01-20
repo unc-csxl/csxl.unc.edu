@@ -18,6 +18,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LayoutModule } from '@angular/cdk/layout';
 
 /* Material UI Dependencies */
+import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -69,6 +70,7 @@ import { MatChipsModule } from '@angular/material/chips';
     ReactiveFormsModule,
     /* Material UI */
     MatButtonModule,
+    MatMenuModule,
     MatChipsModule,
     MatCardModule,
     MatDialogModule,

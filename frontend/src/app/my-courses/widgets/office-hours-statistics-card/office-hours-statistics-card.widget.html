@@ -1,16 +1,16 @@
-<mat-card class="statistics-card" appearance="outlined">
+<mat-card class="max-w-max! m-0!" appearance="outlined">
     <mat-card-header>
       <mat-card-title class="title-medium">{{ title() }}</mat-card-title>
     </mat-card-header>
-    <mat-card-content class="statistics-card-content">
-      <p class="statistics-card-statistic">
-        <span class="text-badge inverse-primary-background-color label-large"
+    <mat-card-content class="flex! flex-row! items-center! gap-6! pt-3!">
+      <p>
+        <span class="h-8 w-12 text-center px-3 py-[6px] rounded-full mr-2 leading-8 text-white inverse-primary-background-color label-large"
           >{{ leftStatistic() }}</span
         >{{ leftStatisticLabel() }}
       </p>
       @if(rightStatistic() && rightStatisticLabel()) {
-        <p class="statistics-card-statistic">
-          <span class="text-badge surface-container-high label-large"
+        <p>
+          <span class="h-8 w-12 text-center px-3 py-[6px] rounded-full mr-2 leading-8 text-white surface-container-high label-large"
             >{{ rightStatistic() }}</span
           >{{ rightStatisticLabel() }}
         </p>

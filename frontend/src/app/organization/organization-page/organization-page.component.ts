@@ -18,7 +18,7 @@ import { OrganizationService } from '../organization.service';
 @Component({
   selector: 'app-organization-page',
   templateUrl: './organization-page.component.html',
-  styleUrls: ['./organization-page.component.css']
+  standalone: false
 })
 export class OrganizationPageComponent {
   /** Route information to be used in Organization Routing Module */

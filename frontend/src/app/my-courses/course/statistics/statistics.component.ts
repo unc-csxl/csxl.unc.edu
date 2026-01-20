@@ -21,7 +21,7 @@ import {
   MatFilterChipSearchableItem
 } from 'src/app/shared/mat/filter-chip/filter-chip.component';
 import { MyCoursesService } from '../../my-courses.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   DefaultOfficeHourStatisticsPaginationParams,
   OfficeHourStatisticsFilterData,
@@ -40,7 +40,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-statistics',
   templateUrl: './statistics.component.html',
-  styleUrl: './statistics.component.css'
+  standalone: false
 })
 export class StatisticsComponent {
   /** Route information to be used in the routing module */
@@ -150,6 +150,7 @@ export class StatisticsComponent {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     protected myCoursesService: MyCoursesService,
     protected dialog: MatDialog,
     protected snackBar: MatSnackBar
@@ -161,7 +162,63 @@ export class StatisticsComponent {
       .getOfficeHoursStatisticsFilterOptions(this.courseSiteId)
       .subscribe((data) => {
         this.filterOptions.set(data);
+
+        // Read the query parameters
+        const studentIds = this.route.snapshot.queryParamMap
+          .get('studentId')
+          ?.split(',');
+        const staffIds = this.route.snapshot.queryParamMap
+          .get('staffId')
+          ?.split(',');
+
+        // Add students to the filter
+        const studentsToAdd: MatFilterChipSearchableItem<PublicProfile>[] = (
+          studentIds ?? []
+        ).reduce<MatFilterChipSearchableItem<PublicProfile>[]>(
+          (studentsToAdd, studentId) => {
+            const student = this.studentFilterOptions().find(
+              (s) => s.item.id === +studentId
+            );
+            if (student) {
+              studentsToAdd.push(student);
+            }
+            return studentsToAdd;
+          },
+          []
+        );
+
+        // Add staff to the filter
+        const staffToAdd: MatFilterChipSearchableItem<PublicProfile>[] = (
+          staffIds ?? []
+        ).reduce<MatFilterChipSearchableItem<PublicProfile>[]>(
+          (staffToAdd, staffId) => {
+            const staff = this.staffFilterOptions().find(
+              (s) => s.item.id === +staffId
+            );
+            if (staff) {
+              staffToAdd.push(staff);
+            }
+            return staffToAdd;
+          },
+          []
+        );
+
+        this.selectedStudentFilterOptions.set(studentsToAdd);
+        this.selectedStaffFilterOptions.set(staffToAdd);
       });
+  }
+
+  clearStudentFilter() {
+    this.selectedStudentFilterOptions.set([]);
+  }
+
+  clearStaffFilter() {
+    this.selectedStaffFilterOptions.set([]);
+  }
+
+  clearDateRangeFilter() {
+    this.selectedStartDate.set(undefined);
+    this.selectedEndDate.set(undefined);
   }
 
   /** Clear all currently-set filters when needed */
@@ -214,4 +271,42 @@ export class StatisticsComponent {
         }
       });
   }
+
+  urlUpdateEffect = effect(
+    () => {
+      const studentIds = this.selectedStudentFilterOptions()
+        .map((student) => student.item.id)
+        .join(',');
+      const staffIds = this.selectedStaffFilterOptions()
+        .map((staff) => staff.item.id)
+        .join(',');
+      const rangeStart = this.selectedStartDate()?.toISOString() ?? '';
+      const rangeEnd = this.selectedEndDate()?.toISOString() ?? '';
+
+      if (studentIds || staffIds || rangeStart || rangeEnd) {
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: {
+            studentId: studentIds || null,
+            staffId: staffIds || null,
+            range_start: rangeStart || null,
+            range_end: rangeEnd || null
+          }
+          //#queryParamsHandling: 'merge'
+        });
+        // } else {
+        //   this.router.navigate([], {
+        //     relativeTo: this.route,
+        //     queryParams: {
+        //       studentId: null,
+        //       staffId: null,
+        //       range_start: null,
+        //       range_end: null
+        //     },
+        //     queryParamsHandling: 'merge'
+        //   });
+      }
+    },
+    { allowSignalWrites: true }
+  ); // Allow signal writes to update the URL with the selected filters
 }

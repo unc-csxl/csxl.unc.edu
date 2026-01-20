@@ -34,7 +34,7 @@ let titleResolver: ResolveFn<string> = (route: ActivatedRouteSnapshot) => {
 @Component({
   selector: 'app-organization-details',
   templateUrl: './organization-details.component.html',
-  styleUrls: ['./organization-details.component.css']
+  standalone: false
 })
 export class OrganizationDetailsComponent implements OnInit {
   /** Route information to be used in Organization Routing Module */

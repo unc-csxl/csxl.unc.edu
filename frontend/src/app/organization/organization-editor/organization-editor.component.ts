@@ -20,7 +20,7 @@ import { organizationEditorGuard } from './organization-editor.guard';
 @Component({
   selector: 'app-organization-editor',
   templateUrl: './organization-editor.component.html',
-  styleUrls: ['./organization-editor.component.css']
+  standalone: false
 })
 export class OrganizationEditorComponent {
   /** Route information to be used in Organization Routing Module */

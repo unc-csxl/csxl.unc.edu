@@ -36,7 +36,7 @@ const CHIME = new Audio('assets/office-hours-notif.wav');
 @Component({
   selector: 'app-office-hours-queue',
   templateUrl: './office-hours-queue.component.html',
-  styleUrl: './office-hours-queue.component.css'
+  standalone: false
 })
 export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
   /** Route information to be used in the routing module */
@@ -141,7 +141,10 @@ export class OfficeHoursQueueComponent implements OnInit, OnDestroy {
   callTicket(ticket: OfficeHourTicketOverview): void {
     this.myCoursesService.callTicket(ticket.id).subscribe({
       next: (_) => this.pollQueue(),
-      error: (err) => this.snackBar.open(err, '', { duration: 2000 })
+      error: (err) =>
+        this.snackBar.open(err.error?.message ?? 'Error calling ticket', '', {
+          duration: 2000
+        })
     });
   }
 

@@ -12,7 +12,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'organization-not-found-card',
   templateUrl: './organization-not-found-card.widget.html',
-  styleUrls: ['./organization-not-found-card.widget.css']
+  standalone: false
 })
 export class OrganizationNotFoundCard {
   constructor() {}

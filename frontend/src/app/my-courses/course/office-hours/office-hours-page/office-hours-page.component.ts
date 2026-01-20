@@ -29,7 +29,7 @@ import {
 @Component({
   selector: 'app-course-office-hours-page',
   templateUrl: './office-hours-page.component.html',
-  styleUrl: './office-hours-page.component.css'
+  standalone: false
 })
 export class OfficeHoursPageComponent {
   /** Route information to be used in the routing module */

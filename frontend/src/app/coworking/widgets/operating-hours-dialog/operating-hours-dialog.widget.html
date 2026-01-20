@@ -3,11 +3,11 @@
   @if (operatingHours.length === 0) {
   <p>Please check back later to see upcoming hours!</p>
   } @for(hours of operatingHours; track hours.id) {
-  <div class="hours-row">
+  <div class="flex flex-row">
     <p>
-      <span class="semibold">{{ hours.start | date: 'EEEE (M/d)' }}</span>
+      <span class="font-medium">{{ hours.start | date: 'EEEE (M/d)' }}</span>
     </p>
-    <p class="hours-text">
+    <p class="ml-auto">
       {{ hours.start | date: 'h:mma' | lowercase }} to
       {{ hours.end | date: 'h:mma' | lowercase }}
     </p>

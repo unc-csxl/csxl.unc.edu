@@ -22,7 +22,7 @@ import { OfficeHourTicketOverview } from '../../../../my-courses.model';
 @Component({
   selector: 'called-ticket-card',
   templateUrl: './called-ticket-card.widget.html',
-  styleUrls: ['./called-ticket-card.widget.scss']
+  standalone: false
 })
 export class CalledTicketCardWidget implements OnChanges {
   @Input() ticket!: OfficeHourTicketOverview;

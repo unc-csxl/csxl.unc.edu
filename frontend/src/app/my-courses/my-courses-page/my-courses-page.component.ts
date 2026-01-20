@@ -6,13 +6,13 @@ import { CreateCourseSiteDialog } from '../dialogs/create-course-site/create-cou
 import { TermOverview, CourseSiteOverview } from '../my-courses.model';
 
 interface CourseInformation extends CourseSiteOverview {
-  termId: string
+  termId: string;
 }
 
 @Component({
   selector: 'app-my-courses-page',
   templateUrl: './my-courses-page.component.html',
-  styleUrl: './my-courses-page.component.css'
+  standalone: false
 })
 export class MyCoursesPageComponent {
   /** Route information to be used in the routing module */
@@ -44,41 +44,45 @@ export class MyCoursesPageComponent {
   getActiveTermNames(): string {
     return this.myCoursesService
       .currentTerms()
-      .map(term => term.name)
+      .map((term) => term.name)
       .join(', ');
   }
 
   /** Returns whether or not user has a non-student role in a course during the current terms */
   hasInstructorCourses(): boolean {
     return this.myCoursesService.currentTerms().some((term) => {
-      return term.sites.some(course => course.role !== 'Student');
+      return term.sites.some((course) => course.role !== 'Student');
     });
   }
-  
-    /** Returns whether or not user has a student role in a course during the current terms */
+
+  /** Returns whether or not user has a student role in a course during the current terms */
   hasStudentCourses(): boolean {
     return this.myCoursesService.currentTerms().some((term) => {
-      return term.sites.some(course => course.role === 'Student');
+      return term.sites.some((course) => course.role === 'Student');
     });
   }
 
   /** Returns the courses where the user is an instructor during the current terms */
   getInstructorCourses(): CourseInformation[] {
     return this.myCoursesService.currentTerms().flatMap((term) => {
-      return term.sites.filter(course => course.role !== 'Student').map(course => ({
-        ...course,
-        termId: term.id
-      }));
+      return term.sites
+        .filter((course) => course.role !== 'Student')
+        .map((course) => ({
+          ...course,
+          termId: term.id
+        }));
     });
   }
 
   /** Returns the courses where the user is a student during the current terms */
   getStudentCourses(): CourseInformation[] {
     return this.myCoursesService.currentTerms().flatMap((term) => {
-      return term.sites.filter(course => course.role === 'Student').map(course => ({
-        ...course,
-        termId: term.id
-      }));
+      return term.sites
+        .filter((course) => course.role === 'Student')
+        .map((course) => ({
+          ...course,
+          termId: term.id
+        }));
     });
   }
 
@@ -94,11 +98,9 @@ export class MyCoursesPageComponent {
         }
         return 0;
       })
-      .map(course => ({
+      .map((course) => ({
         ...course,
         termId: term.id
       }));
   }
 }
-
-

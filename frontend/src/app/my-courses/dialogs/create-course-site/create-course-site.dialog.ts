@@ -21,7 +21,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'dialog-create-course-site',
   templateUrl: './create-course-site.dialog.html',
-  styleUrl: './create-course-site.dialog.css'
+  standalone: false
 })
 export class CreateCourseSiteDialog {
   /** Course Site Form */

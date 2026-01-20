@@ -18,9 +18,10 @@ interface Column {
 }
 
 @Component({
-  selector: 'office-hours-display',
-  templateUrl: './office-hours.widget.html',
-  styleUrl: './office-hours.widget.css'
+    selector: 'office-hours-display',
+    templateUrl: './office-hours.widget.html',
+    styleUrl: './office-hours.widget.css',
+    standalone: false
 })
 export class OfficeHoursWidget {
   officeHours = input<SignageOfficeHours[]>([]);

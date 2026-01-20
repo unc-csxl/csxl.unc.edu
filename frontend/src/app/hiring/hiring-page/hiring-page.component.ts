@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-hiring-page',
-  templateUrl: './hiring-page.component.html',
-  styleUrl: './hiring-page.component.css'
+    selector: 'app-hiring-page',
+    templateUrl: './hiring-page.component.html',
+    styleUrl: './hiring-page.component.css',
+    standalone: false
 })
 export class HiringPageComponent {
   links = [

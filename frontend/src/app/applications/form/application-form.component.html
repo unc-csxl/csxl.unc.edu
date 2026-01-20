@@ -4,12 +4,12 @@
         <mat-card-title>{{ (term$ | async)?.name }} Assignment</mat-card-title>
       </mat-card-header>
       @if(this.application.assignments.length > 0) {
-      <mat-card-content>
-        <p><strong class="font-primary">Congratulations!</strong> You have been matched with the following assignment{{ this.application.assignments.length > 1 ? 's' : ''}}:</p>
+      <mat-card-content class="pt-3!">
+        <p><strong class="font-primary text-medium!">Congratulations!</strong> You have been matched with the following assignment{{ this.application.assignments.length > 1 ? 's' : ''}}:</p>
         <div>
           @for(assignment of this.application.assignments; track assignment) {
-            <div class="assignment-row">
-              <p><strong>{{ assignment.level_title }}</strong> for <strong>{{ assignment.course }}</strong></p>
+            <div class="flex flex-row items-center w-full justify-between">
+              <p><strong class="text-medium!">{{ assignment.level_title }}</strong> for <strong>{{ assignment.course }}</strong></p>
               <user-chip-list [users]="assignment.instructors" [clickable]="false" />
             </div>
           }
@@ -21,24 +21,24 @@
         </mat-card-content>
       }
     </mat-pane>
+} @else {
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <mat-pane>
+      <mat-card-header>
+        <mat-card-title>Application Form</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        @for(field of fields; track field.name) {
+        <application-form-field
+          [field]="field"
+          [selectedSections]="selectedSections" />
+        }
+      </mat-card-content>
+      <mat-card-actions>
+        <button class="submit-button" mat-flat-button color="primary">
+          Submit Application
+        </button>
+      </mat-card-actions>
+    </mat-pane>
+  </form>
 }
-
-<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
-  <mat-pane>
-    <mat-card-header>
-      <mat-card-title>Application Form</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      @for(field of fields; track field.name) {
-      <application-form-field
-        [field]="field"
-        [selectedSections]="selectedSections" />
-      }
-    </mat-card-content>
-    <mat-card-actions>
-      <button class="submit-button" mat-flat-button color="primary">
-        Submit Application
-      </button>
-    </mat-card-actions>
-  </mat-pane>
-</form>

@@ -36,7 +36,7 @@ const CHIME = new Audio('assets/office-hours-notif.wav');
 @Component({
   selector: 'app-office-hours-get-help',
   templateUrl: './office-hours-get-help.component.html',
-  styleUrl: './office-hours-get-help.component.css'
+  standalone: false
 })
 export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
   /** Route information to be used in the routing module */
@@ -105,8 +105,13 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
      */
     let notify: boolean = false;
     /* Test notification condition and store result in notify */
-    if (getHelpData.ticket && getHelpData.ticket.state === 'Called' &&
-      this.data() && this.data()!.ticket && this.data()!.ticket!.state === 'Queued') {
+    if (
+      getHelpData.ticket &&
+      getHelpData.ticket.state === 'Called' &&
+      this.data() &&
+      this.data()!.ticket &&
+      this.data()!.ticket!.state === 'Queued'
+    ) {
       notify = true;
     }
     /* Notification behavior based on result stored in notify */
@@ -114,9 +119,11 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
       CHIME.play();
       this.titleFlashTimer = timer(0, 1000).subscribe(() => {
         this.titleService.setTitle(
-          this.titleService.getTitle() === NOTIFICATION_TITLE ?
-            ORIGINAL_TITLE : NOTIFICATION_TITLE);
-      })
+          this.titleService.getTitle() === NOTIFICATION_TITLE
+            ? ORIGINAL_TITLE
+            : NOTIFICATION_TITLE
+        );
+      });
     } else {
       this.titleFlashTimer?.unsubscribe();
       this.titleService.setTitle(ORIGINAL_TITLE);
@@ -137,9 +144,9 @@ export class OfficeHoursGetHelpComponent implements OnInit, OnDestroy {
     let contentFieldsValid =
       this.ticketForm.controls['type'].value === 1
         ? this.ticketForm.controls['assignmentSection'].value !== '' &&
-        this.ticketForm.controls['codeSection'].value !== '' &&
-        this.ticketForm.controls['conceptsSection'].value !== '' &&
-        this.ticketForm.controls['attemptSection'].value !== ''
+          this.ticketForm.controls['codeSection'].value !== '' &&
+          this.ticketForm.controls['conceptsSection'].value !== '' &&
+          this.ticketForm.controls['attemptSection'].value !== ''
         : this.ticketForm.controls['description'].value !== '';
 
     let linkFieldValid =

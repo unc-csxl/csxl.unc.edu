@@ -15,7 +15,7 @@ import { SocialMediaIconWidgetService } from 'src/app/shared/social-media-icon/s
 @Component({
   selector: 'organization-details-info-card',
   templateUrl: './organization-details-info-card.widget.html',
-  styleUrls: ['./organization-details-info-card.widget.css']
+  standalone: false
 })
 export class OrganizationDetailsInfoCard {
   /** The organization to show */

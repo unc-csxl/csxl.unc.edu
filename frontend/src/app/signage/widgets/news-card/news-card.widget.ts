@@ -11,9 +11,10 @@ import { Component, effect, input } from '@angular/core';
 import { ArticleOverview } from '../../../welcome/welcome.model';
 
 @Component({
-  selector: 'news-card',
-  templateUrl: './news-card.widget.html',
-  styleUrl: './news-card.widget.css'
+    selector: 'news-card',
+    templateUrl: './news-card.widget.html',
+    styleUrl: './news-card.widget.css',
+    standalone: false
 })
 export class NewsCardWidget {
   articles = input<ArticleOverview[]>([]);

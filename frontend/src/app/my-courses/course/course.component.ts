@@ -6,13 +6,7 @@
  * @license MIT
  */
 
-import {
-  Component,
-  computed,
-  OnInit,
-  signal,
-  WritableSignal
-} from '@angular/core';
+import { Component, computed, signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MyCoursesService } from '../my-courses.service';
 import {
@@ -26,7 +20,7 @@ import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-
 @Component({
   selector: 'app-course',
   templateUrl: './course.component.html',
-  styleUrls: ['./course.component.css']
+  standalone: false
 })
 export class CourseComponent {
   /** Links for the tab bar */
@@ -68,7 +62,7 @@ export class CourseComponent {
     } else if (this.isStaff()) {
       return [this.officeHoursLink, this.statisticsLink, this.rosterLink];
     } else {
-      return [this.officeHoursLink, this.rosterLink];
+      return [this.officeHoursLink];
     }
   });
 

@@ -19,7 +19,7 @@ import { RxTermList } from '../rx-academics-admin';
 @Component({
   selector: 'app-admin-term',
   templateUrl: './admin-term.component.html',
-  styleUrls: ['./admin-term.component.css']
+  standalone: false
 })
 export class AdminTermComponent {
   public static Route = {

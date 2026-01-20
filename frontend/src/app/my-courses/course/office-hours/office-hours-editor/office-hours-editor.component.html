@@ -7,9 +7,9 @@
         {{ this.isNew() ? 'Create' : 'Update' }} Office Hours
       </mat-card-title>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content class="flex! flex-col! gap-4! pt-4!">
       <!-- Type Field -->
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>Type</mat-label>
         <mat-select formControlName="type">
           @for(type of [0, 1, 2]; track type) {
@@ -18,7 +18,7 @@
         </mat-select>
       </mat-form-field>
       <!-- Mode Field -->
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>Mode</mat-label>
         <mat-select formControlName="mode" (selectionChange)="modeChanged()">
           @for(mode of [0, 1, 2]; track mode) {
@@ -29,19 +29,27 @@
 
       @if (officeHoursForm.controls['mode'].value === 0) {
       <!-- Room -->
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>Room</mat-label>
-        <mat-select formControlName="room_id">
-          @for(room of rooms; track room.id) {
-          <mat-option [value]="room.id">{{ room.id }}</mat-option>
+        <input
+          #roomInput
+          type="text"
+          matInput
+          formControlName="room_id"
+          [matAutocomplete]="auto"
+          (input)="filterRooms()"
+          (focus)="filterRooms()" />
+        <mat-autocomplete #auto="matAutocomplete" requireSelection>
+          @for (room of filteredRooms; track room.id) {
+          <mat-option [value]="room.id">{{room.id}}</mat-option>
           }
-        </mat-select>
+        </mat-autocomplete>
       </mat-form-field>
 
       }
 
       <!-- Location Description Field -->
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>Location Description or Zoom Link</mat-label>
         <input
           matInput
@@ -51,7 +59,7 @@
       </mat-form-field>
 
       <!-- Long Description Field -->
-      <mat-form-field appearance="outline" color="accent">
+      <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Office Hours Description</mat-label>
         <textarea
           matInput
@@ -60,9 +68,9 @@
           name="description"></textarea>
       </mat-form-field>
 
-      <div class="time-form-fields-container">
+      <div class="flex flex-row gap-3">
         <!-- Start Time -->
-        <mat-form-field appearance="outline" color="accent">
+        <mat-form-field appearance="outline" color="accent" class="w-full">
           <mat-label>Office Hours Event Start Time</mat-label>
           <input
             matInput
@@ -74,7 +82,7 @@
         </mat-form-field>
 
         <!-- End Time -->
-        <mat-form-field appearance="outline" color="accent">
+        <mat-form-field appearance="outline" color="accent" class="w-full">
           <mat-label>Office Hours Event End Time</mat-label>
           <input
             matInput
@@ -88,11 +96,11 @@
 
       <!-- Recurrence Pattern Update Options -->
       @if (!isNew()) {
-        <mat-checkbox className="recurrence-update-toggle" (change)="this.toggleUpdateRecurrencePattern($event.checked)">Update future events in recurrence pattern.</mat-checkbox>
+        <mat-checkbox className="mt-[-20px]" (change)="this.toggleUpdateRecurrencePattern($event.checked)">Update future events in recurrence pattern.</mat-checkbox>
       }
 
       <!-- Recurrence Pattern Field -->
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-full">
         <mat-label>Recurrence Pattern</mat-label>
         <mat-select formControlName="recurs">
           @for(recur of [false, true]; track recur) {
@@ -104,18 +112,19 @@
       <!-- Recurrence Pattern Day Options -->
       @if (officeHoursForm.getRawValue().recurs) {
         <mat-button-toggle-group
+          class="w-full mt-[-16px] mb-4"
           name="days"
           aria-label="Days to Recur"
           [hideMultipleSelectionIndicator]="true"
           multiple
         >
           @for (day of this.days | keyvalue: maintainOriginalOrder; track day.key) {
-            <mat-button-toggle (change)="toggleDay(day.key)" value="{{day.key}}" [checked]="this.days[day.key]" [disabled]="!this.isNew() && !this.updateRecurrencePattern">{{day.key}}</mat-button-toggle>
+            <mat-button-toggle class="w-full" (change)="toggleDay(day.key)" value="{{day.key}}" [checked]="this.days[day.key]" [disabled]="!this.isNew() && !this.updateRecurrencePattern">{{day.key}}</mat-button-toggle>
           }
         </mat-button-toggle-group>
 
         <!-- Recurrence End Date -->
-        <mat-form-field appearance="outline" color="accent">
+        <mat-form-field appearance="outline" color="accent" class="w-full">
           <mat-label>Recurrence End Date</mat-label>
           <input
             matInput 
@@ -139,7 +148,7 @@
         <mat-error>This event's recurrence end date must be after the original event end date.</mat-error>
       }
     </mat-card-content>
-    <mat-card-actions>
+    <mat-card-actions class="pb-4! justify-end! gap-3!">
       <button
         mat-stroked-button
         color="secondary"

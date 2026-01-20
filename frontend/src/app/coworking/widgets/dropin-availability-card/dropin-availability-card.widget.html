@@ -1,6 +1,6 @@
 <mat-pane appearance="outlined">
   <!-- Coworking Card Header -->
-  <mat-card-header class="dropin-header">
+  <mat-card-header class="flex mb-2 items-center justify-between">
     <!--  class="user-name" -->
     <mat-card-title>Drop-in to The XL (SN156)</mat-card-title>
   </mat-card-header>
@@ -16,26 +16,26 @@
     <mat-action-list>
       @for (category of categories; track category) { @if
       (category.reservable_now) {
-      <mat-list-item (click)="reserve(category)">
-        <span matListItemTitle>{{ category.title }}</span>
-        <span matListItemIcon class="primary-background">{{
+      <mat-list-item class="flex items-baseline p-0! rounded-xl!" (click)="reserve(category)">
+        <span matListItemTitle class="mt-[-4px]! ml-1!">{{ category.title }}</span>
+        <span matListItemIcon class="primary-background text-2xl! size-9! text-center! my-auto! ml-2! pb-0! leading-9! rounded-full!">{{
           category.seats_available_now.length
         }}</span>
-        <p matListItemLine>{{ category.availabilityString() }}</p>
-        <h3 matListItemMeta>&rsaquo;</h3>
+        <p matListItemLine class="ml-1! mb-0!">{{ category.availabilityString() }}</p>
+        <h3 matListItemMeta class="flex justify-center items-center text-[32px] mt-1!">&rsaquo;</h3>
       </mat-list-item>
       } @else { @if(category.reservable_soon) {
-      <mat-list-item (click)="reserve(category)">
-        <h3 matListItemTitle>{{ category.title }}</h3>
-        <div matListItemIcon class="upcoming secondary-background">1</div>
-        <p matListItemLine>{{ category.availabilityString() }}</p>
-        <h3 matListItemMeta>&rsaquo;</h3>
+      <mat-list-item class="flex items-baseline p-0! rounded-xl!" (click)="reserve(category)">
+        <h3 matListItemTitle class="mt-[-4px]! ml-1!">{{ category.title }}</h3>
+        <div matListItemIcon class="secondary-background text-2xl! size-9! text-center! my-auto! ml-2! pb-0! leading-9! rounded-full!">1</div>
+        <p matListItemLine class="ml-1! mb-0!">{{ category.availabilityString() }}</p>
+        <h3 matListItemMeta class="flex justify-center items-center text-[32px] mt-1!">&rsaquo;</h3>
       </mat-list-item>
       } @else {
-      <mat-list-item>
-        <h3 matListItemTitle>{{ category.title }}</h3>
-        <div matListItemIcon class="unavailable tertiary-background">0</div>
-        <p matListItemLine class="tertiary-color">None available</p>
+      <mat-list-item  class="flex items-baseline p-0! rounded-xl!">
+        <h3 matListItemTitle class="mt-[-4px]! ml-1!">{{ category.title }}</h3>
+        <div matListItemIcon class="tertiary-background text-2xl! size-9! text-center! my-auto! ml-2! pb-0! leading-9! rounded-full!">0</div>
+        <p matListItemLine class="tertiary-color ml-1! mb-0!">None available</p>
       </mat-list-item>
       } } }
     </mat-action-list>

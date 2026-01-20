@@ -8,7 +8,7 @@ import { SocialMediaIconWidgetService } from 'src/app/shared/social-media-icon/s
 @Component({
   selector: 'app-public-profile-page',
   templateUrl: './public-profile-page.component.html',
-  styleUrl: './public-profile-page.component.css'
+  standalone: false
 })
 export class PublicProfilePageComponent {
   public static Route: Route = {

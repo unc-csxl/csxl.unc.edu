@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-coworking-ambassador-home',
   templateUrl: './ambassador-home.component.html',
-  styleUrls: ['./ambassador-home.component.css']
+  standalone: false
 })
 export class AmbassadorPageComponent implements OnInit {
   public links = [

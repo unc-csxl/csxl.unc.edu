@@ -2,9 +2,10 @@ import { Component, Input } from '@angular/core';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 @Component({
-  selector: 'admin-fab',
-  templateUrl: './admin-fab.component.html',
-  styleUrl: './admin-fab.component.css'
+    selector: 'admin-fab',
+    templateUrl: './admin-fab.component.html',
+    styleUrl: './admin-fab.component.css',
+    standalone: false
 })
 export class AdminFabComponent {
   @Input() primaryIcon!: string;
