@@ -124,6 +124,12 @@ export class EditAssignmentDialog {
     );
   }
 
+  isInstructorPreferred(level: HiringLevel): boolean {
+    const app = this.getApplication();
+    const preferredId = app?.level?.id ?? null;
+    return preferredId != null && level.id === preferredId;
+  }
+
   openApplicationDialog(): void {
     this.dialog.open(ApplicationDialog, {
       height: '600px',

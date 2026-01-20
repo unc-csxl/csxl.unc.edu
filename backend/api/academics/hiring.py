@@ -163,6 +163,18 @@ def update_status(
     return hiring_service.update_status(subject, course_site_id, hiring_status)
 
 
+@api.get("/{course_site_id}/enrollment", tags=["Hiring"])
+def get_course_site_total_enrollment(
+    course_site_id: int,
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> int:
+    """
+    Returns the total enrollment across all sections in a course site.
+    """
+    return hiring_service.get_course_site_total_enrollment(subject, course_site_id)
+
+
 @api.get("/summary/{term_id}", tags=["Hiring"])
 def get_hiring_summary_overview(
     term_id: str,

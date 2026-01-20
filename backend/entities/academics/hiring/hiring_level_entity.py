@@ -45,6 +45,12 @@ class HiringLevelEntity(EntityBase):
         back_populates="hiring_level"
     )
 
+    # Application reviews with this level
+    # NOTE: This defines a one-to-many relationship between the application reviews and level tables.
+    hiring_reviews: Mapped[list["ApplicationReviewEntity"]] = relationship(
+        back_populates="level"
+    )
+
     @classmethod
     def from_model(cls, model: HiringLevel) -> Self:
         return cls(

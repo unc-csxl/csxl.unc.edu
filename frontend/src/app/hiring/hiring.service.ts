@@ -177,4 +177,8 @@ export class HiringService {
       `/api/hiring/conflict_check/${applicationId}`
     );
   }
+  
+  getCourseSiteEnrollment(courseSiteId: number): Observable<number> {
+    return this.http.get<number>(`/api/hiring/${courseSiteId}/enrollment`);
+  }
 }

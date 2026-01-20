@@ -76,27 +76,39 @@ export class QuickCreateAssignmentDialog {
     let review = data.courseAdmin.reviews.find(
       (r) => r.applicant_id == data.user.id
     )!;
-    let program = review.application.program_pursued!;
-    let defaultLevelSearch: string | null;
-    switch (program) {
-      case 'PhD':
-        defaultLevelSearch = '1.0 PhD TA';
-        break;
-      case 'PhD (ABD)':
-        defaultLevelSearch = '1.0 PhD (ABD) TA';
-        break;
-      case 'BS/MS':
-      case 'MS':
-        defaultLevelSearch = '1.0 MS TA';
-        break;
-      default:
-        defaultLevelSearch = '10h UTA';
-        break;
+    
+    let level: HiringLevel | undefined;
+    
+    // Try to use the instructor's preferred level
+    if (review.level?.id) {
+      level = this.hiringService.getHiringLevel(review.level.id);
     }
+    
+    // Fall back to title-based search if no preferred level is set or found
+    if (!level) {
+      let program = review.application.program_pursued!;
+      let defaultLevelSearch: string | null;
+      switch (program) {
+        case 'PhD':
+          defaultLevelSearch = '1.0 PhD TA';
+          break;
+        case 'PhD (ABD)':
+          defaultLevelSearch = '1.0 PhD (ABD) TA';
+          break;
+        case 'BS/MS':
+        case 'MS':
+          defaultLevelSearch = '1.0 MS TA';
+          break;
+        default:
+          defaultLevelSearch = '10h UTA';
+          break;
+      }
 
-    const level = this.hiringService
-      .hiringLevels()
-      .find((level) => level.title == defaultLevelSearch);
+      level = this.hiringService
+        .hiringLevels()
+        .find((level) => level.title == defaultLevelSearch);
+    }
+    
     if (level) {
       this.createAssignmentForm.get('level')?.setValue(level);
     }
@@ -167,6 +179,13 @@ export class QuickCreateAssignmentDialog {
     return this.data.courseAdmin.reviews.find(
       (a) => a.applicant_id === this.data.user.id
     );
+  }
+
+  /** Returns true if the given level matches the instructor's preferred level for this applicant. */
+  isInstructorPreferred(level: HiringLevel): boolean {
+    const app = this.getApplication();
+    const preferredId = app?.level?.id ?? null;
+    return preferredId != null && level.id === preferredId;
   }
 
   openApplicationDialog(): void {

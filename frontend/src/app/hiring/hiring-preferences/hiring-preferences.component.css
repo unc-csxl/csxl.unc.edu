@@ -112,3 +112,10 @@ application-card {
   flex-direction: row;
   gap: 12px;
 }
+
+.coverage-row {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  gap: 4px;
+}
