@@ -18,7 +18,7 @@
       (category.reservable_now) {
       <mat-list-item class="flex items-baseline p-0! rounded-xl!" (click)="reserve(category)">
         <span matListItemTitle class="mt-[-4px]! ml-1!">{{ category.title }}</span>
-        <span matListItemIcon class="primary-background text-2xl! size-9! text-center! my-auto! ml-2! pb-0! leading-9! rounded-full! text-white!">{{
+        <span matListItemIcon class="primary-background text-2xl! size-9! text-center! my-auto! ml-2! pb-0! leading-9! rounded-full!">{{
           category.seats_available_now.length
         }}</span>
         <p matListItemLine class="ml-1! mb-0!">{{ category.availabilityString() }}</p>
@@ -27,14 +27,14 @@
       } @else { @if(category.reservable_soon) {
       <mat-list-item class="flex items-baseline p-0! rounded-xl!" (click)="reserve(category)">
         <h3 matListItemTitle class="mt-[-4px]! ml-1!">{{ category.title }}</h3>
-        <div matListItemIcon class="secondary-background text-2xl! size-9! text-center! my-auto! ml-2! pb-0! leading-9! rounded-full! text-white!">1</div>
+        <div matListItemIcon class="secondary-background text-2xl! size-9! text-center! my-auto! ml-2! pb-0! leading-9! rounded-full!">1</div>
         <p matListItemLine class="ml-1! mb-0!">{{ category.availabilityString() }}</p>
         <h3 matListItemMeta class="flex justify-center items-center text-[32px] mt-1!">&rsaquo;</h3>
       </mat-list-item>
       } @else {
       <mat-list-item  class="flex items-baseline p-0! rounded-xl!">
         <h3 matListItemTitle class="mt-[-4px]! ml-1!">{{ category.title }}</h3>
-        <div matListItemIcon class="tertiary-background text-2xl! size-9! text-center! my-auto! ml-2! pb-0! leading-9! rounded-full! text-white!">0</div>
+        <div matListItemIcon class="tertiary-background text-2xl! size-9! text-center! my-auto! ml-2! pb-0! leading-9! rounded-full!">0</div>
         <p matListItemLine class="tertiary-color ml-1! mb-0!">None available</p>
       </mat-list-item>
       } } }

@@ -1,7 +1,8 @@
 {
   "dependencies": {
-    "@tailwindcss/postcss": "^4.1.16",
-    "openmeteo": "^1.2.0"
+    "@tailwindcss/postcss": "^4.1.18",
+    "openmeteo": "^1.2.0",
+    "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
     "postcss": "^8.5.6"
