@@ -19,6 +19,12 @@ from .....models.academics.hiring.application_review import (
 from .....services.academics import HiringService
 from .....services.application import ApplicationService
 from .....services.academics.course_site import CourseSiteService
+from .....entities.academics.section_entity import SectionEntity
+from .....entities.academics.hiring.application_review_entity import (
+    ApplicationReviewEntity,
+)
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 # Injected Service Fixtures
 from .fixtures import hiring_svc
@@ -98,6 +104,7 @@ def test_update_status(hiring_svc: HiringService):
     status.not_preferred[0].status = ApplicationReviewStatus.PREFERRED
     status.not_preferred[0].preference = 1
     status.preferred[0].notes = "Updated notes!"
+    status.preferred[0].level = hiring_data.uta_level
     status.not_processed[0].preference = 1
     status.not_processed[1].preference = 0
 
@@ -109,6 +116,7 @@ def test_update_status(hiring_svc: HiringService):
     assert len(new_status.preferred) == 2
     assert new_status.preferred[0].application_id == hiring_data.application_two.id
     assert new_status.preferred[0].notes == "Updated notes!"
+    assert new_status.preferred[0].level.id == hiring_data.uta_level.id
     assert new_status.preferred[1].application_id == hiring_data.application_one.id
     assert new_status.not_processed[0].application_id == hiring_data.application_four.id
     assert (
@@ -303,3 +311,29 @@ def test_get_phd_applicants(hiring_svc: HiringService):
     assert len(applicants) > 0
     for applicant in applicants:
         assert applicant.program_pursued in {"PhD", "PhD (ABD)"}
+
+
+def test_get_course_site_total_enrollment(hiring_svc: HiringService, session: Session):
+    """Verify total enrollment sums section enrollments for a course site."""
+    from ...office_hours import office_hours_data
+
+    course_site_id = office_hours_data.comp_110_site.id
+    total = hiring_svc.get_course_site_total_enrollment(
+        user_data.instructor, course_site_id
+    )
+    sections = session.scalars(
+        select(SectionEntity).where(SectionEntity.course_site_id == course_site_id)
+    ).all()
+    expected = sum(s.enrolled for s in sections)
+    assert total == expected
+
+
+def test_get_course_site_total_enrollment_checks_permission(hiring_svc: HiringService):
+    """Ambassador should not be able to read instructor-only enrollment."""
+    from ...office_hours import office_hours_data
+
+    with pytest.raises(UserPermissionException):
+        hiring_svc.get_course_site_total_enrollment(
+            user_data.ambassador, office_hours_data.comp_110_site.id
+        )
+        pytest.fail()

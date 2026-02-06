@@ -29,11 +29,11 @@ mat-card-header {
 tr.example-detail-row {
     height: 0;
 }
-  
+
 .example-element-row td {
     border-bottom-width: 0;
 }
-  
+
 .example-element-detail {
     overflow: hidden;
     display: flex;
@@ -60,6 +60,7 @@ course-hiring-card {
 .row {
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
 
 .totals-row {

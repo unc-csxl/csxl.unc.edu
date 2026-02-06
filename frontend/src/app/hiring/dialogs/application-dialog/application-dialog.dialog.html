@@ -99,10 +99,14 @@
   <mat-divider />
 
   @if(data.viewOnly) {
-  <div class="row">
-    <p mat-card-subtitle>Instructor's Notes</p>
+    <div class="row">
+      <p mat-card-subtitle>Instructor's Notes</p>
+    </div>
     <p markdown>{{ data.review.notes }}</p>
+  <div class="row">
+    <p mat-card-subtitle>Preferred Hiring Level</p>
   </div>
+  <p>{{ data.review.level ? data.review.level.title : 'None' }}</p>
   } @else {
   <div class="row">
     <p mat-card-subtitle>Your Notes</p>
@@ -114,6 +118,19 @@
       placeholder="Write your thoughts about each application here."
       [formControl]="notes"
       name="notes"></textarea>
+  </mat-form-field>
+
+  <div class="row">
+    <p mat-card-subtitle>Preferred Hiring Level</p>
+  </div>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Select Preferred Level</mat-label>
+    <mat-select [formControl]="preferredLevel" [compareWith]="compareLevels">
+      @for(level of hiringService.activeHiringlevels(); track level.id) {
+      <mat-option [value]="level">{{ level.title }}</mat-option>
+      }
+    </mat-select>
   </mat-form-field>
   }
 </mat-dialog-content>

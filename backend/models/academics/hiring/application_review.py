@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from enum import Enum
 
+from .hiring_level import HiringLevel
+
 from ...application import Comp227, ApplicationUnderReview
 from ...public_user import PublicUser
 
@@ -28,6 +30,7 @@ class ApplicationReview(BaseModel):
     status: ApplicationReviewStatus = ApplicationReviewStatus.NOT_PROCESSED
     preference: int
     notes: str
+    level: HiringLevel | None = None
 
 
 class ApplicationReviewOverview(ApplicationReview):
@@ -39,6 +42,7 @@ class ApplicationReviewOverview(ApplicationReview):
     preference: int
     notes: str
     applicant_course_ranking: int
+    level: HiringLevel | None = None
 
 
 class HiringStatus(BaseModel):
@@ -76,3 +80,4 @@ class ApplicationReviewCsvRow(BaseModel):
     status: ApplicationReviewStatus = ApplicationReviewStatus.NOT_PROCESSED
     preference: int
     notes: str
+    level: str | None
