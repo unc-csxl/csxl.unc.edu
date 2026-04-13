@@ -1,4 +1,4 @@
-<mat-card appearance="outlined" class="border-transparent! max-w-full! mr-8!">
+<mat-card appearance="outlined" class="mr-8! max-w-full! border-transparent!">
   <mat-card-header>
     <mat-card-title>All Roles</mat-card-title>
   </mat-card-header>
@@ -7,7 +7,10 @@
       <div class="table-responsive">
         <table mat-table [dataSource]="roles">
           <ng-container matColumnDef="name">
-            <th class="flex! flex-row! w-full! items-center! py-1!" mat-header-cell *matHeaderCellDef>
+            <th
+              class="flex! w-full! flex-row! items-center! py-1!"
+              mat-header-cell
+              *matHeaderCellDef>
               Role
               <button
                 class="ml-auto"
@@ -16,7 +19,12 @@
                 Create New Role
               </button>
             </th>
-            <td class="border-0! border-transparent! hover:cursor-pointer! hover:bg-black/5! dark:hover:bg-white/5! hover:rounded-xl" mat-cell *matCellDef="let element">{{ element.name }}</td>
+            <td
+              class="border-0! border-transparent! hover:cursor-pointer! hover:rounded-xl hover:bg-black/5! dark:hover:bg-white/5!"
+              mat-cell
+              *matCellDef="let element">
+              {{ element.name }}
+            </td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr

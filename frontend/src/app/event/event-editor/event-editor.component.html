@@ -79,34 +79,34 @@
         Use the CSXL's event registration system.
       </mat-slide-toggle>
 
-      @if(eventForm.get('internal_registration')!.value) {
-      <!-- Room Reservable Field -->
-      <mat-slide-toggle formControlName="has_limit">
-        Add registration limit?
-      </mat-slide-toggle>
+      @if (eventForm.get('internal_registration')!.value) {
+        <!-- Room Reservable Field -->
+        <mat-slide-toggle formControlName="has_limit">
+          Add registration limit?
+        </mat-slide-toggle>
 
-      <!-- Registration Limit -->
-      @if(eventForm.get('has_limit')!.value) {
-      <mat-form-field class="w-full" appearance="outline" color="accent">
-        <mat-label>Registration Limit</mat-label>
-        <input
-          type="number"
-          matInput
-          placeholder="Registration limit here."
-          formControlName="registration_limit"
-          name="registration_limit" />
-      </mat-form-field>
-      } } @else {
-      <!-- Registration URL -->
-      <mat-form-field class="w-full" appearance="outline" color="accent">
-        <mat-label>Custom Registration Link</mat-label>
-        <input
-          matInput
-          placeholder="Custom Registration Link."
-          formControlName="override_registration_url"
-          name="override_registration_url" />
-      </mat-form-field>
-
+        <!-- Registration Limit -->
+        @if (eventForm.get('has_limit')!.value) {
+          <mat-form-field class="w-full" appearance="outline" color="accent">
+            <mat-label>Registration Limit</mat-label>
+            <input
+              type="number"
+              matInput
+              placeholder="Registration limit here."
+              formControlName="registration_limit"
+              name="registration_limit" />
+          </mat-form-field>
+        }
+      } @else {
+        <!-- Registration URL -->
+        <mat-form-field class="w-full" appearance="outline" color="accent">
+          <mat-label>Custom Registration Link</mat-label>
+          <input
+            matInput
+            placeholder="Custom Registration Link."
+            formControlName="override_registration_url"
+            name="override_registration_url" />
+        </mat-form-field>
       }
 
       <!-- User Selection / Organizers Form Control -->
@@ -116,13 +116,13 @@
     <!-- Save Button -->
     <mat-card-actions class="mb-4! justify-between gap-3!">
       @if (!isNew()) {
-      <button
-        mat-flat-button
-        class="tertiary-button"
-        type="button"
-        (click)="onDelete()">
-        Delete
-      </button>
+        <button
+          mat-flat-button
+          class="tertiary-button"
+          type="button"
+          (click)="onDelete()">
+          Delete
+        </button>
       }
       <div class="flex flex-row gap-3">
         <button

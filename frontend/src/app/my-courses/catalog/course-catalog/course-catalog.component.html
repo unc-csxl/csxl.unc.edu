@@ -29,13 +29,14 @@
               mat-icon-button
               aria-label="expand row"
               (click)="
-              expandedElement = expandedElement === element ? null : element;
-              $event.stopPropagation()
-            ">
+                expandedElement = expandedElement === element ? null : element;
+                $event.stopPropagation()
+              ">
               @if (expandedElement === element) {
-              <mat-icon>keyboard_arrow_up</mat-icon>
-              } @if (expandedElement !== element) {
-              <mat-icon>keyboard_arrow_down</mat-icon>
+                <mat-icon>keyboard_arrow_up</mat-icon>
+              }
+              @if (expandedElement !== element) {
+                <mat-icon>keyboard_arrow_down</mat-icon>
               }
             </button>
           </div>

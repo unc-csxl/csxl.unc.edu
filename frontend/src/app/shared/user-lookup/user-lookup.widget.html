@@ -5,35 +5,38 @@
     aria-label="Choose people"
     [disabled]="this.disabled">
     @for (user of users; track user) {
-    <mat-chip-row (removed)="onUserRemoved(user)">
-      @if (user.github_avatar) {
-      <img class="user-image" matChipAvatar [src]="user.github_avatar" />
-      } {{ user.first_name + ' ' + user.last_name }}
-      <button
-        matChipRemove
-        [attr.aria-label]="'remove ' + user.first_name + ' ' + user.last_name">
-        <mat-icon>cancel</mat-icon>
-      </button>
-    </mat-chip-row>
-    } @if ( this.maxSelected === null || this.users.length < this.maxSelected )
-    {
-    <input
-      #usersInput
-      type="text"
-      placeholder="Add more people..."
-      aria-label="More people"
-      [matChipInputFor]="chipGrid"
-      matInput
-      [matAutocomplete]="auto"
-      [formControl]="userLookup" />
+      <mat-chip-row (removed)="onUserRemoved(user)">
+        @if (user.github_avatar) {
+          <img class="user-image" matChipAvatar [src]="user.github_avatar" />
+        }
+        {{ user.first_name + ' ' + user.last_name }}
+        <button
+          matChipRemove
+          [attr.aria-label]="
+            'remove ' + user.first_name + ' ' + user.last_name
+          ">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip-row>
+    }
+    @if (this.maxSelected === null || this.users.length < this.maxSelected) {
+      <input
+        #usersInput
+        type="text"
+        placeholder="Add more people..."
+        aria-label="More people"
+        [matChipInputFor]="chipGrid"
+        matInput
+        [matAutocomplete]="auto"
+        [formControl]="userLookup" />
     }
     <mat-autocomplete
       #auto="matAutocomplete"
       (optionSelected)="onUserAdded($event)">
       @for (option of filteredUsers$ | async; track option) {
-      <mat-option [value]="option">
-        {{ option.first_name }} {{ option.last_name }}
-      </mat-option>
+        <mat-option [value]="option">
+          {{ option.first_name }} {{ option.last_name }}
+        </mat-option>
       }
     </mat-autocomplete>
   </mat-chip-grid>

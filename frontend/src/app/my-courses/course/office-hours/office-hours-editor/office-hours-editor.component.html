@@ -12,8 +12,8 @@
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Type</mat-label>
         <mat-select formControlName="type">
-          @for(type of [0, 1, 2]; track type) {
-          <mat-option [value]="type">{{ numberToType(type) }}</mat-option>
+          @for (type of [0, 1, 2]; track type) {
+            <mat-option [value]="type">{{ numberToType(type) }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -21,31 +21,30 @@
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Mode</mat-label>
         <mat-select formControlName="mode" (selectionChange)="modeChanged()">
-          @for(mode of [0, 1, 2]; track mode) {
-          <mat-option [value]="mode">{{ numberToMode(mode) }}</mat-option>
+          @for (mode of [0, 1, 2]; track mode) {
+            <mat-option [value]="mode">{{ numberToMode(mode) }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
 
       @if (officeHoursForm.controls['mode'].value === 0) {
-      <!-- Room -->
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Room</mat-label>
-        <input
-          #roomInput
-          type="text"
-          matInput
-          formControlName="room_id"
-          [matAutocomplete]="auto"
-          (input)="filterRooms()"
-          (focus)="filterRooms()" />
-        <mat-autocomplete #auto="matAutocomplete" requireSelection>
-          @for (room of filteredRooms; track room.id) {
-          <mat-option [value]="room.id">{{room.id}}</mat-option>
-          }
-        </mat-autocomplete>
-      </mat-form-field>
-
+        <!-- Room -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Room</mat-label>
+          <input
+            #roomInput
+            type="text"
+            matInput
+            formControlName="room_id"
+            [matAutocomplete]="auto"
+            (input)="filterRooms()"
+            (focus)="filterRooms()" />
+          <mat-autocomplete #auto="matAutocomplete" requireSelection>
+            @for (room of filteredRooms; track room.id) {
+              <mat-option [value]="room.id">{{ room.id }}</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
       }
 
       <!-- Location Description Field -->
@@ -96,15 +95,21 @@
 
       <!-- Recurrence Pattern Update Options -->
       @if (!isNew()) {
-        <mat-checkbox className="mt-[-20px]" (change)="this.toggleUpdateRecurrencePattern($event.checked)">Update future events in recurrence pattern.</mat-checkbox>
+        <mat-checkbox
+          className="mt-[-20px]"
+          (change)="this.toggleUpdateRecurrencePattern($event.checked)"
+          >Update future events in recurrence pattern.</mat-checkbox
+        >
       }
 
       <!-- Recurrence Pattern Field -->
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Recurrence Pattern</mat-label>
         <mat-select formControlName="recurs">
-          @for(recur of [false, true]; track recur) {
-          <mat-option [value]="recur">{{ recur ? 'Weekly' : 'Does not repeat' }}</mat-option>
+          @for (recur of [false, true]; track recur) {
+            <mat-option [value]="recur">{{
+              recur ? 'Weekly' : 'Does not repeat'
+            }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -112,14 +117,23 @@
       <!-- Recurrence Pattern Day Options -->
       @if (officeHoursForm.getRawValue().recurs) {
         <mat-button-toggle-group
-          class="w-full mt-[-16px] mb-4"
+          class="mt-[-16px] mb-4 w-full"
           name="days"
           aria-label="Days to Recur"
           [hideMultipleSelectionIndicator]="true"
-          multiple
-        >
-          @for (day of this.days | keyvalue: maintainOriginalOrder; track day.key) {
-            <mat-button-toggle class="w-full" (change)="toggleDay(day.key)" value="{{day.key}}" [checked]="this.days[day.key]" [disabled]="!this.isNew() && !this.updateRecurrencePattern">{{day.key}}</mat-button-toggle>
+          multiple>
+          @for (
+            day of this.days | keyvalue: maintainOriginalOrder;
+            track day.key
+          ) {
+            <mat-button-toggle
+              class="w-full"
+              (change)="toggleDay(day.key)"
+              value="{{ day.key }}"
+              [checked]="this.days[day.key]"
+              [disabled]="!this.isNew() && !this.updateRecurrencePattern"
+              >{{ day.key }}</mat-button-toggle
+            >
           }
         </mat-button-toggle-group>
 
@@ -127,28 +141,37 @@
         <mat-form-field appearance="outline" color="accent" class="w-full">
           <mat-label>Recurrence End Date</mat-label>
           <input
-            matInput 
-            formControlName="recur_end" 
+            matInput
+            formControlName="recur_end"
             name="recur_end"
             [max]="this.myCoursesService.currentTerms()[0].end"
-            [matDatepicker]="endDatePicker" 
+            [matDatepicker]="endDatePicker"
             (click)="endDatePicker.open()"
-            required
-          >
-          <mat-datepicker-toggle matIconSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+            required />
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="endDatePicker"></mat-datepicker-toggle>
           <mat-datepicker #endDatePicker></mat-datepicker>
         </mat-form-field>
       }
-      
+
       <!-- Date Range Validation Error -->
       @if (officeHoursForm.hasError('dateRangeInvalid')) {
-        <mat-error>This event's end time must be after its start time.</mat-error>
+        <mat-error
+          >This event's end time must be after its start time.</mat-error
+        >
       }
-      @if (officeHoursForm.value.recurs && officeHoursForm.hasError('recurEndDateInvalid')) {
-        <mat-error>This event's recurrence end date must be after the original event end date.</mat-error>
+      @if (
+        officeHoursForm.value.recurs &&
+        officeHoursForm.hasError('recurEndDateInvalid')
+      ) {
+        <mat-error
+          >This event's recurrence end date must be after the original event end
+          date.</mat-error
+        >
       }
     </mat-card-content>
-    <mat-card-actions class="pb-4! justify-end! gap-3!">
+    <mat-card-actions class="justify-end! gap-3! pb-4!">
       <button
         mat-stroked-button
         color="secondary"

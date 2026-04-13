@@ -1,34 +1,42 @@
-<mat-card appearance="outlined" class="border-transparent! w-[360px]! h-[186px]! m-0! gap-2.5">
+<mat-card
+  appearance="outlined"
+  class="m-0! h-[186px]! w-[360px]! gap-2.5 border-transparent!">
   <mat-card-header class="header">
     <div class="flex flex-row items-center">
-      <img mat-card-image src="{{ organization.logo }}" class="size-10 rounded-full! mr-4" />
+      <img
+        mat-card-image
+        src="{{ organization.logo }}"
+        class="mr-4 size-10 rounded-full!" />
       <mat-card-title
-        class="m-0 text-lg! font-medium! overflow-hidden line-clamp-1"
+        class="m-0 line-clamp-1 overflow-hidden text-lg! font-medium!"
         [matTooltip]="organization.name"
         matTooltipPosition="above"
         [matTooltipDisabled]="organization.name.length < 25">
-        {{ organization.name.length < 25 ? organization.name :
-        organization.shorthand }}
+        {{
+          organization.name.length < 25
+            ? organization.name
+            : organization.shorthand
+        }}
       </mat-card-title>
     </div>
   </mat-card-header>
 
   <mat-card-content class="grow">
-    <p class="w-full m-0 overflow-hidden line-clamp-2">
+    <p class="m-0 line-clamp-2 w-full overflow-hidden">
       {{ organization.short_description }}
     </p>
   </mat-card-content>
 
   <mat-card-actions class="flex! flex-row! justify-end">
-    <div class="flex flex-row mt-auto gap-2 items-center mb-2">
+    <div class="mt-auto mb-2 flex flex-row items-center gap-2">
       @if (organization.website !== '') {
         <social-media-icon [fontIcon]="'link'" [href]="organization.website" />
       }
       <a
-      class="no-underline mr-0"
-      [routerLink]="['/organizations', organization.slug]">
-      <button mat-flat-button>Details</button>
-    </a>
+        class="mr-0 no-underline"
+        [routerLink]="['/organizations', organization.slug]">
+        <button mat-flat-button>Details</button>
+      </a>
     </div>
   </mat-card-actions>
 </mat-card>

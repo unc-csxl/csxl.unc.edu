@@ -5,21 +5,29 @@
       Add students to a course section by importing the roster CSV from Canvas.
     </p>
     <p><strong class="font-medium">Steps to Download Roster CSV:</strong></p>
-    <ol class="list-decimal list-inside">
+    <ol class="list-inside list-decimal">
       <li>Navigate to the "Grades" tab in your Canvas course page.</li>
-      <li><em>Filter</em> your gradebook to include just one section. If you have two or more sections in your class, you will want to export these from Canvas and import this into the CSXL website separately.</li>
+      <li>
+        <em>Filter</em> your gradebook to include just one section. If you have
+        two or more sections in your class, you will want to export these from
+        Canvas and import this into the CSXL website separately.
+      </li>
       <li>On the top right, press the dropdown "Export".</li>
       <li>Select "Export Current Gradebook View".</li>
-      <li>Now, fill in the prompts below to upload your roster into the CSXL site.</li>
+      <li>
+        Now, fill in the prompts below to upload your roster into the CSXL site.
+      </li>
     </ol>
 
-    <mat-form-field appearance="outline" class="w-full! my-3!">
+    <mat-form-field appearance="outline" class="my-3! w-full!">
       <mat-label>Select Section to Import Into</mat-label>
       <mat-select
         [formControl]="selectedSection"
         (selectionChange)="clearFile()">
-        @for(section of data.sections; track section.number) {
-        <mat-option [value]="section">Section {{ section.number }}</mat-option>
+        @for (section of data.sections; track section.number) {
+          <mat-option [value]="section"
+            >Section {{ section.number }}</mat-option
+          >
         }
       </mat-select>
     </mat-form-field>
@@ -32,10 +40,10 @@
       accept=".csv"
       (change)="uploadFile($event)" />
 
-    <div class="flex flex-row w-full items-center pl-4">
+    <div class="flex w-full flex-row items-center pl-4">
       <p>{{ file ? file.name : 'No file selected.' }}</p>
       <button
-        class="ml-auto! mr-4!"
+        class="mr-4! ml-auto!"
         id="choose-file-button"
         mat-flat-button
         color="primary"

@@ -4,23 +4,23 @@
   <mat-pane appearance="outlined">
     <mat-card-header>
       @if (this.termId === 'new') {
-      <mat-card-title> Create Term </mat-card-title>
+        <mat-card-title> Create Term </mat-card-title>
       } @else {
-      <mat-card-title> Update Term </mat-card-title>
+        <mat-card-title> Update Term </mat-card-title>
       }
     </mat-card-header>
     <mat-card-content class="flex! flex-col! gap-3! pt-4!">
       <!-- Term ID Field -->
       @if (termId === 'new') {
-      <mat-form-field class="w-full" appearance="outline" color="accent">
-        <mat-label>Term ID</mat-label>
-        <input
-          matInput
-          placeholder=""
-          formControlName="id"
-          name="id"
-          required />
-      </mat-form-field>
+        <mat-form-field class="w-full" appearance="outline" color="accent">
+          <mat-label>Term ID</mat-label>
+          <input
+            matInput
+            placeholder=""
+            formControlName="id"
+            name="id"
+            required />
+        </mat-form-field>
       }
       <!-- Term Name Field -->
       <mat-form-field appearance="outline" color="accent" class="w-full">

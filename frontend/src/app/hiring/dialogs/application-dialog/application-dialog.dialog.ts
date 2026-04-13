@@ -25,10 +25,10 @@ export interface ApplicationDialogData {
 }
 
 @Component({
-    selector: 'app-application-dialog',
-    templateUrl: './application-dialog.dialog.html',
-    styleUrl: './application-dialog.dialog.css',
-    standalone: false
+  selector: 'app-application-dialog',
+  templateUrl: './application-dialog.dialog.html',
+  styleUrl: './application-dialog.dialog.css',
+  standalone: false
 })
 export class ApplicationDialog implements OnInit, OnDestroy {
   notes = new FormControl('');
@@ -60,7 +60,7 @@ export class ApplicationDialog implements OnInit, OnDestroy {
 
   youtubeVideoId(): string | undefined {
     let splitUrl = this.data.review.application.intro_video_url?.split('?v=');
-    return splitUrl?.length ?? 0 > 0 ? splitUrl![1] : undefined;
+    return (splitUrl?.length ?? 0 > 0) ? splitUrl![1] : undefined;
   }
 
   saveData() {

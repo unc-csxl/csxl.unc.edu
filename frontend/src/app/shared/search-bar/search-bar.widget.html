@@ -12,17 +12,17 @@
       (ngModelChange)="onTextChanged()" />
     <!-- Search/Clear Icon Logic -->
     @if (searchBarQuery) {
-    <button
-      matSuffix
-      mat-icon-button
-      aria-label="Clear"
-      (click)="clearSearch()">
-      <!-- "Clear" appears if there is a search query. -->
-      <mat-icon>close</mat-icon>
-    </button>
+      <button
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        (click)="clearSearch()">
+        <!-- "Clear" appears if there is a search query. -->
+        <mat-icon>close</mat-icon>
+      </button>
     } @else {
-    <!-- "Search" appears if there is no search query. -->
-    <mat-icon matSuffix>search</mat-icon>
+      <!-- "Search" appears if there is no search query. -->
+      <mat-icon matSuffix>search</mat-icon>
     }
   </mat-form-field>
 </mat-card>

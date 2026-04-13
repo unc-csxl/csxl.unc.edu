@@ -1,17 +1,21 @@
-<mat-card appearance="outlined" class="my-2! mx-0!">
+<mat-card appearance="outlined" class="mx-0! my-2!">
   <mat-card-header class="flex! flex-row! items-center! pb-4!">
     <div class="flex flex-col gap-0.5">
       <mat-card-subtitle>{{ ticket.type }}</mat-card-subtitle>
       @if (calledByUser) {
-      <p>
-        <span class="semibold-text">You</span> called this ticket at
-        {{ ticket.called_at | date: 'shortTime' }}
-      </p>
+        <p>
+          <span class="semibold-text">You</span> called this ticket at
+          {{ ticket.called_at | date: 'shortTime' }}
+        </p>
       } @else {
-      <p>
-        Called by <span class="semibold-text">{{ ticket.caller!.first_name }} {{ ticket.caller!.last_name }}</span> at
-        {{ ticket.called_at | date: 'shortTime' }}
-      </p>
+        <p>
+          Called by
+          <span class="semibold-text"
+            >{{ ticket.caller!.first_name }}
+            {{ ticket.caller!.last_name }}</span
+          >
+          at {{ ticket.called_at | date: 'shortTime' }}
+        </p>
       }
     </div>
     <button
@@ -22,25 +26,25 @@
       {{ expanded() ? 'Hide Details' : 'Show Details' }}
     </button>
   </mat-card-header>
-  @if(expanded()) {
-  <mat-card-content>
-    <mat-divider class="my-3!" />
-    <div class="flex flex-row items-center gap-2">
-      <p class="mb-2!"><span class="font-medium">Helping:</span></p>
-      <user-chip-list [users]="ticket.creators" [clickable]="false" />
-    </div>
-    <mat-divider class="mt-1! mb-3!" />
+  @if (expanded()) {
+    <mat-card-content>
+      <mat-divider class="my-3!" />
+      <div class="flex flex-row items-center gap-2">
+        <p class="mb-2!"><span class="font-medium">Helping:</span></p>
+        <user-chip-list [users]="ticket.creators" [clickable]="false" />
+      </div>
+      <mat-divider class="mt-1! mb-3!" />
 
-    <!-- <p><span class="semibold-text">Description:</span></p> -->
-    <p markdown>{{ ticket.description }}</p>
-  </mat-card-content>
-  <mat-card-actions class="pt-3! justify-end!">
-    <button
-      mat-flat-button
-      class="tertiary-button"
-      (click)="closeButtonEvent()">
-      Close Ticket
-    </button>
-  </mat-card-actions>
+      <!-- <p><span class="semibold-text">Description:</span></p> -->
+      <p markdown>{{ ticket.description }}</p>
+    </mat-card-content>
+    <mat-card-actions class="justify-end! pt-3!">
+      <button
+        mat-flat-button
+        class="tertiary-button"
+        (click)="closeButtonEvent()">
+        Close Ticket
+      </button>
+    </mat-card-actions>
   }
 </mat-card>

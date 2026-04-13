@@ -1,21 +1,21 @@
 <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
   <mat-pane appearance="outlined">
     @if (profile.id) {
-    <mat-card-header>
-      <mat-card-title>Update your Profile</mat-card-title>
-    </mat-card-header>
+      <mat-card-header>
+        <mat-card-title>Update your Profile</mat-card-title>
+      </mat-card-header>
     } @else {
-    <mat-card-header>
-      <mat-card-title
-        >Welcome to CSXL! Please verify and complete your profile
-        below.</mat-card-title
-      >
-      <mat-card-subtitle>
-        Once your profile is setup you will be able to take advantage of CSXL
-        initiatives such as enrolling in workshops, reserving a desk during
-        coworking hours, and more!
-      </mat-card-subtitle>
-    </mat-card-header>
+      <mat-card-header>
+        <mat-card-title
+          >Welcome to CSXL! Please verify and complete your profile
+          below.</mat-card-title
+        >
+        <mat-card-subtitle>
+          Once your profile is setup you will be able to take advantage of CSXL
+          initiatives such as enrolling in workshops, reserving a desk during
+          coworking hours, and more!
+        </mat-card-subtitle>
+      </mat-card-header>
     }
     <mat-card-content class="flex! flex-col! gap-4! pt-4!">
       <mat-form-field appearance="outline" class="w-full">
@@ -46,7 +46,7 @@
           name="email"
           required />
         @if (profileForm.value.email) {
-        <mat-error>Must provide a valid UNC email address.</mat-error>
+          <mat-error>Must provide a valid UNC email address.</mat-error>
         }
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">

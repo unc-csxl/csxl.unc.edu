@@ -15,8 +15,8 @@ import { profileResolver } from '../profile/profile.resolver';
 import { isAuthenticated } from './gate.guard';
 
 @Component({
-    template: '',
-    standalone: false
+  template: '',
+  standalone: false
 })
 export class GateComponent {
   public static Route = {

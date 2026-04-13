@@ -1,37 +1,42 @@
 <!-- HTML Structure of Admin Terms List -->
-<mat-card appearance="outlined" class="border-transparent! max-w-full! mr-8!">
+<mat-card appearance="outlined" class="mr-8! max-w-full! border-transparent!">
   <mat-card-content>
-    @if(terms()) {
-    <div class="content">
-      <div class="table-responsive">
-        <table mat-table [dataSource]="terms()">
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>
-              <div class="flex items-center justify-between">
-                Terms
-                <button mat-stroked-button (click)="createTerm()">Create</button>
-              </div>
-            </th>
-            <td class="border-0! border-transparent! hover:cursor-pointer! hover:bg-black/5! dark:hover:bg-white/5! hover:rounded-xl" mat-cell *matCellDef="let element">
-              <div class="flex flex-row w-full justify-between items-center" (click)="updateTerm(element)">
-                <p>
-                  {{ element.name }}
-                </p>
-                <div clas="ml-auto">
-                  <button
-                    mat-stroked-button
-                    (click)="deleteTerm(element, $event)">
-                    Delete
+    @if (terms()) {
+      <div class="content">
+        <div class="table-responsive">
+          <table mat-table [dataSource]="terms()">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="flex items-center justify-between">
+                  Terms
+                  <button mat-stroked-button (click)="createTerm()">
+                    Create
                   </button>
                 </div>
-              </div>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
+              </th>
+              <td
+                class="border-0! border-transparent! hover:cursor-pointer! hover:rounded-xl hover:bg-black/5! dark:hover:bg-white/5!"
+                mat-cell
+                *matCellDef="let element">
+                <div
+                  class="flex w-full flex-row items-center justify-between"
+                  (click)="updateTerm(element)">
+                  <p>{{ element.name }}</p>
+                  <div clas="ml-auto">
+                    <button
+                      mat-stroked-button
+                      (click)="deleteTerm(element, $event)">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
       </div>
-    </div>
     }
   </mat-card-content>
 </mat-card>

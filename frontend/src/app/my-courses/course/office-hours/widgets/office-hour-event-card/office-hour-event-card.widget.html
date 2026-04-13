@@ -1,9 +1,10 @@
-<mat-card class="max-w-[400px]! m-0!" appearance="outlined">
-  <mat-card-header class="flex! flex-row! items-center! justify-between! w-full!">
-      <mat-card-subtitle>{{ event.type }}</mat-card-subtitle>
-      <mat-chip-set class="ml-auto! h-6!">
-        <mat-chip class="h-6! m-0!">{{ event.queued }} waiting</mat-chip>
-      </mat-chip-set>
+<mat-card class="m-0! max-w-[400px]!" appearance="outlined">
+  <mat-card-header
+    class="flex! w-full! flex-row! items-center! justify-between!">
+    <mat-card-subtitle>{{ event.type }}</mat-card-subtitle>
+    <mat-chip-set class="ml-auto! h-6!">
+      <mat-chip class="m-0! h-6!">{{ event.queued }} waiting</mat-chip>
+    </mat-chip-set>
   </mat-card-header>
   <mat-card-content class="pt-3!">
     <p>
@@ -13,11 +14,11 @@
     <p>{{ event.location }}</p>
     <p>{{ event.description }}</p>
   </mat-card-content>
-  <mat-card-actions class="flex! flex-row! gap-2! justify-end! py-4!">
+  <mat-card-actions class="flex! flex-row! justify-end! gap-2! py-4!">
     @if ((role$ | async) !== 'Student') {
-    <button mat-stroked-button color="secondary" [routerLink]="editRoute">
-      Edit
-    </button>
+      <button mat-stroked-button color="secondary" [routerLink]="editRoute">
+        Edit
+      </button>
     }
     <button
       mat-flat-button

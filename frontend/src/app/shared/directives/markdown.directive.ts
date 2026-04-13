@@ -11,8 +11,8 @@ import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 
 @Directive({
-    selector: '[markdown]',
-    standalone: false
+  selector: '[markdown]',
+  standalone: false
 })
 export class MarkdownDirective implements AfterViewInit {
   constructor(private el: ElementRef) {}

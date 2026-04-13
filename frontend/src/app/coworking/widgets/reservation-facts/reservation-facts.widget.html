@@ -1,13 +1,16 @@
 <div class="flex flex-col gap-3 py-2">
   <!-- Location Section -->
   <div class="flex flex-row items-center">
-    <mat-icon class="text-[34px] min-w-[34px] size-[34px]">location_on</mat-icon>
-    <div class="flex flex-col justify-center ml-[18px]">
-      <p class="text-base m-0">
+    <mat-icon class="size-[34px] min-w-[34px] text-[34px]"
+      >location_on</mat-icon
+    >
+    <div class="ml-[18px] flex flex-col justify-center">
+      <p class="m-0 text-base">
         <strong class="font-medium">{{
           reservation.room
             ? reservation.room.id
-            : 'The XL Colab in Sitterson 156'
+            : 'The XL Colab in
+          Sitterson 156'
         }}</strong>
       </p>
     </div>
@@ -15,27 +18,33 @@
 
   <!-- What Section -->
   @if (reservation.seats.length > 0) {
-  <div class="flex flex-row items-center">
-    <mat-icon class="text-[34px] min-w-[34px] size-[34px]">chair_alt</mat-icon>
-    <div class="flex flex-col justify-center ml-[18px]">
-      <p class="text-base m-0">
-        <strong class="font-medium">
-          {{ reservation.seats[0].title }}
-        </strong>
-      </p>
+    <div class="flex flex-row items-center">
+      <mat-icon class="size-[34px] min-w-[34px] text-[34px]"
+        >chair_alt</mat-icon
+      >
+      <div class="ml-[18px] flex flex-col justify-center">
+        <p class="m-0 text-base">
+          <strong class="font-medium">
+            {{ reservation.seats[0].title }}
+          </strong>
+        </p>
+      </div>
     </div>
-  </div>
-
   }
 
   <!-- Time Section -->
   <div class="flex flex-row items-center">
-    <mat-icon class="text-[34px] min-w-[34px] size-[34px]">schedule</mat-icon>
+    <mat-icon class="size-[34px] min-w-[34px] text-[34px]">schedule</mat-icon>
 
-    <div class="flex flex-col justify-center ml-[18px]">
+    <div class="ml-[18px] flex flex-col justify-center">
       <p class="header-text">
-        <strong class="font-medium">{{ reservation.start | date: 'shortTime' }}</strong> to
-        <strong class="font-medium">{{ reservation.end | date: 'shortTime' }}</strong>
+        <strong class="font-medium">{{
+          reservation.start | date: 'shortTime'
+        }}</strong>
+        to
+        <strong class="font-medium">{{
+          reservation.end | date: 'shortTime'
+        }}</strong>
         <strong class="font-medium">{{ ', ' }}</strong>
         <strong class="font-medium">{{
           reservation.start | date: 'dd MMM yyyy'
@@ -43,14 +52,14 @@
       </p>
 
       @if (reservation.state === 'CONFIRMED') {
-      <p>
-        Check-in between {{ reservation.start | date: 'shortTime' }} and
-        {{
-          checkinDeadline(reservation.start, reservation.end)
-            | date: 'shortTime'
-        }}
-        to avoid cancellation.
-      </p>
+        <p>
+          Check-in between {{ reservation.start | date: 'shortTime' }} and
+          {{
+            checkinDeadline(reservation.start, reservation.end)
+              | date: 'shortTime'
+          }}
+          to avoid cancellation.
+        </p>
       }
     </div>
   </div>

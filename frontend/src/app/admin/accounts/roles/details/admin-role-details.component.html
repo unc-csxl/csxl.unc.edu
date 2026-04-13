@@ -70,35 +70,35 @@
               {{ user.first_name }} {{ user.last_name }}
             </td>
             <td mat-footer-cell *matFooterCellDef>
-              @if(selectedUser) {
-              <div class="p-4">
-                <button
-                  mat-form-field
-                  mat-stroked-button
-                  (click)="changeSelectedMember()">
-                  {{ selectedUser.first_name }} {{ selectedUser.last_name }}
-                </button>
-              </div>
+              @if (selectedUser) {
+                <div class="p-4">
+                  <button
+                    mat-form-field
+                    mat-stroked-button
+                    (click)="changeSelectedMember()">
+                    {{ selectedUser.first_name }} {{ selectedUser.last_name }}
+                  </button>
+                </div>
               } @else {
-              <mat-form-field appearance="outline">
-                <mat-label>User</mat-label>
-                <input
-                  type="text"
-                  placeholder="Find User"
-                  aria-label="User"
-                  matInput
-                  [matAutocomplete]="auto"
-                  [formControl]="userLookup" />
-                <mat-autocomplete
-                  #auto="matAutocomplete"
-                  (optionSelected)="onOptionSelected($event)">
-                  @for (option of filteredUsers$ | async; track option) {
-                  <mat-option [value]="option">
-                    {{ option.first_name }} {{ option.last_name }}
-                  </mat-option>
-                  }
-                </mat-autocomplete>
-              </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>User</mat-label>
+                  <input
+                    type="text"
+                    placeholder="Find User"
+                    aria-label="User"
+                    matInput
+                    [matAutocomplete]="auto"
+                    [formControl]="userLookup" />
+                  <mat-autocomplete
+                    #auto="matAutocomplete"
+                    (optionSelected)="onOptionSelected($event)">
+                    @for (option of filteredUsers$ | async; track option) {
+                      <mat-option [value]="option">
+                        {{ option.first_name }} {{ option.last_name }}
+                      </mat-option>
+                    }
+                  </mat-autocomplete>
+                </mat-form-field>
               }
             </td>
           </ng-container>

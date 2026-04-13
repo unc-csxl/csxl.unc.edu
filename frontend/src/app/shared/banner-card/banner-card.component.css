@@ -1,41 +1,42 @@
 .wide-banner-card {
-    ::ng-deep .mat-mdc-card {
-        max-width: 100% !important;
-    }
+  ::ng-deep .mat-mdc-card {
+    max-width: 100% !important;
+  }
 }
 
 .alert-body {
-    display: flex;
-    flex-direction: column;
-    margin-top: 16px;
-    margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
 .alert-container {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-left: 16px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 16px;
 }
 
 .content-section {
-    flex-direction: column;
+  flex-direction: column;
 }
 
 .mat-mdc-card-header {
-    padding-top: 0px;
+  padding-top: 0px;
 }
 
-.mat-mdc-card-content, .mat-mdc-card-actions {
-    padding-bottom: 0px !important;
+.mat-mdc-card-content,
+.mat-mdc-card-actions {
+  padding-bottom: 0px !important;
 }
 
 .mat-mdc-card-actions {
-    margin-left: 48px;
-    padding-left: 8px;
+  margin-left: 48px;
+  padding-left: 8px;
 }
 
 .icon-section {
-    margin-top: 1px;
-    margin-bottom: auto;
+  margin-top: 1px;
+  margin-bottom: auto;
 }

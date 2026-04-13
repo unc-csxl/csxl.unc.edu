@@ -28,10 +28,6 @@ p {
   --mat-chip-outline-color: transparent !important;
 }
 
-
-
-
-
 /** Custom Material Component Styling Mixins */
 // Note: These are sorted in alphabetical oder.
 
@@ -40,7 +36,6 @@ p {
 ///
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin global-styles($theme) {
-
   // NOTE: Refactor this to use css variables on m3 v20 upgrade
   .mdc-linear-progress__primary-bar {
     background-color: mat.get-theme-color($theme, surface-container) !important;
@@ -57,9 +52,18 @@ p {
   // *yes, this is really how it is implemented........*
   .mdc-linear-progress__bar-inner {
     border-top-color: mat.get-theme-color($theme, primary-container) !important;
-    border-left-color: mat.get-theme-color($theme, primary-container) !important;
-    border-right-color: mat.get-theme-color($theme, primary-container) !important;
-    border-bottom-color: mat.get-theme-color($theme, primary-container) !important;
+    border-left-color: mat.get-theme-color(
+      $theme,
+      primary-container
+    ) !important;
+    border-right-color: mat.get-theme-color(
+      $theme,
+      primary-container
+    ) !important;
+    border-bottom-color: mat.get-theme-color(
+      $theme,
+      primary-container
+    ) !important;
   }
 
   p {
@@ -168,7 +172,10 @@ p {
   }
 
   .surface-container-high {
-    background-color: mat.get-theme-color($theme, surface-container-high) !important;
+    background-color: mat.get-theme-color(
+      $theme,
+      surface-container-high
+    ) !important;
     color: mat.get-theme-color($theme, on-surface) !important;
   }
 
@@ -178,7 +185,7 @@ p {
   }
 
   .surface-background {
-    background: #E6E0E9 !important; // Surface background color is broken in Angular M3 at the moment.
+    background: #e6e0e9 !important; // Surface background color is broken in Angular M3 at the moment.
     color: mat.get-theme-color($theme, on-surface) !important;
   }
 
@@ -384,7 +391,7 @@ p {
   }
 
   .mat-divider {
-    border-top-color: var(--mat-card-outlined-outline-color)
+    border-top-color: var(--mat-card-outlined-outline-color);
   }
 }
 
@@ -418,11 +425,11 @@ p {
 /// @param {theme} $theme: Angular Material theme to apply styles with.
 @mixin mat-table-styles($theme) {
   .mat-mdc-cell {
-    border-bottom-color: var(--mat-card-outlined-outline-color)
+    border-bottom-color: var(--mat-card-outlined-outline-color);
   }
 
   .mat-mdc-header-cell {
-    border-bottom-color: var(--mat-card-outlined-outline-color)
+    border-bottom-color: var(--mat-card-outlined-outline-color);
   }
 }
 
@@ -598,11 +605,13 @@ p {
   }
 
   mat-filter-chip-dialog {
-    @include mat.form-field-overrides((
-      filled-container-color: mat.get-theme-color($theme, surface-container-high),
-      hover-state-layer-opacity: 0
-  ));
-
+    @include mat.form-field-overrides(
+      (
+        filled-container-color:
+          mat.get-theme-color($theme, surface-container-high),
+        hover-state-layer-opacity: 0
+      )
+    );
   }
 }
 .mdc-notched-outline__notch {

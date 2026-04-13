@@ -10,7 +10,8 @@ const routes: Routes = [
   HomeComponent.Route,
   AboutComponent.Route,
   GateComponent.Route,
-  { path: 'signage',
+  {
+    path: 'signage',
     title: 'XL Signage',
     loadChildren: () =>
       import('./signage/signage.module').then((m) => m.SignageModule)

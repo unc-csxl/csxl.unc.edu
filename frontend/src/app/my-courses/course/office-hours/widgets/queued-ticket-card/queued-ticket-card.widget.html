@@ -8,21 +8,21 @@
   <mat-card-content>
     <p markdown>{{ ticket.description }}</p>
   </mat-card-content>
-  <mat-card-actions class="flex! flex-row! gap-2! pt-3! justify-end! pb-3!">
+  <mat-card-actions class="flex! flex-row! justify-end! gap-2! pt-3! pb-3!">
     <button
       mat-stroked-button
       class="tertiary-button"
       (click)="cancelButtonEvent()">
       Cancel Ticket
     </button>
-    @if(!hideCallTicketButton) {
-    <button
-      mat-flat-button
-      class="primary-button"
-      (click)="callButtonEvent()"
-      [disabled]="disableCallTicketButton">
-      Call Ticket
-    </button>
+    @if (!hideCallTicketButton) {
+      <button
+        mat-flat-button
+        class="primary-button"
+        (click)="callButtonEvent()"
+        [disabled]="disableCallTicketButton">
+        Call Ticket
+      </button>
     }
   </mat-card-actions>
 </mat-card>

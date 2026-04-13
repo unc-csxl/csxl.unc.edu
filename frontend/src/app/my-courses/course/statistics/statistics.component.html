@@ -1,152 +1,204 @@
 <div class="container">
-    <mat-card appearance="outlined" class="border-transparent! max-w-full! min-h-[73vh]! mb-8! mr-8!">
-      <mat-card-header class="flex! flex-col! gap-4! pb-4!">
-        <mat-card-title>Statistics</mat-card-title>
-        <mat-divider />
-      </mat-card-header>
-      <mat-card-content>
-        <div class="flex flex-row items-center justify-between w-full">
-          <mat-card-subtitle>Ticket History</mat-card-subtitle>
-          @if(filterOptions()) {
-            <div class="flex flex-row items-center gap-4">
-              <!-- Students chip -->
-              <mat-filter-chip
-                placeholder="Students"
-                leadingIcon="person_raised_hand"
-                dropdownAlignment="right"
-                [searchableItems]="studentFilterOptions()"
-                [(selectedItems)]="selectedStudentFilterOptions"
-                [filterLogic]="profileFilterLogic"
-              >
-                @if(studentFilterOptions().length) {
-                  <div class="flex flex-row items-center" (click)="clearStudentFilter()">
-                    <mat-divider [vertical]="true" class="h-[30px]"></mat-divider>
-                    <mat-icon matChipTrailingIcon>close</mat-icon>    
-                  </div>
-                }
-              </mat-filter-chip>
+  <mat-card
+    appearance="outlined"
+    class="mr-8! mb-8! min-h-[73vh]! max-w-full! border-transparent!">
+    <mat-card-header class="flex! flex-col! gap-4! pb-4!">
+      <mat-card-title>Statistics</mat-card-title>
+      <mat-divider />
+    </mat-card-header>
+    <mat-card-content>
+      <div class="flex w-full flex-row items-center justify-between">
+        <mat-card-subtitle>Ticket History</mat-card-subtitle>
+        @if (filterOptions()) {
+          <div class="flex flex-row items-center gap-4">
+            <!-- Students chip -->
+            <mat-filter-chip
+              placeholder="Students"
+              leadingIcon="person_raised_hand"
+              dropdownAlignment="right"
+              [searchableItems]="studentFilterOptions()"
+              [(selectedItems)]="selectedStudentFilterOptions"
+              [filterLogic]="profileFilterLogic">
+              @if (studentFilterOptions().length) {
+                <div
+                  class="flex flex-row items-center"
+                  (click)="clearStudentFilter()">
+                  <mat-divider [vertical]="true" class="h-[30px]"></mat-divider>
+                  <mat-icon matChipTrailingIcon>close</mat-icon>
+                </div>
+              }
+            </mat-filter-chip>
 
+            <!-- Staff chip -->
+            <mat-filter-chip
+              placeholder="Staff"
+              leadingIcon="group"
+              dropdownAlignment="right"
+              [searchableItems]="staffFilterOptions()"
+              [(selectedItems)]="selectedStaffFilterOptions"
+              [filterLogic]="profileFilterLogic">
+              @if (staffFilterOptions().length) {
+                <div
+                  class="flex flex-row items-center"
+                  (click)="clearStaffFilter()">
+                  <mat-divider
+                    [vertical]="true"
+                    class="mat-filter-chip-divider"></mat-divider>
+                  <mat-icon matChipTrailingIcon>close</mat-icon>
+                </div>
+              }
+            </mat-filter-chip>
 
-              <!-- Staff chip -->
-              <mat-filter-chip
-                placeholder="Staff"
-                leadingIcon="group"
-                dropdownAlignment="right"
-                [searchableItems]="staffFilterOptions()"
-                [(selectedItems)]="selectedStaffFilterOptions"
-                [filterLogic]="profileFilterLogic"
-              >
-                @if(staffFilterOptions().length) {
-                  <div class="flex flex-row items-center" (click)="clearStaffFilter()">
-                    <mat-divider [vertical]="true" class="mat-filter-chip-divider"></mat-divider>
-                    <mat-icon matChipTrailingIcon>close</mat-icon>    
-                  </div>
-                }
-              </mat-filter-chip>
-
-
-              <!-- Date picker -->
-              <div class="-pt-3 h-8">
-                <mat-chip disableRipple [highlighted]="selectedStartDate() || selectedEndDate()" >
-                  <div class="flex flex-row items-center">
-                      <div class="flex flex-row items-center" (click)="datePicker.open()" >
-                          <mat-icon matChipTrailingIcon class="font-primary pl-0!">date_range</mat-icon>
-                          @if(selectedStartDate() || selectedEndDate()) {
-                              <span>{{ selectedStartDate() | date: 'shortDate' }} </span>
-                              @if(selectedEndDate()) {
-                                  <span> - {{ selectedEndDate() | date: 'shortDate' }}</span>
-                              }
-                          } @else {
-                              <span>Date</span>
-                          }
-                          <mat-icon matChipTrailingIcon>arrow_drop_down</mat-icon>
-                      </div>
-                      @if(selectedStartDate()|| selectedEndDate()) {
-                          <div class="flex flex-row items-center" (click)="clearDateRangeFilter()">
-                              <mat-divider [vertical]="true" class="mat-filter-chip-divider"></mat-divider>
-                              <mat-icon matChipTrailingIcon>close</mat-icon>    
-                          </div>
+            <!-- Date picker -->
+            <div class="-pt-3 h-8">
+              <mat-chip
+                disableRipple
+                [highlighted]="selectedStartDate() || selectedEndDate()">
+                <div class="flex flex-row items-center">
+                  <div
+                    class="flex flex-row items-center"
+                    (click)="datePicker.open()">
+                    <mat-icon matChipTrailingIcon class="font-primary pl-0!"
+                      >date_range</mat-icon
+                    >
+                    @if (selectedStartDate() || selectedEndDate()) {
+                      <span
+                        >{{ selectedStartDate() | date: 'shortDate' }}
+                      </span>
+                      @if (selectedEndDate()) {
+                        <span>
+                          - {{ selectedEndDate() | date: 'shortDate' }}</span
+                        >
                       }
+                    } @else {
+                      <span>Date</span>
+                    }
+                    <mat-icon matChipTrailingIcon>arrow_drop_down</mat-icon>
                   </div>
+                  @if (selectedStartDate() || selectedEndDate()) {
+                    <div
+                      class="flex flex-row items-center"
+                      (click)="clearDateRangeFilter()">
+                      <mat-divider
+                        [vertical]="true"
+                        class="mat-filter-chip-divider"></mat-divider>
+                      <mat-icon matChipTrailingIcon>close</mat-icon>
+                    </div>
+                  }
+                </div>
               </mat-chip>
 
               <!--[TODO] For some reason, styles only worked when inlined or in the css file like so.... very suspicious...-->
-              <mat-date-range-input 
-                style="position: relative; float: bottom; margin-top: auto; margin-bottom: -10px;"
-                [rangePicker]="datePicker" 
+              <mat-date-range-input
+                style="
+                  position: relative;
+                  float: bottom;
+                  margin-top: auto;
+                  margin-bottom: -10px;
+                "
+                [rangePicker]="datePicker"
                 [class.cdk-visually-hidden]="true"
                 [min]="filterOptions()?.term_start"
-                [max]="filterOptions()?.term_end"
-              >
-                <input matStartDate [class.cdk-visually-hidden]="true" [(ngModel)]="selectedStartDate">
-                <input matEndDate [class.cdk-visually-hidden]="true" [(ngModel)]="selectedEndDate">
+                [max]="filterOptions()?.term_end">
+                <input
+                  matStartDate
+                  [class.cdk-visually-hidden]="true"
+                  [(ngModel)]="selectedStartDate" />
+                <input
+                  matEndDate
+                  [class.cdk-visually-hidden]="true"
+                  [(ngModel)]="selectedEndDate" />
               </mat-date-range-input>
-              <mat-date-range-picker #datePicker></mat-date-range-picker>       
+              <mat-date-range-picker #datePicker></mat-date-range-picker>
             </div>
-              <!-- Download button -->
-              <button
-                mat-flat-button (click)="downloadTicketData()"
-                class="secondary-button"
-              >
-                <mat-icon class="mr-[-8px]!">download</mat-icon>
-              </button>
-            </div>
-          }
-        </div>
-        <!-- Ticket data cards -->
-        <div class="flex flex-row gap-6 mt-4">
-          <office-hours-statistics-card
-            title="Total Tickets"
-            [leftStatistic]="ticketStatistics()?.total_tickets_weekly?.toFixed(0) ?? '---'"
-            leftStatisticLabel="this week"
-            [rightStatistic]="ticketStatistics()?.total_tickets?.toFixed(0) ?? '---'"
-            rightStatisticLabel="overall"
-          />
-          <office-hours-statistics-card
+            <!-- Download button -->
+            <button
+              mat-flat-button
+              (click)="downloadTicketData()"
+              class="secondary-button">
+              <mat-icon class="mr-[-8px]!">download</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+      <!-- Ticket data cards -->
+      <div class="mt-4 flex flex-row gap-6">
+        <office-hours-statistics-card
+          title="Total Tickets"
+          [leftStatistic]="
+            ticketStatistics()?.total_tickets_weekly?.toFixed(0) ?? '---'
+          "
+          leftStatisticLabel="this week"
+          [rightStatistic]="
+            ticketStatistics()?.total_tickets?.toFixed(0) ?? '---'
+          "
+          rightStatisticLabel="overall" />
+        <office-hours-statistics-card
           title="Queue Statistics"
-          [leftStatistic]="ticketStatistics()?.average_wait_time?.toFixed(2) ?? '---'"
+          [leftStatistic]="
+            ticketStatistics()?.average_wait_time?.toFixed(2) ?? '---'
+          "
           leftStatisticLabel="average wait (m)"
-          [rightStatistic]="ticketStatistics()?.average_duration?.toFixed(2) ?? '---'"
-          rightStatisticLabel="average duration (m)"
-          />
-        </div>
-        <!-- Ticket history -->
-         @if(paginatedTickets()) {
-          <mat-card class="max-w-full! max-h-full! mx-0! mt-4!" appearance="outlined">
-            <mat-card-content>
-              <div class="flex flex-col gap-3">
-                @for(item of paginatedTickets()?.items ?? []; track item.id) {
-                  <div class="flex flex-row items-center justify-between gap-4">
-                    <div class="flex flex-row items-center gap-4">
-                      <p>{{ item.called_at | date: 'EEE, M/d' }}<br>{{ item.called_at | date: 'shortTime' }}</p>
-                      <p><span class="font-medium">{{ item.type }}</span></p>
-                      <div class="flex flex-row gap-2 pl-4 -pb-2">
-                        <user-chip-list [users]="item.creators"></user-chip-list>
-                        <user-chip-list [users]="item.caller? [item.caller] : []" nameSuffix=" (Staff)"></user-chip-list>
-                      </div>
-                    </div>
-                    <div class="flex flex-row items-center">
-                      @if(item.has_concerns || (item.caller_notes && item.caller_notes != "")) {
-                        <mat-icon [class]="'mt-1 ' + (item.has_concerns ? 'font-error' : 'font-secondary')">feedback</mat-icon>
-                      }
-                      <button mat-icon-button (click)="openTicketDetails(item)">
-                        <mat-icon>more_vert</mat-icon>
-                      </button>
+          [rightStatistic]="
+            ticketStatistics()?.average_duration?.toFixed(2) ?? '---'
+          "
+          rightStatisticLabel="average duration (m)" />
+      </div>
+      <!-- Ticket history -->
+      @if (paginatedTickets()) {
+        <mat-card
+          class="mx-0! mt-4! max-h-full! max-w-full!"
+          appearance="outlined">
+          <mat-card-content>
+            <div class="flex flex-col gap-3">
+              @for (item of paginatedTickets()?.items ?? []; track item.id) {
+                <div class="flex flex-row items-center justify-between gap-4">
+                  <div class="flex flex-row items-center gap-4">
+                    <p>
+                      {{ item.called_at | date: 'EEE, M/d' }}<br />{{
+                        item.called_at | date: 'shortTime'
+                      }}
+                    </p>
+                    <p>
+                      <span class="font-medium">{{ item.type }}</span>
+                    </p>
+                    <div class="-pb-2 flex flex-row gap-2 pl-4">
+                      <user-chip-list [users]="item.creators"></user-chip-list>
+                      <user-chip-list
+                        [users]="item.caller ? [item.caller] : []"
+                        nameSuffix=" (Staff)"></user-chip-list>
                     </div>
                   </div>
-                } @empty {
-                  <p>No tickets found.</p>
-                }
-              </div>
-              <mat-paginator
-                [length]="paginatedTickets()!.length"
-                [pageSize]="paginatedTickets()!.params.page_size"
-                [pageIndex]="paginatedTickets()!.params.page"
-                (page)="handlePageEvent($event)"
-              />
-            </mat-card-content>
-          </mat-card>
-         }
-      </mat-card-content>
-    </mat-card> 
+                  <div class="flex flex-row items-center">
+                    @if (
+                      item.has_concerns ||
+                      (item.caller_notes && item.caller_notes !== '')
+                    ) {
+                      <mat-icon
+                        [class]="
+                          'mt-1 ' +
+                          (item.has_concerns ? 'font-error' : 'font-secondary')
+                        "
+                        >feedback</mat-icon
+                      >
+                    }
+                    <button mat-icon-button (click)="openTicketDetails(item)">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              } @empty {
+                <p>No tickets found.</p>
+              }
+            </div>
+            <mat-paginator
+              [length]="paginatedTickets()!.length"
+              [pageSize]="paginatedTickets()!.params.page_size"
+              [pageIndex]="paginatedTickets()!.params.page"
+              (page)="handlePageEvent($event)" />
+          </mat-card-content>
+        </mat-card>
+      }
+    </mat-card-content>
+  </mat-card>
 </div>

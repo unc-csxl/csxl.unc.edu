@@ -1,26 +1,33 @@
 <!-- Search Bar -->
-<div class="h-full mr-4">
+<div class="mr-4 h-full">
   <search-bar
-  class="roster-search-bar mat-csxl-search-bar"
-  [searchBarQuery]="searchBarQuery()"
-  (searchBarQueryChange)="searchBarQuery.set($event)" />
+    class="roster-search-bar mat-csxl-search-bar"
+    [searchBarQuery]="searchBarQuery()"
+    (searchBarQueryChange)="searchBarQuery.set($event)" />
 </div>
 
 <div class="h-full">
-  <mat-card appearance="outlined" class="border-transparent! mr-8! max-w-full! min-h-[73vh]! mb-8!">
+  <mat-card
+    appearance="outlined"
+    class="mr-8! mb-8! min-h-[73vh]! max-w-full! border-transparent!">
     <mat-card-header class="items-center! pb-4!">
       <mat-card-title>Course Roster</mat-card-title>
-      <div class="flex flex-row ml-auto gap-3">
-        @if(myCoursesService.courseOverview(+courseSiteId)?.role !== 'Student') {
-          <button mat-stroked-button color="primary" (click)="importFromCanvas()">
+      <div class="ml-auto flex flex-row gap-3">
+        @if (
+          myCoursesService.courseOverview(+courseSiteId)?.role !== 'Student'
+        ) {
+          <button
+            mat-stroked-button
+            color="primary"
+            (click)="importFromCanvas()">
             Import From Canvas
           </button>
         }
-         <!-- Download button -->
-          <button
-          mat-flat-button (click)="downloadCourseRoster()"
-          class="secondary-button"
-        >
+        <!-- Download button -->
+        <button
+          mat-flat-button
+          (click)="downloadCourseRoster()"
+          class="secondary-button">
           <mat-icon class="mr-[-8px]!">download</mat-icon>
         </button>
       </div>
@@ -38,8 +45,8 @@
             <th mat-header-cell *matHeaderCellDef>Name</th>
             <td mat-cell *matCellDef="let element">
               {{ element.first_name }} {{ element.last_name }}
-              @if (element.pronouns && element.pronouns !== '' ) {
-              <span class="pronoun-labels">({{ element.pronouns }})</span>
+              @if (element.pronouns && element.pronouns !== '') {
+                <span class="pronoun-labels">({{ element.pronouns }})</span>
               }
             </td>
           </ng-container>
@@ -50,9 +57,14 @@
           <ng-container matColumnDef="email">
             <th mat-header-cell *matHeaderCellDef>Email</th>
             <td mat-cell *matCellDef="let element">
-              <div class="flex items-center gap-2 group hover:cursor-pointer" (click)="copyToClipboard(element.email)">
+              <div
+                class="group flex items-center gap-2 hover:cursor-pointer"
+                (click)="copyToClipboard(element.email)">
                 {{ element.email }}
-                <mat-icon class="secondary-color opacity-0 group-hover:opacity-100">content_copy</mat-icon>
+                <mat-icon
+                  class="secondary-color opacity-0 group-hover:opacity-100"
+                  >content_copy</mat-icon
+                >
               </div>
             </td>
           </ng-container>
@@ -62,8 +74,14 @@
           </ng-container>
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let element" class="flex flex-row items-center w-full h-[52px]">
-              <button mat-icon-button [matMenuTriggerFor]="menu" class="ml-auto">
+            <td
+              mat-cell
+              *matCellDef="let element"
+              class="flex h-[52px] w-full flex-row items-center">
+              <button
+                mat-icon-button
+                [matMenuTriggerFor]="menu"
+                class="ml-auto">
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu" xPosition="before">

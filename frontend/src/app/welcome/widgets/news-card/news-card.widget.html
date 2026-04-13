@@ -1,6 +1,8 @@
-<mat-card appearance="outlined" class="ml-0 max-w-full! max-h-fit!">
+<mat-card appearance="outlined" class="ml-0 max-h-fit! max-w-full!">
   <div class="flex flex-col md:flex-row">
-    <img class="h-44 rounded-xl mt-3 ml-3 mr-3 md:mr-0 aspect-square object-cover" [src]="article.image_url" />
+    <img
+      class="mt-3 mr-3 ml-3 aspect-square h-44 rounded-xl object-cover md:mr-0"
+      [src]="article.image_url" />
     <div class="flex flex-col">
       <mat-card-header>
         <mat-card-title [routerLink]="'/article/' + article.slug">{{
@@ -8,31 +10,27 @@
         }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <p>
-          {{ article.published | date: 'mediumDate' }}
-        </p>
+        <p>{{ article.published | date: 'mediumDate' }}</p>
         <mat-chip-set>
           <!-- Organization chip -->
-          @if(article.organization_slug) {
-          <mat-chip-row
-            class="h-7!"
-            [routerLink]="'/organizations/' + article.organization_slug">
-            <img
-              class="profile-icon"
-              matChipAvatar
-              [src]="article.organization_logo" />
-            {{ article.organization_name }}
-          </mat-chip-row>
+          @if (article.organization_slug) {
+            <mat-chip-row
+              class="h-7!"
+              [routerLink]="'/organizations/' + article.organization_slug">
+              <img
+                class="profile-icon"
+                matChipAvatar
+                [src]="article.organization_logo" />
+              {{ article.organization_name }}
+            </mat-chip-row>
           }
         </mat-chip-set>
 
-        <p class="py-2">
-          {{ article.synopsis }}
-        </p>
+        <p class="py-2">{{ article.synopsis }}</p>
       </mat-card-content>
     </div>
   </div>
-  <mat-card-actions class="w-full gap-2 mb-2 justify-end">
+  <mat-card-actions class="mb-2 w-full justify-end gap-2">
     <button mat-flat-button [routerLink]="'/article/' + article.slug">
       Read
     </button>

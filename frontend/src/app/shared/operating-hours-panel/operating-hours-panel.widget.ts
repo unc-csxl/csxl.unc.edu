@@ -5,10 +5,10 @@ import { OperatingHoursDialog } from '../../coworking/widgets/operating-hours-di
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Component({
-    selector: 'coworking-operating-hours-panel',
-    templateUrl: './operating-hours-panel.widget.html',
-    styleUrls: ['./operating-hours-panel.widget.css'],
-    standalone: false
+  selector: 'coworking-operating-hours-panel',
+  templateUrl: './operating-hours-panel.widget.html',
+  styleUrls: ['./operating-hours-panel.widget.css'],
+  standalone: false
 })
 export class CoworkingHoursCard {
   @Input() operatingHours!: OperatingHours[];
@@ -26,8 +26,8 @@ export class CoworkingHoursCard {
 
 /** Local pipe that capitalizes the first letter of the string. */
 @Pipe({
-    name: 'operatingHoursCapitalizationPipe',
-    standalone: false
+  name: 'operatingHoursCapitalizationPipe',
+  standalone: false
 })
 export class OperatingHoursCapitalizationPipe implements PipeTransform {
   transform(sentence: string | null | undefined): string {

@@ -1,9 +1,9 @@
-@if(!hasUserAgreed) {
-<banner-card
-  type="alert"
-  icon="error"
-  title="Action Required"
-  body="Please read and accept the community agreement below to continue to the
+@if (!hasUserAgreed) {
+  <banner-card
+    type="alert"
+    icon="error"
+    title="Action Required"
+    body="Please read and accept the community agreement below to continue to the
     CSXL web page." />
 }
 
@@ -49,12 +49,12 @@
     communication should not demean others. Consider what you are saying and how
     it would feel if it were said to you or about you.
   </p>
-  @if(!hasUserAgreed) {
-  <mat-slide-toggle
-    [(ngModel)]="agreementSectionsAccepted[0]"
-    (change)="updateSectionAcceptance(0, $event.checked)">
-    I agree
-  </mat-slide-toggle>
+  @if (!hasUserAgreed) {
+    <mat-slide-toggle
+      [(ngModel)]="agreementSectionsAccepted[0]"
+      (change)="updateSectionAcceptance(0, $event.checked)">
+      I agree
+    </mat-slide-toggle>
   }
   <mat-divider />
   <mat-card-subtitle>
@@ -66,12 +66,12 @@
     not be aware of what they are doing, and politely bringing their behavior to
     their attention is encouraged.
   </p>
-  @if(!hasUserAgreed) {
-  <mat-slide-toggle
-    [(ngModel)]="agreementSectionsAccepted[1]"
-    (change)="updateSectionAcceptance(1, $event.checked)">
-    I agree
-  </mat-slide-toggle>
+  @if (!hasUserAgreed) {
+    <mat-slide-toggle
+      [(ngModel)]="agreementSectionsAccepted[1]"
+      (change)="updateSectionAcceptance(1, $event.checked)">
+      I agree
+    </mat-slide-toggle>
   }
   <mat-divider />
   <mat-card-subtitle>
@@ -92,12 +92,12 @@
     <li>Physical or cyber threats</li>
   </ul>
 
-  @if(!hasUserAgreed) {
-  <mat-slide-toggle
-    [(ngModel)]="agreementSectionsAccepted[2]"
-    (change)="updateSectionAcceptance(2, $event.checked)">
-    I agree
-  </mat-slide-toggle>
+  @if (!hasUserAgreed) {
+    <mat-slide-toggle
+      [(ngModel)]="agreementSectionsAccepted[2]"
+      (change)="updateSectionAcceptance(2, $event.checked)">
+      I agree
+    </mat-slide-toggle>
   }
   <mat-divider />
   <mat-card-subtitle>
@@ -121,12 +121,12 @@
     <li>Social demographic</li>
   </ul>
 
-  @if(!hasUserAgreed) {
-  <mat-slide-toggle
-    [(ngModel)]="agreementSectionsAccepted[3]"
-    (change)="updateSectionAcceptance(3, $event.checked)">
-    I agree
-  </mat-slide-toggle>
+  @if (!hasUserAgreed) {
+    <mat-slide-toggle
+      [(ngModel)]="agreementSectionsAccepted[3]"
+      (change)="updateSectionAcceptance(3, $event.checked)">
+      I agree
+    </mat-slide-toggle>
   }
   <mat-divider />
   <mat-card-subtitle>
@@ -139,12 +139,12 @@
     Anti-Harassment Policy and respond appropriately.
   </p>
 
-  @if(!hasUserAgreed) {
-  <mat-slide-toggle
-    [(ngModel)]="agreementSectionsAccepted[4]"
-    (change)="updateSectionAcceptance(4, $event.checked)">
-    I agree
-  </mat-slide-toggle>
+  @if (!hasUserAgreed) {
+    <mat-slide-toggle
+      [(ngModel)]="agreementSectionsAccepted[4]"
+      (change)="updateSectionAcceptance(4, $event.checked)">
+      I agree
+    </mat-slide-toggle>
   }
   <mat-divider />
   <mat-card-subtitle>
@@ -158,12 +158,12 @@
     >
     to file a report.
   </p>
-  @if(!hasUserAgreed) {
-  <mat-slide-toggle
-    [(ngModel)]="agreementSectionsAccepted[5]"
-    (change)="updateSectionAcceptance(5, $event.checked)">
-    I agree
-  </mat-slide-toggle>
+  @if (!hasUserAgreed) {
+    <mat-slide-toggle
+      [(ngModel)]="agreementSectionsAccepted[5]"
+      (change)="updateSectionAcceptance(5, $event.checked)">
+      I agree
+    </mat-slide-toggle>
   }
   <mat-divider />
   <mat-card-subtitle>
@@ -183,12 +183,12 @@
     XL staff may take any action they deem appropriate, including warning or
     expelling the offender from the event or space.
   </p>
-  @if(!hasUserAgreed) {
-  <mat-slide-toggle
-    [(ngModel)]="agreementSectionsAccepted[6]"
-    (change)="updateSectionAcceptance(6, $event.checked)">
-    I agree
-  </mat-slide-toggle>
+  @if (!hasUserAgreed) {
+    <mat-slide-toggle
+      [(ngModel)]="agreementSectionsAccepted[6]"
+      (change)="updateSectionAcceptance(6, $event.checked)">
+      I agree
+    </mat-slide-toggle>
   }
   <mat-divider />
   <mat-card-subtitle>
@@ -211,12 +211,12 @@
     <li>Erasing whiteboards</li>
     <li>Not doing anything destructive</li>
   </ul>
-  @if(!hasUserAgreed) {
-  <mat-slide-toggle
-    [(ngModel)]="agreementSectionsAccepted[7]"
-    (change)="updateSectionAcceptance(7, $event.checked)">
-    I agree
-  </mat-slide-toggle>
+  @if (!hasUserAgreed) {
+    <mat-slide-toggle
+      [(ngModel)]="agreementSectionsAccepted[7]"
+      (change)="updateSectionAcceptance(7, $event.checked)">
+      I agree
+    </mat-slide-toggle>
   }
   <mat-divider />
   <mat-card-subtitle>
@@ -233,12 +233,12 @@
     Over $80,000 of furniture was bought new for the space this year, please
     treat it like you bought it.
   </p>
-  @if(!hasUserAgreed) {
-  <mat-slide-toggle
-    [(ngModel)]="agreementSectionsAccepted[8]"
-    (change)="updateSectionAcceptance(8, $event.checked)">
-    I agree
-  </mat-slide-toggle>
+  @if (!hasUserAgreed) {
+    <mat-slide-toggle
+      [(ngModel)]="agreementSectionsAccepted[8]"
+      (change)="updateSectionAcceptance(8, $event.checked)">
+      I agree
+    </mat-slide-toggle>
   }
   <mat-divider />
   <mat-card-subtitle>
@@ -254,12 +254,12 @@
     Do not eat food or have open drinking containers in the workstation spaces
     with 2nd monitors in the XL.
   </p>
-  @if(!hasUserAgreed) {
-  <mat-slide-toggle
-    [(ngModel)]="agreementSectionsAccepted[9]"
-    (change)="updateSectionAcceptance(9, $event.checked)">
-    I agree
-  </mat-slide-toggle>
+  @if (!hasUserAgreed) {
+    <mat-slide-toggle
+      [(ngModel)]="agreementSectionsAccepted[9]"
+      (change)="updateSectionAcceptance(9, $event.checked)">
+      I agree
+    </mat-slide-toggle>
   }
   <mat-divider />
   <mat-card-subtitle>
@@ -278,12 +278,12 @@
     or elsewhere on campus. If you are playing games in the workstation monitor
     space, you will be asked to stop and/or take the gameplay elsewhere.
   </p>
-  @if(!hasUserAgreed) {
-  <mat-slide-toggle
-    [(ngModel)]="agreementSectionsAccepted[10]"
-    (change)="updateSectionAcceptance(10, $event.checked)">
-    I agree
-  </mat-slide-toggle>
+  @if (!hasUserAgreed) {
+    <mat-slide-toggle
+      [(ngModel)]="agreementSectionsAccepted[10]"
+      (change)="updateSectionAcceptance(10, $event.checked)">
+      I agree
+    </mat-slide-toggle>
   }
   <mat-divider />
   <mat-card-subtitle>
@@ -291,12 +291,12 @@
     eat in the XL, fail to clean up after myself, destroy, damage property of
     the XL, or otherwise act outside the community's standards.
   </mat-card-subtitle>
-  @if(!hasUserAgreed) {
-  <mat-slide-toggle
-    [(ngModel)]="agreementSectionsAccepted[11]"
-    (change)="updateSectionAcceptance(11, $event.checked)">
-    I agree
-  </mat-slide-toggle>
+  @if (!hasUserAgreed) {
+    <mat-slide-toggle
+      [(ngModel)]="agreementSectionsAccepted[11]"
+      (change)="updateSectionAcceptance(11, $event.checked)">
+      I agree
+    </mat-slide-toggle>
   }
 </mat-dialog-content>
 

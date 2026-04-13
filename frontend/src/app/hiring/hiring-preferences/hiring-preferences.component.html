@@ -20,7 +20,7 @@
         class="drop-list"
         (cdkDropListDropped)="drop($event)">
         @for (item of notPreferred; track item.id) {
-        <application-card [item]="item" (click)="openDialog(item)" />
+          <application-card [item]="item" (click)="openDialog(item)" />
         }
       </div>
     </mat-card-content>
@@ -54,7 +54,7 @@
         class="drop-list"
         (cdkDropListDropped)="drop($event)">
         @for (item of notProcessed; track item.id) {
-        <application-card [item]="item" (click)="openDialog(item)" />
+          <application-card [item]="item" (click)="openDialog(item)" />
         }
       </div>
     </mat-card-content>
@@ -106,7 +106,7 @@
         class="drop-list"
         (cdkDropListDropped)="drop($event)">
         @for (item of preferred; track item.id) {
-        <application-card [item]="item" (click)="openDialog(item)" />
+          <application-card [item]="item" (click)="openDialog(item)" />
         }
       </div>
     </mat-card-content>

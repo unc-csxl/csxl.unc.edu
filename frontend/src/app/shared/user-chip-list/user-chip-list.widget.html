@@ -1,54 +1,40 @@
 <div class="user-chips">
-  @if(clickable) { @if(enableMailTo) {
-  <mat-chip-row
-    class="user-chip"
-    *ngFor="let user of users"
-    (click)="emailRedirect(user)">
-    <img
-      class="user-image"
-      *ngIf="user.github_avatar"
-      matChipAvatar
-      [src]="user.github_avatar" />
-    {{ user.first_name + ' ' + user.last_name }}
-  </mat-chip-row>
+  @if (clickable) {
+    @if (enableMailTo) {
+      @for (user of users; track user.onyen) {
+        <mat-chip-row class="user-chip" (click)="emailRedirect(user)">
+          @if (user.github_avatar) {
+            <img class="user-image" matChipAvatar [src]="user.github_avatar" />
+          }
+          {{ user.first_name + ' ' + user.last_name }}
+        </mat-chip-row>
+      }
+    } @else {
+      @for (user of users; track user.onyen) {
+        <mat-chip-row class="user-chip" [routerLink]="'/profile/' + user.onyen">
+          @if (user.github_avatar) {
+            <img class="user-image" matChipAvatar [src]="user.github_avatar" />
+          }
+          {{ user.first_name + ' ' + user.last_name + nameSuffix }}
+        </mat-chip-row>
+      }
+    }
   } @else {
-  <mat-chip-row
-    class="user-chip"
-    *ngFor="let user of users"
-    [routerLink]="'/profile/' + user.onyen">
-    <img
-      class="user-image"
-      *ngIf="user.github_avatar"
-      matChipAvatar
-      [src]="user.github_avatar" />
-    <a
-      *ngIf="enableMailTo; else disableMailTo"
-      class="user-email-link"
-      href="mailto:{{ user.email }}">
-      {{ user.first_name + ' ' + user.last_name + nameSuffix }}
-    </a>
-    <ng-template #disableMailTo>
-      {{ user.first_name + ' ' + user.last_name + nameSuffix }}
-    </ng-template>
-  </mat-chip-row>
-  } } @else {
-  <div class="no-hover-chipset">
-    <mat-chip class="user-chip" *ngFor="let user of users" disableRipple>
-      <img
-        class="user-image"
-        *ngIf="user.github_avatar"
-        matChipAvatar
-        [src]="user.github_avatar" />
-      <a
-        *ngIf="enableMailTo; else disableMailTo"
-        class="user-email-link"
-        href="mailto:{{ user.email }}">
-        {{ user.first_name + ' ' + user.last_name + nameSuffix }}
-      </a>
-      <ng-template #disableMailTo>
-        {{ user.first_name + ' ' + user.last_name + nameSuffix }}
-      </ng-template>
-    </mat-chip>
-  </div>
+    <div class="no-hover-chipset">
+      @for (user of users; track user.onyen) {
+        <mat-chip class="user-chip" disableRipple>
+          @if (user.github_avatar) {
+            <img class="user-image" matChipAvatar [src]="user.github_avatar" />
+          }
+          @if (enableMailTo) {
+            <a class="user-email-link" href="mailto:{{ user.email }}">
+              {{ user.first_name + ' ' + user.last_name + nameSuffix }}
+            </a>
+          } @else {
+            {{ user.first_name + ' ' + user.last_name + nameSuffix }}
+          }
+        </mat-chip>
+      }
+    </div>
   }
 </div>

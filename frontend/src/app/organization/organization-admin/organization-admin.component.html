@@ -1,5 +1,5 @@
 <!-- HTML Structure of Admin Organizations List -->
-<mat-card appearance="outlined" class="border-transparent! max-w-full!">
+<mat-card appearance="outlined" class="max-w-full! border-transparent!">
   <mat-card-content>
     <div class="content">
       <div class="table-responsive">
@@ -7,28 +7,32 @@
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>
               <div class="flex items-center justify-between">
-                Organizations @if (adminPermissions() | async) {
-                <button mat-stroked-button (click)="createOrganization()">
-                  Create
-                </button>
+                Organizations
+                @if (adminPermissions() | async) {
+                  <button mat-stroked-button (click)="createOrganization()">
+                    Create
+                  </button>
                 }
               </div>
             </th>
-            <td class="border-0! border-transparent! hover:cursor-pointer hover:bg-black/10! dark:hover:bg-white/10! hover:rounded-xl" mat-cell *matCellDef="let element">
+            <td
+              class="border-0! border-transparent! hover:cursor-pointer hover:rounded-xl hover:bg-black/10! dark:hover:bg-white/10!"
+              mat-cell
+              *matCellDef="let element">
               <div class="flex items-center justify-between">
                 <p>{{ element.name }}</p>
                 <div class="button-container">
-                  @if(adminPermissions() | async) {
-                  <button
-                    mat-stroked-button
-                    (click)="deleteOrganization(element)"
-                    class="justify-between m-1">
-                    Delete
-                  </button>
+                  @if (adminPermissions() | async) {
+                    <button
+                      mat-stroked-button
+                      (click)="deleteOrganization(element)"
+                      class="m-1 justify-between">
+                      Delete
+                    </button>
                   }
                   <button
                     mat-stroked-button
-                    class="justify-between m-1"
+                    class="m-1 justify-between"
                     (click)="editOrganization(element)">
                     Edit
                   </button>

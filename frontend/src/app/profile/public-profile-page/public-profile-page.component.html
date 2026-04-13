@@ -1,14 +1,19 @@
 <mat-pane>
   <mat-card-header class="flex! flex-row! items-center!">
     @if (profile.github_avatar) {
-    <img mat-card-avatar class="size-10! leading-10! bg-[#4786c6]! rounded! text-center!" [src]="profile.github_avatar" />
+      <img
+        mat-card-avatar
+        class="size-10! rounded! bg-[#4786c6]! text-center! leading-10!"
+        [src]="profile.github_avatar" />
     } @else if (profile.first_name && profile.last_name) {
-    <p mat-card-avatar class="size-10! leading-10! rounded-full! text-center! secondary-background mb-0!">
-      {{ profile.first_name.charAt(0) }}{{ profile.last_name.charAt(0) }}
-    </p>
+      <p
+        mat-card-avatar
+        class="secondary-background mb-0! size-10! rounded-full! text-center! leading-10!">
+        {{ profile.first_name.charAt(0) }}{{ profile.last_name.charAt(0) }}
+      </p>
     }
 
-    <div class="flex flex-row flex-wrap items-center gap-2 ml-2">
+    <div class="ml-2 flex flex-row flex-wrap items-center gap-2">
       <mat-card-title>
         {{ profile.first_name }} {{ profile.last_name }}
       </mat-card-title>
@@ -20,55 +25,55 @@
     </div>
   </mat-card-header>
   <mat-card-content>
-    <div class="flex flex-row flex-wrap mt-1 items-center mb-3 ml-12 gap-1">
-      <div class="flex flex-row gap-1 items-center">
+    <div class="mt-1 mb-3 ml-12 flex flex-row flex-wrap items-center gap-1">
+      <div class="flex flex-row items-center gap-1">
         <mat-icon class="secondary-icon">mail</mat-icon>
         <p>{{ profile.email }}</p>
       </div>
       @if (profile.website) {
-      <div class="flex flex-row gap-1 items-center">
-        <mat-icon class="ml-[6px]! secondary-icon">link</mat-icon>
-        <p>
-          <a class="font-secondary" [href]="profile.website" target="_blank"
-            >Personal Website</a
-          >
-        </p>
-      </div>
-      } @if (profile.linkedin) {
-      <div class="flex flex-row gap-1 items-center">
-        <mat-icon
-          class="ml-[6px]! size-[22px]! secondary-icon"
-          svgIcon="linkedin" />
-        <p>
-          <a class="font-secondary" [href]="profile.linkedin" target="_blank"
-            >LinkedIn</a
-          >
-        </p>
-      </div>
-
+        <div class="flex flex-row items-center gap-1">
+          <mat-icon class="secondary-icon ml-[6px]!">link</mat-icon>
+          <p>
+            <a class="font-secondary" [href]="profile.website" target="_blank"
+              >Personal Website</a
+            >
+          </p>
+        </div>
       }
-      <div class="flex flex-row gap-1 items-center">
+      @if (profile.linkedin) {
+        <div class="flex flex-row items-center gap-1">
+          <mat-icon
+            class="secondary-icon ml-[6px]! size-[22px]!"
+            svgIcon="linkedin" />
+          <p>
+            <a class="font-secondary" [href]="profile.linkedin" target="_blank"
+              >LinkedIn</a
+            >
+          </p>
+        </div>
+      }
+      <div class="flex flex-row items-center gap-1">
         @if (profile.github) {
-        <mat-icon
-          class="ml-[6px]! secondary-icon"
-          id="github-icon"
-          svgIcon="github" />
-        <p>
-          <a
-            class="font-secondary mr-1"
-            href="https://github.com/{{ profile.github }}">
-            &#64;{{ profile.github }}
-          </a>
-        </p>
+          <mat-icon
+            class="secondary-icon ml-[6px]!"
+            id="github-icon"
+            svgIcon="github" />
+          <p>
+            <a
+              class="font-secondary mr-1"
+              href="https://github.com/{{ profile.github }}">
+              &#64;{{ profile.github }}
+            </a>
+          </p>
         }
       </div>
     </div>
     <mat-divider class="my-4!" />
     <mat-card-subtitle class="my-1!">Profile Bio</mat-card-subtitle>
     @if (profile.bio) {
-    <p markdown>{{ profile.bio! }}</p>
+      <p markdown>{{ profile.bio! }}</p>
     } @else {
-    <p>User does not have a bio.</p>
+      <p>User does not have a bio.</p>
     }
   </mat-card-content>
 </mat-pane>

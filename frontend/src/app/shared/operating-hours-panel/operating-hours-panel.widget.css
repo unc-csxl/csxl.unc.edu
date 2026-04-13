@@ -43,7 +43,6 @@
 }
 
 @media only screen and (max-width: 900px) {
-
   .mat-mdc-card-title {
     display: flex;
     flex-direction: column;
@@ -52,5 +51,4 @@
   button {
     margin-left: 0;
   }
-  
 }
