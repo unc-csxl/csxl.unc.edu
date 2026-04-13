@@ -1,5 +1,3 @@
-<!-- eslint-disable prettier/prettier -->
-<!-- eslint-disable prettier/prettier -->
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav
     #drawer
@@ -12,181 +10,230 @@
       <mat-nav-list (click)="hideMobileSidenav(drawer)">
         <div>
           <a
-          mat-list-item
-          class="logo-item"
-          routerLink="/"
-          routerLinkActive="active"
-          >
-          <picture class="flex flex-row items-center justify-center w-full">
-            <source
-              class="logo"
-              srcset="/assets/lil-logo.png"
-              media="(prefers-color-scheme: dark)"
-              alt="Computer Science Experience Labs Logo" />
-            <img
-              class="logo"
-              src="/assets/lil-logo-light.png"
-              alt="Computer Science Experience Labs Logo" />
-          </picture>
-        </a>
+            mat-list-item
+            class="logo-item"
+            routerLink="/"
+            routerLinkActive="active">
+            <picture class="flex w-full flex-row items-center justify-center">
+              <source
+                class="logo"
+                srcset="/assets/lil-logo.png"
+                media="(prefers-color-scheme: dark)"
+                alt="Computer Science Experience Labs Logo" />
+              <img
+                class="logo"
+                src="/assets/lil-logo-light.png"
+                alt="Computer Science Experience Labs Logo" />
+            </picture>
+          </a>
 
           <!-- Administration -->
           @if (profile$ | async; as profile) {
-            @if ((adminPermission$ | async) || (ambassadorPermission$ | async)) {
+            @if (
+              (adminPermission$ | async) || (ambassadorPermission$ | async)
+            ) {
               <h3 matSubheader>Administration</h3>
             }
             @if (adminPermission$ | async) {
-              <mat-list-item routerLink="/admin" [activated]="router.isActive('/admin', false)">
-                  <mat-icon matListItemIcon>settings</mat-icon>
-                  <div matListItemTitle>Admin</div>              
+              <mat-list-item
+                routerLink="/admin"
+                [activated]="router.isActive('/admin', false)">
+                <mat-icon matListItemIcon>settings</mat-icon>
+                <div matListItemTitle>Admin</div>
               </mat-list-item>
-            } 
+            }
             @if (hiringPermission$ | async) {
-              <mat-list-item routerLink="/hiring/admin" [activated]="router.isActive('/hiring/admin', false)">
-                  <mat-icon matListItemIcon>badge</mat-icon>
-                  <div matListItemTitle>Hiring</div>              
+              <mat-list-item
+                routerLink="/hiring/admin"
+                [activated]="router.isActive('/hiring/admin', false)">
+                <mat-icon matListItemIcon>badge</mat-icon>
+                <div matListItemTitle>Hiring</div>
               </mat-list-item>
-            } 
+            }
             @if (ambassadorPermission$ | async) {
-              <mat-list-item routerLink="/coworking/ambassador" [activated]="router.isActive('/coworking/ambassador', false)">
+              <mat-list-item
+                routerLink="/coworking/ambassador"
+                [activated]="router.isActive('/coworking/ambassador', false)">
                 <mat-icon matListItemIcon>handshake</mat-icon>
                 <div matListItemTitle>XL Ambassador</div>
               </mat-list-item>
             }
-            @if ((adminPermission$ | async) || (ambassadorPermission$ | async)) {
+            @if (
+              (adminPermission$ | async) || (ambassadorPermission$ | async)
+            ) {
               <mat-divider></mat-divider>
             }
           }
           <!-- Main Section -->
           @if (profile$ | async; as profile) {
             <h3 matSubheader>School</h3>
-            <mat-list-item routerLink="/coworking" [activated]="router.isActive('/coworking', true)">
+            <mat-list-item
+              routerLink="/coworking"
+              [activated]="router.isActive('/coworking', true)">
               <mat-icon matListItemIcon>groups</mat-icon>
               <div matListItemTitle>Coworking</div>
             </mat-list-item>
             <!-- <mat-list-item routerLink="/office-hours" [activated]="router.isActive('/office-hours', true)">
-              <mat-icon matListItemIcon>person_raised_hand</mat-icon>
-              <div matListItemTitle>Office Hours</div>
-            </mat-list-item> -->
-            <mat-list-item routerLink="/my-courses" [activated]="router.isActive('/my-courses', true)">
+            <mat-icon matListItemIcon>person_raised_hand</mat-icon>
+            <div matListItemTitle>Office Hours</div>
+          </mat-list-item> -->
+            <mat-list-item
+              routerLink="/my-courses"
+              [activated]="router.isActive('/my-courses', true)">
               <mat-icon matListItemIcon>school</mat-icon>
               <div matListItemTitle>My Courses</div>
             </mat-list-item>
             <!-- <mat-list-item routerLink="/academics" [activated]="router.isActive('/academics', true)">
-              <mat-icon matListItemIcon>school</mat-icon>
-              <div matListItemTitle>Academics</div>
-            </mat-list-item> -->
+          <mat-icon matListItemIcon>school</mat-icon>
+          <div matListItemTitle>Academics</div>
+        </mat-list-item> -->
           }
           <mat-divider></mat-divider>
           <!-- Community -->
           <h3 matSubheader>Community</h3>
-          <mat-list-item routerLink="/events" [activated]="router.isActive('/events?', false)">
+          <mat-list-item
+            routerLink="/events"
+            [activated]="router.isActive('/events?', false)">
             <mat-icon matListItemIcon>event</mat-icon>
             <div matListItemTitle>Events</div>
           </mat-list-item>
-          <mat-list-item routerLink="/organizations" [activated]="router.isActive('/organizations', true)">
+          <mat-list-item
+            routerLink="/organizations"
+            [activated]="router.isActive('/organizations', true)">
             <mat-icon matListItemIcon>interests</mat-icon>
             <div matListItemTitle>Organizations</div>
           </mat-list-item>
           <mat-divider></mat-divider>
           <!-- Other-->
           <h3 matSubheader>Other</h3>
-          <mat-list-item routerLink="/about" [activated]="router.isActive('/about', true)">
+          <mat-list-item
+            routerLink="/about"
+            [activated]="router.isActive('/about', true)">
             <mat-icon matListItemIcon>info</mat-icon>
             <div matListItemTitle>About the XL</div>
           </mat-list-item>
-          <mat-list-item (click)="openLink('https://www.instagram.com/unc.csxl')">
-            <mat-icon matListItemIcon svgIcon="instagram" class="svg-icon on-surface-variant-icon"></mat-icon>
+          <mat-list-item
+            (click)="openLink('https://www.instagram.com/unc.csxl')">
+            <mat-icon
+              matListItemIcon
+              svgIcon="instagram"
+              class="svg-icon on-surface-variant-icon"></mat-icon>
             <div matListItemTitle>&commat;unc.csxl</div>
           </mat-list-item>
-          <mat-list-item (click)="openLink('https://github.com/unc-csxl/csxl.unc.edu')">
-            <mat-icon matListItemIcon svgIcon="github" class="svg-icon on-surface-variant-icon"></mat-icon>
+          <mat-list-item
+            (click)="openLink('https://github.com/unc-csxl/csxl.unc.edu')">
+            <mat-icon
+              matListItemIcon
+              svgIcon="github"
+              class="svg-icon on-surface-variant-icon"></mat-icon>
             <div matListItemTitle>Fork on GitHub</div>
           </mat-list-item>
         </div>
       </mat-nav-list>
       <!-- <div
-        mat-list-item
-        class="bottom-button-container"
-        *ngIf="profile$ | async as profile">
-        <social-media-icon svgIcon="slack" (click)="onSlackInviteClick()" />
-        <social-media-icon
-          svgIcon="github"
-          href="https://github.com/unc-csxl/csxl.unc.edu" />
-        <social-media-icon
-          svgIcon="instagram"
-          href="https://www.instagram.com/unc.csxl/" />
-      </div> -->
+  mat-list-item
+  class="bottom-button-container"
+  *ngIf="profile$ | async as profile">
+  <social-media-icon svgIcon="slack" (click)="onSlackInviteClick()" />
+  <social-media-icon
+    svgIcon="github"
+    href="https://github.com/unc-csxl/csxl.unc.edu" />
+  <social-media-icon
+    svgIcon="instagram"
+    href="https://www.instagram.com/unc.csxl/" />
+</div> -->
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
     <mat-toolbar color="primary">
       <div class="toolbar">
         <div class="toolbar-left">
-          <button
-           type="button"
-           aria-label="Toggle sidenav"
-           mat-icon-button
-           (click)="drawer.toggle()"
-           *ngIf="isHandset">
-          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-          </button>
-          <span id="toolbar-title" [class]="isHandset ? 'title-medium' : ''">{{ navigationService.title$ | async }}</span>
+          @if (isHandset) {
+            <button
+              type="button"
+              aria-label="Toggle sidenav"
+              mat-icon-button
+              (click)="drawer.toggle()">
+              <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+            </button>
+          }
+          <span id="toolbar-title" [class]="isHandset ? 'title-medium' : ''">{{
+            navigationService.title$ | async
+          }}</span>
         </div>
 
         <div class="profile-chip-container">
-          @if(navigationAdminGearService.adminSettingsData()) {
+          @if (navigationAdminGearService.adminSettingsData()) {
             <button
-            class="mat-csxl-stroked-icon-button"
+              class="mat-csxl-stroked-icon-button"
               id="gear-icon"
               type="button"
               mat-icon-button
-              [routerLink]="navigationAdminGearService.adminSettingsData()?.url">
-              <mat-icon aria-label="Admin icon" color="secondary">settings</mat-icon>
+              [routerLink]="
+                navigationAdminGearService.adminSettingsData()?.url
+              ">
+              <mat-icon aria-label="Admin icon" color="secondary"
+                >settings</mat-icon
+              >
             </button>
           }
-
-            @if(profile$ | async; as profile) {
-              <mat-chip-set class="desktop-profile-chips">
+          @if (profile$ | async; as profile) {
+            <mat-chip-set class="desktop-profile-chips">
               <mat-chip class="profile-chip" routerLink="/profile">
-                @if(profile.github_avatar) {
-                  <img id="profile-icon" matChipAvatar [src]="profile.github_avatar" alt="GitHub Avatar"/>
+                @if (profile.github_avatar) {
+                  <img
+                    id="profile-icon"
+                    matChipAvatar
+                    [src]="profile.github_avatar"
+                    alt="GitHub Avatar" />
                 } @else {
-                  <mat-icon class="account-circle-icon" matChipAvatar>account_circle</mat-icon>
+                  <mat-icon class="account-circle-icon" matChipAvatar
+                    >account_circle</mat-icon
+                  >
                 }
-                {{ profile.first_name !== '' ? profile.first_name + ' ' + profile.last_name : 'Profile' }}
+                {{
+                  profile.first_name !== ''
+                    ? profile.first_name + ' ' + profile.last_name
+                    : 'Profile'
+                }}
               </mat-chip>
-              </mat-chip-set>
-              <button
+            </mat-chip-set>
+            <button
               class="mobile-icon-chips mat-csxl-stroked-icon-button profile-circle-icon"
-                type="button"
-                mat-icon-button
-                routerLink="/profile">
-                @if(profile.github_avatar) {
-                  <img id="profile-icon" matChipAvatar [src]="profile.github_avatar" alt="GitHub Avatar"/>
-                } @else {
-                  <mat-icon class="account-circle-icon" matChipAvatar>account_circle</mat-icon>
-                }
-              </button>
-            } @else {
-              <a class="profile-chip-container" href="/auth?continue_to={{ router.url }}">
-                <mat-chip class="profile-chip">
-                  <mat-icon matChipAvatar>account_circle</mat-icon>
-                  Sign In
-                </mat-chip>
-              </a>
-            }
+              type="button"
+              mat-icon-button
+              routerLink="/profile">
+              @if (profile.github_avatar) {
+                <img
+                  id="profile-icon"
+                  matChipAvatar
+                  [src]="profile.github_avatar"
+                  alt="GitHub Avatar" />
+              } @else {
+                <mat-icon class="account-circle-icon" matChipAvatar
+                  >account_circle</mat-icon
+                >
+              }
+            </button>
+          } @else {
+            <a
+              class="profile-chip-container"
+              href="/auth?continue_to={{ router.url }}">
+              <mat-chip class="profile-chip">
+                <mat-icon matChipAvatar>account_circle</mat-icon>
+                Sign In
+              </mat-chip>
+            </a>
+          }
         </div>
       </div>
     </mat-toolbar>
-    <mat-progress-bar
-      *ngIf="navigationService.loading$ | async"
-      mode="query"
-    ></mat-progress-bar>
-    <mat-progress-bar
-      *ngIf="navigationService.sending$ | async"
-      mode="indeterminate"
-    ></mat-progress-bar>
+    @if (navigationService.loading$ | async) {
+      <mat-progress-bar mode="query"></mat-progress-bar>
+    }
+    @if (navigationService.sending$ | async) {
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    }
     <div>
       <router-outlet></router-outlet>
     </div>

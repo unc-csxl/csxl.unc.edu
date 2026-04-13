@@ -10,22 +10,21 @@
         </mat-card-header>
         <mat-card-content>
           @if (subtitle) {
-          <p>{{ subtitle }}</p>
+            <p>{{ subtitle }}</p>
           }
           <p>{{ body }}</p>
         </mat-card-content>
       </div>
     </div>
     @if (bottomActionButton) {
-    <mat-card-actions>
-      <button
-        mat-stroked-button
-        [color]="this.type === 'info' ? 'secondary' : 'tertiary'"
-        (click)="buttonPressed()">
-        {{ actionButtonText }}
-      </button>
-    </mat-card-actions>
-
+      <mat-card-actions>
+        <button
+          mat-stroked-button
+          [color]="this.type === 'info' ? 'secondary' : 'tertiary'"
+          (click)="buttonPressed()">
+          {{ actionButtonText }}
+        </button>
+      </mat-card-actions>
     }
   </div>
 </mat-pane>

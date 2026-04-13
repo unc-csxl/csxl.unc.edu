@@ -1,27 +1,31 @@
-<div class="overflow-x-auto max-w-full">
+<div class="max-w-full overflow-x-auto">
   <div class="table-responsive">
-    <table class="border-collapse w-full ml-[10px] whitespace-nowrap">
+    <table class="ml-[10px] w-full border-collapse whitespace-nowrap">
       <tr>
         <th></th>
-        @for(timeSlot of timeSlots; track timeSlot) {
-        <th [innerHTML]="timeSlot" class="text-xs"></th>
+        @for (timeSlot of timeSlots; track timeSlot) {
+          <th [innerHTML]="timeSlot" class="text-xs"></th>
         }
       </tr>
       @for (record of reservationsMap | keyvalue; track record.key) {
-      <tr>
-        <th class="h-[40px] w-[30px]">{{ record.key }}
-          <br><span class= "text-sm font-light"> {{"# seats: "}}{{capacityMap[record.key]}}
-          <br>{{roomTypeMap[record.key]}}</span>
-        </th>
-        <td
-          class="h-[40px] w-[30px]"
-          *ngFor="let timeSlot of record.value; let j = index"
-          [style.background]="cellPropertyMap[timeSlot].backgroundColor"
-          (click)="
-            !cellPropertyMap[timeSlot].isDisabled &&
-              toggleCellColor(record.key, j)
-          "></td>
-      </tr>
+        <tr>
+          <th class="h-[40px] w-[30px]">
+            {{ record.key }} <br /><span class="text-sm font-light">
+              {{ '# seats: ' }}{{ capacityMap[record.key] }} <br />{{
+                roomTypeMap[record.key]
+              }}</span
+            >
+          </th>
+          @for (timeSlot of record.value; track timeSlot; let j = $index) {
+            <td
+              class="h-[40px] w-[30px]"
+              [style.background]="cellPropertyMap[timeSlot].backgroundColor"
+              (click)="
+                !cellPropertyMap[timeSlot].isDisabled &&
+                  toggleCellColor(record.key, j)
+              "></td>
+          }
+        </tr>
       }
     </table>
   </div>

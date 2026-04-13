@@ -11,10 +11,10 @@ import { Component, Input } from '@angular/core';
 import { AvailabeRoom } from '../../signage.model';
 
 @Component({
-    selector: 'rooms',
-    templateUrl: './rooms.widget.html',
-    styleUrls: ['./rooms.widget.css'],
-    standalone: false
+  selector: 'rooms',
+  templateUrl: './rooms.widget.html',
+  styleUrls: ['./rooms.widget.css'],
+  standalone: false
 })
 export class RoomsWidget {
   @Input() availableRooms: AvailabeRoom[] = [];

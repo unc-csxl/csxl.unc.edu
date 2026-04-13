@@ -3,28 +3,25 @@
   <!-- Update Term Card -->
   <mat-pane appearance="outlined">
     <mat-card-header>
-      <mat-card-title *ngIf="this.termId === 'new'; else update">
-        Create Term
-      </mat-card-title>
-      <ng-template #update>
+      @if (this.termId === 'new') {
+        <mat-card-title> Create Term </mat-card-title>
+      } @else {
         <mat-card-title> Update Term </mat-card-title>
-      </ng-template>
+      }
     </mat-card-header>
     <mat-card-content class="flex! flex-col! gap-3! pt-4!">
       <!-- Term ID Field -->
-      <mat-form-field
-        class="w-full"
-        appearance="outline"
-        color="accent"
-        *ngIf="termId === 'new'">
-        <mat-label>Term ID</mat-label>
-        <input
-          matInput
-          placeholder=""
-          formControlName="id"
-          name="id"
-          required />
-      </mat-form-field>
+      @if (termId === 'new') {
+        <mat-form-field class="w-full" appearance="outline" color="accent">
+          <mat-label>Term ID</mat-label>
+          <input
+            matInput
+            placeholder=""
+            formControlName="id"
+            name="id"
+            required />
+        </mat-form-field>
+      }
       <!-- Term Name Field -->
       <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Term Name</mat-label>
@@ -80,7 +77,7 @@
           required />
       </mat-form-field>
     </mat-card-content>
-    <mat-card-actions class="flex! flex-row! justify-end! mb-2!">
+    <mat-card-actions class="mb-2! flex! flex-row! justify-end!">
       <div class="flex flex-row gap-2">
         <button mat-stroked-button routerLink="/academics/admin/term">
           Cancel

@@ -9,26 +9,30 @@
 /// Estimate a hue using the given previous and next hues.
 @function _estimate-hue($hues, $hue, $prev-hue, $next-hue) {
   $weight: math.div($next-hue - $hue, $next-hue - $prev-hue) * 100%;
-  @return color.mix(map.get($hues, $prev-hue), map.get($hues, $next-hue), $weight);
+  @return color.mix(
+    map.get($hues, $prev-hue),
+    map.get($hues, $next-hue),
+    $weight
+  );
 }
 
 $_neutral_hues: (
   0: #000000,
-  10: #1C1B1C,
+  10: #1c1b1c,
   20: #313030,
-  25: #3C3B3B,
+  25: #3c3b3b,
   30: #484646,
   35: #545252,
-  40: #605E5E,
+  40: #605e5e,
   50: #797676,
   60: #939090,
-  70: #ADAAAA,
-  80: #C9C6C5,
-  90: #E5E1E1,
-  95: #F4F0EF,
-  98: #FDF8F8,
-  99: #FFFBFF,
-  100: #FFFFFF,
+  70: #adaaaa,
+  80: #c9c6c5,
+  90: #e5e1e1,
+  95: #f4f0ef,
+  98: #fdf8f8,
+  99: #fffbff,
+  100: #ffffff
 );
 
 // Note: Color palettes are generated from the
@@ -49,61 +53,62 @@ $_palettes: (
     95: #f6eeff,
     98: #fdf7ff,
     99: #fffbff,
-    100: #ffffff,
+    100: #ffffff
   ),
   secondary: (
     0: #000000,
-    10: #1E192B,
-    20: #332D41,
-    25: #3E384D,
-    30: #4A4459,
-    35: #564F65,
-    40: #625B71,
-    50: #7B738B,
-    60: #958DA5,
-    70: #B0A7C0,
-    80: #CCC2DC,
-    90: #E8DEF9,
-    95: #F6EEFF,
-    98: #FDF7FF,
-    99: #FFFBFF,
-    100: #ffffff,
+    10: #1e192b,
+    20: #332d41,
+    25: #3e384d,
+    30: #4a4459,
+    35: #564f65,
+    40: #625b71,
+    50: #7b738b,
+    60: #958da5,
+    70: #b0a7c0,
+    80: #ccc2dc,
+    90: #e8def9,
+    95: #f6eeff,
+    98: #fdf7ff,
+    99: #fffbff,
+    100: #ffffff
   ),
   tertiary: (
     0: #000000,
-    10: #31101D,
-    20: #4A2532,
-    25: #56303D,
-    30: #633B48,
+    10: #31101d,
+    20: #4a2532,
+    25: #56303d,
+    30: #633b48,
     35: #704654,
-    40: #7E5260,
-    50: #996A78,
-    60: #B58392,
-    70: #D29DAC,
-    80: #EFB8C8,
-    90: #FFD9E3,
-    95: #FFECF0,
-    98: #FFF8F8,
-    99: #FFFBFF,
-    100: #ffffff,
+    40: #7e5260,
+    50: #996a78,
+    60: #b58392,
+    70: #d29dac,
+    80: #efb8c8,
+    90: #ffd9e3,
+    95: #ffecf0,
+    98: #fff8f8,
+    99: #fffbff,
+    100: #ffffff
   ),
   neutral: (
     0: #000000,
-    10: #1C1B1C,
+    10: #1c1b1c,
     20: #313030,
-    25: #3C3B3B,
+    25: #3c3b3b,
     30: #484646,
     35: #545252,
-    40: #605E5E,
+    40: #605e5e,
     50: #797676,
     60: #939090,
-    70: #ADAAAA,
-    80: #C9C6C5,
-    90: #E5E1E1,
-    95: #F4F0EF,
-    98: #FDF8F8,
-    99: #FEF7FF, // surface
-    100: #FFFFFF,
+    70: #adaaaa,
+    80: #c9c6c5,
+    90: #e5e1e1,
+    95: #f4f0ef,
+    98: #fdf8f8,
+    99: #fef7ff,
+    // surface
+    100: #ffffff,
     4: _estimate-hue($_neutral_hues, 4, 0, 10),
     6: _estimate-hue($_neutral_hues, 6, 0, 10),
     12: _estimate-hue($_neutral_hues, 12, 10, 20),
@@ -111,27 +116,28 @@ $_palettes: (
     22: _estimate-hue($_neutral_hues, 22, 20, 30),
     24: _estimate-hue($_neutral_hues, 24, 20, 30),
     87: _estimate-hue($_neutral_hues, 87, 80, 90),
-    92: #ece6f0, // surface-container-high
-    94: #F3EDF7,
+    92: #ece6f0,
+    // surface-container-high
+    94: #f3edf7,
     96: _estimate-hue($_neutral_hues, 96, 90, 100)
   ),
   neutral-variant: (
     0: #000000,
-    10: #1C1B1C,
+    10: #1c1b1c,
     20: #313031,
-    25: #3C3B3C,
+    25: #3c3b3c,
     30: #484647,
     35: #545253,
-    40: #605E5F,
+    40: #605e5f,
     50: #797677,
     60: #939091,
-    70: #AEAAAB,
-    80: #C9C5C6,
-    90: #E6E1E2,
-    95: #F4F0F0,
-    98: #FDF8F9,
-    99: #FFFBFF,
-    100: #ffffff,
+    70: #aeaaab,
+    80: #c9c5c6,
+    90: #e6e1e2,
+    95: #f4f0f0,
+    98: #fdf8f9,
+    99: #fffbff,
+    100: #ffffff
   ),
   error: (
     0: #000000,
@@ -149,30 +155,34 @@ $_palettes: (
     95: #ffedea,
     98: #fff8f7,
     99: #fffbff,
-    100: #ffffff,
-  ),
+    100: #ffffff
+  )
 );
 
 $_rest: (
   secondary: map.get($_palettes, secondary),
   neutral: map.get($_palettes, neutral),
-  neutral-variant: map.get($_palettes,  neutral-variant),
-  error: map.get($_palettes, error),
+  neutral-variant: map.get($_palettes, neutral-variant),
+  error: map.get($_palettes, error)
 );
 $_primary: map.merge(map.get($_palettes, primary), $_rest);
 $_tertiary: map.merge(map.get($_palettes, tertiary), $_rest);
 
-$light-theme: mat.define-theme((
-  color: (
-    theme-type: light,
-    primary: $_primary,
-    tertiary: $_tertiary
+$light-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+      primary: $_primary,
+      tertiary: $_tertiary
+    )
   )
-));
-$dark-theme: mat.define-theme((
-  color: (
-    theme-type: dark,
-    primary: $_primary,
-    tertiary: $_tertiary
+);
+$dark-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: dark,
+      primary: $_primary,
+      tertiary: $_tertiary
+    )
   )
-));
+);

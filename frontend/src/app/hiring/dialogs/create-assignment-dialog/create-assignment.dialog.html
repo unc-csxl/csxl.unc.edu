@@ -5,8 +5,8 @@
     <mat-form-field appearance="outline">
       <mat-label>Select Level</mat-label>
       <mat-select formControlName="level">
-        @for(level of hiringService.activeHiringlevels(); track level.id) {
-        <mat-option [value]="level">{{ level.title }}</mat-option>
+        @for (level of hiringService.activeHiringlevels(); track level.id) {
+          <mat-option [value]="level">{{ level.title }}</mat-option>
         }
       </mat-select>
     </mat-form-field>

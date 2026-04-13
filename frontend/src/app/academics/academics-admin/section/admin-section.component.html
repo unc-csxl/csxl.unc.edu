@@ -1,58 +1,67 @@
 <!-- HTML Structure of Admin Terms List -->
-<mat-card appearance="outlined" class="border-transparent! max-w-full! mr-8!">
+<mat-card appearance="outlined" class="mr-8! max-w-full! border-transparent!">
   <mat-card-content>
-    <div class="content" *ngIf="displayTerm() && sections(); else noTerm">
-      <div class="table-responsive">
-        <table mat-table [dataSource]="sections()">
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef>
-              <div class="flex items-center py-4">
-                Sections
-                <div class="flex flex-row ml-auto gap-3 items-center">
-                  <mat-form-field class="w-[260px] mb-[-1.25em]" appearance="outline">
-                    <mat-label>Select Term</mat-label>
-                    <mat-select
-                      [(ngModel)]="displayTermId"
-                      (selectionChange)="resetSections()">
-                      @for(term of terms; track term.id) {
-                      <mat-option [value]="term.id">{{ term.name }}</mat-option>
-                      }
-                    </mat-select>
-                  </mat-form-field>
-                  <button mat-stroked-button (click)="createSection()">
-                    Create
-                  </button>
+    @if (displayTerm() && sections()) {
+      <div class="content">
+        <div class="table-responsive">
+          <table mat-table [dataSource]="sections()">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="flex items-center py-4">
+                  Sections
+                  <div class="ml-auto flex flex-row items-center gap-3">
+                    <mat-form-field
+                      class="mb-[-1.25em] w-[260px]"
+                      appearance="outline">
+                      <mat-label>Select Term</mat-label>
+                      <mat-select
+                        [(ngModel)]="displayTermId"
+                        (selectionChange)="resetSections()">
+                        @for (term of terms; track term.id) {
+                          <mat-option [value]="term.id">{{
+                            term.name
+                          }}</mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                    <button mat-stroked-button (click)="createSection()">
+                      Create
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </th>
-            <td class="border-0! border-transparent! hover:cursor-pointer hover:bg-black/5! dark:hover:bg-white/5! hover:rounded-xl" mat-cell *matCellDef="let element">
-              <div class="flex flex-row w-full justify-between items-center" (click)="updateSection(element)">
-                <p>
-                  {{ element.subject_code }}
-                  {{ element.course_number }} - {{ element.section_number }}:
-                  {{ element.title }}
-                </p>
-                <div clas="ml-auto">
-                  <button
-                    mat-stroked-button
-                    (click)="deleteSection(element, $event)">
-                    Delete
-                  </button>
+              </th>
+              <td
+                class="border-0! border-transparent! hover:cursor-pointer hover:rounded-xl hover:bg-black/5! dark:hover:bg-white/5!"
+                mat-cell
+                *matCellDef="let element">
+                <div
+                  class="flex w-full flex-row items-center justify-between"
+                  (click)="updateSection(element)">
+                  <p>
+                    {{ element.subject_code }} {{ element.course_number }} -
+                    {{ element.section_number }}: {{ element.title }}
+                  </p>
+                  <div clas="ml-auto">
+                    <button
+                      mat-stroked-button
+                      (click)="deleteSection(element, $event)">
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-        </table>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
       </div>
-    </div>
-    <ng-template #noTerm>
+    } @else {
       <mat-card appearance="outlined">
         <mat-card-content>
           <p>Please make a term first!</p>
         </mat-card-content>
       </mat-card>
-    </ng-template>
+    }
   </mat-card-content>
 </mat-card>

@@ -1,41 +1,48 @@
 @if (queue()) {
-  <div class="flex flex-col lg:flex-row w-full">
-    <div class="flex flex-col w-full lg:w-[95%] h-auto lg:h-[85vh]">
-      <mat-card appearance="outlined" class="flex-auto lg:grow lg:shrink lg:basis-auto min-h-0 max-h-full! h-auto max-w-full! border-transparent!">
+  <div class="flex w-full flex-col lg:flex-row">
+    <div class="flex h-auto w-full flex-col lg:h-[85vh] lg:w-[95%]">
+      <mat-card
+        appearance="outlined"
+        class="h-auto max-h-full! min-h-0 max-w-full! flex-auto border-transparent! lg:shrink lg:grow lg:basis-auto">
         <mat-card-header class="flex! flex-col! gap-1!">
           <mat-card-title>{{ queue()!.type }} Event</mat-card-title>
           <p>
             {{ queue()!.start_time | date: 'shortTime' }} -
             {{ queue()!.end_time | date: 'shortTime' }}
           </p>
-          <mat-chip-set class="h-6! mt-0!">
-            <mat-chip class="h-6! mt-0!">{{ queue()!.queue.length }} waiting</mat-chip>
+          <mat-chip-set class="mt-0! h-6!">
+            <mat-chip class="mt-0! h-6!"
+              >{{ queue()!.queue.length }} waiting</mat-chip
+            >
           </mat-chip-set>
           <mat-divider class="mt-2!" />
         </mat-card-header>
-        <mat-card-content class="pt-2! overflow-y-scroll!">
+        <mat-card-content class="overflow-y-scroll! pt-2!">
           <mat-card-subtitle>Called Tickets</mat-card-subtitle>
           @if (!queue()!.active && queue()!.other_called.length === 0) {
-          <p>Nobody is being helped right now.</p>
-          } @if(queue()!.active) {
-          <called-ticket-card
-            [ticket]="queue()!.active!"
-            [calledByUser]="true"
-            (closeButtonPressed)="closeTicket($event)" />
-          } @for(ticket of queue()!.other_called; track ticket.id) {
-          <called-ticket-card
-            [ticket]="ticket"
-            (closeButtonPressed)="closeTicket($event)" />
+            <p>Nobody is being helped right now.</p>
+          }
+          @if (queue()!.active) {
+            <called-ticket-card
+              [ticket]="queue()!.active!"
+              [calledByUser]="true"
+              (closeButtonPressed)="closeTicket($event)" />
+          }
+          @for (ticket of queue()!.other_called; track ticket.id) {
+            <called-ticket-card
+              [ticket]="ticket"
+              (closeButtonPressed)="closeTicket($event)" />
           }
           <mat-card-subtitle>Queue</mat-card-subtitle>
           @if (queue()!.queue.length === 0) {
-          <p>There are no tickets in the queue.</p>
-          } @for(ticket of queue()!.queue; track ticket.id) {
-          <queued-ticket-card
-            [ticket]="ticket"
-            [disableCallTicketButton]="queue()!.active !== undefined"
-            (callButtonPressed)="callTicket($event)"
-            (cancelButtonPressed)="cancelTicket($event)" />
+            <p>There are no tickets in the queue.</p>
+          }
+          @for (ticket of queue()!.queue; track ticket.id) {
+            <queued-ticket-card
+              [ticket]="ticket"
+              [disableCallTicketButton]="queue()!.active !== undefined"
+              (callButtonPressed)="callTicket($event)"
+              (cancelButtonPressed)="cancelTicket($event)" />
           }
         </mat-card-content>
       </mat-card>
@@ -85,6 +92,5 @@
         </mat-card-content>
       </mat-card>
     </div>
-  -->
-  </div>
+  --></div>
 }

@@ -3,20 +3,20 @@
   <form [formGroup]="editAssignmentForm">
     <div class="row">
       <user-chip-list [users]="[data.assignment.user]" />
-      @if(getApplication()) {
-      <button
-        mat-button
-        class="primary-button"
-        (click)="openApplicationDialog()">
-        View Application
-      </button>
+      @if (getApplication()) {
+        <button
+          mat-button
+          class="primary-button"
+          (click)="openApplicationDialog()">
+          View Application
+        </button>
       }
     </div>
     <mat-form-field appearance="outline">
       <mat-label>Select Level</mat-label>
       <mat-select formControlName="level">
-        @for(level of hiringService.activeHiringlevels(); track level.id) {
-        <mat-option [value]="level">{{ level.title }}</mat-option>
+        @for (level of hiringService.activeHiringlevels(); track level.id) {
+          <mat-option [value]="level">{{ level.title }}</mat-option>
         }
       </mat-select>
     </mat-form-field>

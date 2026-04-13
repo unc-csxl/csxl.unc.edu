@@ -1,19 +1,19 @@
 <mat-pane>
   <mat-card-content>
-    <div class="flex flex-col md:flex-row w-full items-start md:items-center">
+    <div class="flex w-full flex-col items-start md:flex-row md:items-center">
       <div class="flex flex-col">
         <mat-card-title>Users and Roles</mat-card-title>
-        <div class="font-variant mt-2 flex flex-row flex-wrap gap-2 w-full">
+        <div class="font-variant mt-2 flex w-full flex-row flex-wrap gap-2">
           <p>
-            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
-              (facts$ | async)?.users
-            }}</span
+            <span
+              class="secondary-background h-[22px] w-8 rounded-full px-[6px] py-0.5 text-center text-sm leading-[24px] text-white"
+              >{{ (facts$ | async)?.users }}</span
             >&nbsp;users
           </p>
           <p>
-            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
-              (facts$ | async)?.roles
-            }}</span
+            <span
+              class="secondary-background h-[22px] w-8 rounded-full px-[6px] py-0.5 text-center text-sm leading-[24px] text-white"
+              >{{ (facts$ | async)?.roles }}</span
             >&nbsp;roles
           </p>
         </div>
@@ -31,32 +31,32 @@
 
 <mat-pane>
   <mat-card-content>
-    <div class="flex flex-col md:flex-row w-full items-start md:items-center">
+    <div class="flex w-full flex-col items-start md:flex-row md:items-center">
       <div class="flex flex-col">
         <mat-card-title>Academics</mat-card-title>
-        <div class="font-variant flex flex-row flex-wrap gap-2 w-full">
+        <div class="font-variant flex w-full flex-row flex-wrap gap-2">
           <p>
-            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
-              (facts$ | async)?.terms
-            }}</span
+            <span
+              class="secondary-background h-[22px] w-8 rounded-full px-[6px] py-0.5 text-center text-sm leading-[24px] text-white"
+              >{{ (facts$ | async)?.terms }}</span
             >&nbsp;terms
           </p>
           <p>
-            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
-              (facts$ | async)?.courses
-            }}</span
+            <span
+              class="secondary-background h-[22px] w-8 rounded-full px-[6px] py-0.5 text-center text-sm leading-[24px] text-white"
+              >{{ (facts$ | async)?.courses }}</span
             >&nbsp;courses
           </p>
           <p>
-            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
-              (facts$ | async)?.sections
-            }}</span
+            <span
+              class="secondary-background h-[22px] w-8 rounded-full px-[6px] py-0.5 text-center text-sm leading-[24px] text-white"
+              >{{ (facts$ | async)?.sections }}</span
             >&nbsp;sections
           </p>
           <p>
-            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
-              (facts$ | async)?.rooms
-            }}</span
+            <span
+              class="secondary-background h-[22px] w-8 rounded-full px-[6px] py-0.5 text-center text-sm leading-[24px] text-white"
+              >{{ (facts$ | async)?.rooms }}</span
             >&nbsp;rooms
           </p>
         </div>
@@ -75,14 +75,14 @@
 
 <mat-pane>
   <mat-card-content>
-    <div class="flex flex-col md:flex-row w-full items-start md:items-center">
+    <div class="flex w-full flex-col items-start md:flex-row md:items-center">
       <div class="flex flex-col">
         <mat-card-title>Organizations</mat-card-title>
-        <div class="font-variant flex flex-row flex-wrap gap-2 w-full">
+        <div class="font-variant flex w-full flex-row flex-wrap gap-2">
           <p>
-            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
-              (facts$ | async)?.organizations
-            }}</span
+            <span
+              class="secondary-background h-[22px] w-8 rounded-full px-[6px] py-0.5 text-center text-sm leading-[24px] text-white"
+              >{{ (facts$ | async)?.organizations }}</span
             >&nbsp;organizations
           </p>
         </div>
@@ -101,14 +101,14 @@
 
 <mat-pane>
   <mat-card-content>
-    <div class="flex flex-col md:flex-row w-full items-start md:items-center">
+    <div class="flex w-full flex-col items-start md:flex-row md:items-center">
       <div class="flex flex-col">
         <mat-card-title>Articles</mat-card-title>
-        <div class="font-variant flex flex-row flex-wrap gap-2 w-full">
+        <div class="font-variant flex w-full flex-row flex-wrap gap-2">
           <p>
-            <span class="text-sm leading-[24px] h-[22px] w-8 text-center px-[6px] py-0.5 rounded-full text-white secondary-background">{{
-              (facts$ | async)?.articles
-            }}</span
+            <span
+              class="secondary-background h-[22px] w-8 rounded-full px-[6px] py-0.5 text-center text-sm leading-[24px] text-white"
+              >{{ (facts$ | async)?.articles }}</span
             >&nbsp;articles
           </p>
         </div>

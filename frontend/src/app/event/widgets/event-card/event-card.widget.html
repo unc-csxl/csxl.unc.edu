@@ -1,34 +1,38 @@
-<mat-card appearance="outlined" class="ml-0 max-w-full! max-h-fit">
+<mat-card appearance="outlined" class="ml-0 max-h-fit max-w-full!">
   <mat-card-header>
-    <div class="flex flex-row w-full">
+    <div class="flex w-full flex-row">
       <div class="flex flex-col justify-center">
         <mat-card-title>{{ event.name }}</mat-card-title>
 
-        <div class="flex flex-row flex-wrap my-1 items-center gap-4">
-          <div class="flex flex-row gap-1 items-center">
+        <div class="my-1 flex flex-row flex-wrap items-center gap-4">
+          <div class="flex flex-row items-center gap-1">
             <mat-icon class="secondary-icon">schedule</mat-icon>
             <p>
               {{ event.start | date: 'shortTime' }} -
               {{ event.end | date: 'shortTime' }}
             </p>
           </div>
-          <div class="flex flex-row gap-1 items-center">
+          <div class="flex flex-row items-center gap-1">
             <mat-icon class="secondary-icon">location_on</mat-icon>
             <p>{{ event.location }}</p>
           </div>
-          @if(profile) {
-          <div class="flex flex-row gap-1 items-center">
-            <mat-icon class="secondary-icon">person_outline</mat-icon>
-            @if (event.override_registration_url) {
-            <p>External registration</p>
-            } @else if (event.registration_limit > 400) {
-            <p>Open to all</p>
-            } @else if (event.registration_limit === event.number_registered) {
-            <p><span class="tertiary-color">Filled</span></p>
-            } @else {
-            <p>{{ event.registration_limit - event.number_registered }} left</p>
-            }
-          </div>
+          @if (profile) {
+            <div class="flex flex-row items-center gap-1">
+              <mat-icon class="secondary-icon">person_outline</mat-icon>
+              @if (event.override_registration_url) {
+                <p>External registration</p>
+              } @else if (event.registration_limit > 400) {
+                <p>Open to all</p>
+              } @else if (
+                event.registration_limit === event.number_registered
+              ) {
+                <p><span class="tertiary-color">Filled</span></p>
+              } @else {
+                <p>
+                  {{ event.registration_limit - event.number_registered }} left
+                </p>
+              }
+            </div>
           }
         </div>
       </div>
@@ -38,7 +42,7 @@
     <mat-chip-set>
       <!-- Organization chip -->
       <mat-chip-row
-        class="hover:cursor-pointer h-7!"
+        class="h-7! hover:cursor-pointer"
         [routerLink]="'/organizations/' + event.organization_slug">
         <img
           class="rounded-full!"
@@ -48,51 +52,55 @@
       </mat-chip-row>
 
       @if (event.organizers.length > 0) {
-      <mat-divider class="ml2! my-[6px]!" [vertical]="true" />
+        <mat-divider class="ml2! my-[6px]!" [vertical]="true" />
       }
 
       <!-- Organizer Chips -->
       @for (organizer of event.organizers; track organizer.id) {
-      <mat-chip-row [routerLink]="'/profile/' + organizer.onyen" class="h-7!">
-        @if (organizer.github_avatar && organizer.github_avatar !== '') {
-        <img
-          class="rounded-full!"
-          matChipAvatar
-          [src]="organizer.github_avatar" />
-        }
-
-        {{ organizer.first_name }} {{ organizer.last_name }}
-      </mat-chip-row>
+        <mat-chip-row [routerLink]="'/profile/' + organizer.onyen" class="h-7!">
+          @if (organizer.github_avatar && organizer.github_avatar !== '') {
+            <img
+              class="rounded-full!"
+              matChipAvatar
+              [src]="organizer.github_avatar" />
+          }
+          {{ organizer.first_name }} {{ organizer.last_name }}
+        </mat-chip-row>
       }
     </mat-chip-set>
-    <p markdown class="my-2!">
-      {{ event.description }}
-    </p>
+    <p markdown class="my-2!">{{ event.description }}</p>
   </mat-card-content>
-  <mat-card-actions class="gap-2! mb-2! justify-end">
-    @if(profile) {
-    <button mat-stroked-button [routerLink]="'/events/' + event.id">
-      Details
-    </button>
-    @if(event.user_registration_type === registrationType.ATTENDEE &&
-    event.start > now) {
-    <button
-      mat-flat-button
-      class="tertiary-button"
-      (click)="unregisterForEvent()">
-      Unregister
-    </button>
-    } @else if(event.user_registration_type === registrationType.ORGANIZER) {
-    <button mat-flat-button [disabled]="true">Manage</button>
-    } @else if(event.registration_limit === event.number_registered &&
-    event.start > now) {
-    <button mat-flat-button [disabled]="true">Filled</button>
-    } @else if(event.start > now) { @if(event.override_registration_url) {
-    <button mat-flat-button (click)="registerForEvent()">
-      Register (External)
-    </button>
-    } @else {
-    <button mat-flat-button (click)="registerForEvent()">Register</button>
-    } } }
+  <mat-card-actions class="mb-2! justify-end gap-2!">
+    @if (profile) {
+      <button mat-stroked-button [routerLink]="'/events/' + event.id">
+        Details
+      </button>
+      @if (
+        event.user_registration_type === registrationType.ATTENDEE &&
+        event.start > now
+      ) {
+        <button
+          mat-flat-button
+          class="tertiary-button"
+          (click)="unregisterForEvent()">
+          Unregister
+        </button>
+      } @else if (event.user_registration_type === registrationType.ORGANIZER) {
+        <button mat-flat-button [disabled]="true">Manage</button>
+      } @else if (
+        event.registration_limit === event.number_registered &&
+        event.start > now
+      ) {
+        <button mat-flat-button [disabled]="true">Filled</button>
+      } @else if (event.start > now) {
+        @if (event.override_registration_url) {
+          <button mat-flat-button (click)="registerForEvent()">
+            Register (External)
+          </button>
+        } @else {
+          <button mat-flat-button (click)="registerForEvent()">Register</button>
+        }
+      }
+    }
   </mat-card-actions>
 </mat-card>

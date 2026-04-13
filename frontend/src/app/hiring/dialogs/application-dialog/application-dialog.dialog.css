@@ -4,14 +4,13 @@ mat-form-field {
 }
 
 .semibold {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .mat-divider {
-    margin-top: 16px;
-    margin-bottom: 16px;
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
-
 
 ::ng-deep youtube-player > *,
 ::ng-deep youtube-player iframe {

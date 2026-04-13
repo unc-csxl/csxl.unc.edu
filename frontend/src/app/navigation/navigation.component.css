@@ -84,7 +84,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between
+  justify-content: space-between;
 }
 
 .toolbar-left {
@@ -168,7 +168,9 @@ a {
     display: none !important;
   }
 
-  ::ng-deep .mat-mdc-standard-chip .mdc-evolution-chip__text-label:not(:only-child) {
+  ::ng-deep
+    .mat-mdc-standard-chip
+    .mdc-evolution-chip__text-label:not(:only-child) {
     padding-left: 12px;
   }
 }

@@ -1,16 +1,16 @@
-@if(event) {
-<mat-card appearance="outlined" [routerLink]="'/events/' + event.id">
-  <mat-card-content>
-    <div class="header-row">
-      <div class="header-column">
-        <mat-card-subtitle>{{ event.name }}</mat-card-subtitle>
-        <p>{{ event.location }}</p>
-        <p>
-          {{ event.start | date: 'shortDate' }} at
-          {{ event.start | date: 'shortTime' }}
-        </p>
+@if (event) {
+  <mat-card appearance="outlined" [routerLink]="'/events/' + event.id">
+    <mat-card-content>
+      <div class="header-row">
+        <div class="header-column">
+          <mat-card-subtitle>{{ event.name }}</mat-card-subtitle>
+          <p>{{ event.location }}</p>
+          <p>
+            {{ event.start | date: 'shortDate' }} at
+            {{ event.start | date: 'shortTime' }}
+          </p>
+        </div>
       </div>
-    </div>
-  </mat-card-content>
-</mat-card>
+    </mat-card-content>
+  </mat-card>
 }

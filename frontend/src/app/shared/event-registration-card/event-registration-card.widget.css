@@ -1,46 +1,44 @@
-
 .mat-mdc-card {
-    margin-left: 0px;
-    max-width: 100%;
+  margin-left: 0px;
+  max-width: 100%;
 }
 
 .mat-mdc-card:hover {
-    cursor: pointer !important;
+  cursor: pointer !important;
 }
 
 .header-row {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
 }
 
 .header-column {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
-    p {
-        margin-bottom: 0;
-    }
+  p {
+    margin-bottom: 0;
+  }
 }
 
 #chip-column {
-    align-items: end;
-    margin-left: auto;
+  align-items: end;
+  margin-left: auto;
 }
 
 .mat-mdc-chip {
-    height: 26px;
+  height: 26px;
 }
 
-
 mat-card-actions {
-    gap: 8px;
-    margin-bottom: 8px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 #organization-chip:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 ::ng-deep .profile-icon {
@@ -48,6 +46,6 @@ mat-card-actions {
 }
 
 mat-card-content {
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
 }

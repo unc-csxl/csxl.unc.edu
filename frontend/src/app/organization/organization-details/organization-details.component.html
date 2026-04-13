@@ -1,11 +1,10 @@
 <!-- HTML Structure of Organization Details Page -->
 
 @if (organization === undefined) {
-<organization-not-found-card />
+  <organization-not-found-card />
 } @else {
-<organization-details-info-card
-  [organization]="organization"
-  [profile]="profile"
-  [eventCreationPermissions]="eventCreationPermission$ | async"
-/>
+  <organization-details-info-card
+    [organization]="organization"
+    [profile]="profile"
+    [eventCreationPermissions]="eventCreationPermission$ | async" />
 }

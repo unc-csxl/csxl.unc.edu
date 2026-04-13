@@ -2,14 +2,19 @@
 <mat-pane>
   <mat-card-header>
     @if (profile.github_avatar) {
-    <img mat-card-avatar class="size-10! leading-10! bg-[#4786c6]! rounded! text-center!" [src]="profile.github_avatar" />
+      <img
+        mat-card-avatar
+        class="size-10! rounded! bg-[#4786c6]! text-center! leading-10!"
+        [src]="profile.github_avatar" />
     } @else if (profile.first_name && profile.last_name) {
-    <p mat-card-avatar class="size-10! leading-10! rounded-full! text-center! secondary-background mb-0!">
-      {{ profile.first_name.charAt(0) }}{{ profile.last_name.charAt(0) }}
-    </p>
+      <p
+        mat-card-avatar
+        class="secondary-background mb-0! size-10! rounded-full! text-center! leading-10!">
+        {{ profile.first_name.charAt(0) }}{{ profile.last_name.charAt(0) }}
+      </p>
     }
 
-    <div class="flex flex-row flex-wrap items-center gap-2 ml-2">
+    <div class="ml-2 flex flex-row flex-wrap items-center gap-2">
       <mat-card-title>
         {{ profile.first_name }} {{ profile.last_name }}
       </mat-card-title>
@@ -21,68 +26,69 @@
     </div>
   </mat-card-header>
   <mat-card-content>
-    <div class="flex flex-row flex-wrap mt-1 items-center mb-3 ml-3 gap-1">
-      <div class="flex flex-row gap-1 items-center">
+    <div class="mt-1 mb-3 ml-3 flex flex-row flex-wrap items-center gap-1">
+      <div class="flex flex-row items-center gap-1">
         <mat-icon class="secondary-icon">mail</mat-icon>
         <p>{{ profile.email }}</p>
       </div>
       @if (profile.website) {
-      <div class="flex flex-row gap-1 items-center">
-        <mat-icon class="ml-[6px]! secondary-icon">link</mat-icon>
-        <p>
-          <a class="font-secondary" [href]="profile.website" target="_blank"
-            >Personal Website</a
-          >
-        </p>
-      </div>
-      } @if (profile.linkedin) {
-      <div class="flex flex-row gap-1 items-center">
-        <mat-icon
-          class="ml-[6px]! secondary-icon size-[22px]"
-          id="linkedin-icon"
-          svgIcon="linkedin" />
-        <p>
-          <a class="font-secondary" [href]="profile.linkedin" target="_blank"
-            >LinkedIn</a
-          >
-        </p>
-      </div>
+        <div class="flex flex-row items-center gap-1">
+          <mat-icon class="secondary-icon ml-[6px]!">link</mat-icon>
+          <p>
+            <a class="font-secondary" [href]="profile.website" target="_blank"
+              >Personal Website</a
+            >
+          </p>
+        </div>
       }
-      <div class="flex flex-row gap-1 items-center">
+      @if (profile.linkedin) {
+        <div class="flex flex-row items-center gap-1">
+          <mat-icon
+            class="secondary-icon ml-[6px]! size-[22px]"
+            id="linkedin-icon"
+            svgIcon="linkedin" />
+          <p>
+            <a class="font-secondary" [href]="profile.linkedin" target="_blank"
+              >LinkedIn</a
+            >
+          </p>
+        </div>
+      }
+      <div class="flex flex-row items-center gap-1">
         <mat-icon
-          class="ml-[6px]! secondary-icon"
+          class="secondary-icon ml-[6px]!"
           id="github-icon"
           svgIcon="github" />
         @if (profile.github) {
-        <p>
-          <a
-            class="font-secondary mr-1"
-            href="https://github.com/{{ profile.github }}">
-            &#64;{{ profile.github }}
-          </a>
-        </p>
-        <button
-          class="font-secondary height-5 px-0.5 font-medium underline"
-          mat-button
-          (click)="unlinkGitHub()">
-          Unlink
-        </button>
+          <p>
+            <a
+              class="font-secondary mr-1"
+              href="https://github.com/{{ profile.github }}">
+              &#64;{{ profile.github }}
+            </a>
+          </p>
+          <button
+            class="font-secondary height-5 px-0.5 font-medium underline"
+            mat-button
+            (click)="unlinkGitHub()">
+            Unlink
+          </button>
         } @else {
-        <button
-          class="font-secondary height-5 px-0.5 font-normal"
-          mat-button
-          (click)="linkWithGitHub()">
-          Link with GitHub
-        </button>
+          <button
+            class="font-secondary height-5 px-0.5 font-normal"
+            mat-button
+            (click)="linkWithGitHub()">
+            Link with GitHub
+          </button>
         }
       </div>
     </div>
     <mat-divider class="my-4!" />
     <mat-card-subtitle class="my-1!">Profile Bio</mat-card-subtitle>
     @if (profile.bio) {
-    <p markdown>{{ profile.bio! }}</p>
+      <p markdown>{{ profile.bio! }}</p>
     } @else {
-    <p>User does not have a bio.</p>
+      <p>User does not have a bio.</p>
     }
   </mat-card-content>
   <mat-card-actions class="flex! flex-row-reverse!">
@@ -98,22 +104,17 @@
   </mat-card-header>
   <mat-card-content>
     <mat-list class="flex! flex-col!">
-      <div class="flex flex-row items-center w-full mb-4">
+      <div class="mb-4 flex w-full flex-row items-center">
         <mat-icon class="mr-4!" matListItemIcon>handshake</mat-icon>
         <div matListItemTitle>Community Agreement</div>
-        <button
-          class="ml-auto"
-          mat-button
-          (click)="openAgreementDialog()">
+        <button class="ml-auto" mat-button (click)="openAgreementDialog()">
           View
         </button>
       </div>
-      <div class="flex flex-row items-center w-full">
+      <div class="flex w-full flex-row items-center">
         <mat-icon class="mr-4!" matListItemIcon>key</mat-icon>
         <div matListItemTitle>Bearer Token</div>
-        <button class="ml-auto" mat-button (click)="copyToken()">
-          Copy
-        </button>
+        <button class="ml-auto" mat-button (click)="copyToken()">Copy</button>
       </div>
     </mat-list>
   </mat-card-content>

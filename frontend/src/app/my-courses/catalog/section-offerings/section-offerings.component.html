@@ -1,16 +1,15 @@
-<mat-card appearance="outlined" class="border-transparent! max-w-full! mr-8!">
+<mat-card appearance="outlined" class="mr-8! max-w-full! border-transparent!">
   <mat-card-header class="items-center!">
     <mat-card-title>
-      {{ displayTerm() ? displayTerm()!.name + ' ' : '' }}
-      Course Offerings
+      {{ displayTerm() ? displayTerm()!.name + ' ' : '' }} Course Offerings
     </mat-card-title>
-    <mat-form-field class="ml-auto w-[260px] mb-[-1.25em]" appearance="outline">
+    <mat-form-field class="mb-[-1.25em] ml-auto w-[260px]" appearance="outline">
       <mat-label>Select Term</mat-label>
       <mat-select
         [(ngModel)]="displayTermId"
         (selectionChange)="resetSections()">
-        @for(term of terms; track term.id) {
-        <mat-option [value]="term.id">{{ term.name }}</mat-option>
+        @for (term of terms; track term.id) {
+          <mat-option [value]="term.id">{{ term.name }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
@@ -21,8 +20,7 @@
         <ng-container matColumnDef="code">
           <th mat-header-cell *matHeaderCellDef>Code</th>
           <td class="border-b-0!" mat-cell *matCellDef="let element">
-            {{ element.subject_code }}
-            {{ element.course_number }} -
+            {{ element.subject_code }} {{ element.course_number }} -
             {{ element.section_number }}
           </td>
         </ng-container>
@@ -53,8 +51,10 @@
         <ng-container matColumnDef="enrollment">
           <th mat-header-cell *matHeaderCellDef>Enrolled</th>
           <td class="border-b-0!" mat-cell *matCellDef="let element">
-            @if (element.total_seats <= 0) { Unknown } @else {
-            {{ element.enrolled }} / {{ element.total_seats }}
+            @if (element.total_seats <= 0) {
+              Unknown
+            } @else {
+              {{ element.enrolled }} / {{ element.total_seats }}
             }
           </td>
         </ng-container>
@@ -72,12 +72,12 @@
                     expandedElement === element ? null : element;
                   $event.stopPropagation()
                 ">
-                <mat-icon *ngIf="expandedElement === element"
-                  >keyboard_arrow_up</mat-icon
-                >
-                <mat-icon *ngIf="expandedElement !== element"
-                  >keyboard_arrow_down</mat-icon
-                >
+                @if (expandedElement === element) {
+                  <mat-icon>keyboard_arrow_up</mat-icon>
+                }
+                @if (expandedElement !== element) {
+                  <mat-icon>keyboard_arrow_down</mat-icon>
+                }
               </button>
             </div>
           </td>
@@ -93,9 +93,7 @@
               [@detailExpand]="
                 element === expandedElement ? 'expanded' : 'collapsed'
               ">
-              <p class="py-3">
-                {{ element.description }}
-              </p>
+              <p class="py-3">{{ element.description }}</p>
             </div>
           </td>
         </ng-container>
@@ -106,9 +104,7 @@
           *matRowDef="let row; columns: columnsToDisplayWithExpand"
           class="example-element-row"
           [class.example-expanded-row]="expandedElement === row"
-          (click)="
-            expandedElement = expandedElement === row ? null : row
-          "></tr>
+          (click)="expandedElement = expandedElement === row ? null : row"></tr>
         <tr
           mat-row
           *matRowDef="let row; columns: ['expandedDetail']"

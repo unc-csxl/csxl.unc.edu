@@ -1,5 +1,5 @@
 <div>
-  <mat-card class="border-transparent! max-w-full! mr-8!" appearance="outlined">
+  <mat-card class="mr-8! max-w-full! border-transparent!" appearance="outlined">
     <mat-card-header class="mb-4!">
       <mat-card-title>Reserve a Drop-in at the Welcome Desk</mat-card-title>
     </mat-card-header>
@@ -20,144 +20,163 @@
         [maxSelected]="1"
         [users]="welcomeDeskReservationSelection"
         (usersChanged)="onUsersChanged($event)"></user-lookup>
-      @if (welcomeDeskReservationSelection.length > 0) { @if (status()) {
-      <coworking-dropin-availability-card
-        [seat_availability]="status().seat_availability"
-        (seatsSelected)="onWalkinSeatSelection($event)" />
-      } }
+      @if (welcomeDeskReservationSelection.length > 0) {
+        @if (status()) {
+          <coworking-dropin-availability-card
+            [seat_availability]="status().seat_availability"
+            (seatsSelected)="onWalkinSeatSelection($event)" />
+        }
+      }
     </mat-card-content>
   </mat-card>
 </div>
 
-@if (upcomingReservations()) { @if(upcomingReservations().length > 0) {
-<mat-card class="border-transparent! max-w-full! mr-8!" appearance="outlined">
-  <mat-card-header class="mb-4!">
-    <mat-card-title>Upcoming Reservations</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <div class="table-responsive">
-      <table mat-table [dataSource]="upcomingReservations()">
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef>ID</th>
-          <td mat-cell *matCellDef="let reservation">{{ reservation.id }}</td>
-        </ng-container>
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
-          <td mat-cell *matCellDef="let reservation">
-            {{ reservation.users[0].first_name }}
-            {{ reservation.users[0].last_name }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="start">
-          <th mat-header-cell *matHeaderCellDef>Start</th>
-          <td mat-cell *matCellDef="let reservation">
-            {{ reservation.start | date: 'shortTime' }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="end">
-          <th mat-header-cell *matHeaderCellDef>End</th>
-          <td mat-cell *matCellDef="let reservation">
-            {{ reservation.end | date: 'shortTime' }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="seat">
-          <th mat-header-cell *matHeaderCellDef>Seat</th>
-          <td mat-cell *matCellDef="let reservation">
-            {{ reservation.seats[0].title }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let reservation">
-            <button
-              mat-flat-button
-              (click)="this.ambassadorService.checkIn(reservation)">
-              Check-in
-            </button>
-            <button
-              mat-flat-button
-              class="tertiary-button ml-3"
-              (click)="this.ambassadorService.cancel(reservation)">
-              Cancel
-            </button>
-          </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-        <tr
-          mat-row
-          *matRowDef="let reservation; columns: columnsToDisplay"></tr>
-      </table>
-    </div>
-  </mat-card-content>
-</mat-card>
-} @else {
-<mat-card class="border-transparent! max-w-full! mr-8!" appearance="outlined">
-  <mat-card-header class="mb-4!">
-    <mat-card-title>Upcoming Reservations</mat-card-title>
-  </mat-card-header>
-  <mat-card-content><p>No upcoming reservations.</p></mat-card-content>
-</mat-card>
-} } @if (activeReservations()) { @if(activeReservations().length > 0) {
-<mat-card class="border-transparent! max-w-full! mr-8!" appearance="outlined">
-  <mat-card-header>
-    <mat-card-title>Active Reservations</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <div class="table-responsive">
-      <table mat-table [dataSource]="activeReservations()">
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef>ID</th>
-          <td mat-cell *matCellDef="let reservation">{{ reservation.id }}</td>
-        </ng-container>
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
-          <td mat-cell *matCellDef="let reservation">
-            {{ reservation.users[0].first_name }}
-            {{ reservation.users[0].last_name }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="start">
-          <th mat-header-cell *matHeaderCellDef>Start</th>
-          <td mat-cell *matCellDef="let reservation">
-            {{ reservation.start | date: 'shortTime' }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="end">
-          <th mat-header-cell *matHeaderCellDef>End</th>
-          <td mat-cell *matCellDef="let reservation">
-            {{ reservation.end | date: 'shortTime' }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="seat">
-          <th mat-header-cell *matHeaderCellDef>Seat</th>
-          <td mat-cell *matCellDef="let reservation">
-            {{ reservation.seats[0].title }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let reservation">
-            <button
-              mat-flat-button
-              class="tertiary-button"
-              (click)="this.ambassadorService.checkOut(reservation)">
-              Check-out</button
-            >&nbsp;
-          </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-        <tr
-          mat-row
-          *matRowDef="let reservation; columns: columnsToDisplay"></tr>
-      </table>
-    </div>
-  </mat-card-content>
-</mat-card>
-} @else {
-<mat-card class="border-transparent! max-w-full! mr-8!" appearance="outlined">
-  <mat-card-header class="mb-4!">
-    <mat-card-title>Active Reservations</mat-card-title>
-  </mat-card-header>
-  <mat-card-content><p>It's lonely in here.</p></mat-card-content>
-</mat-card>
-} }
+@if (upcomingReservations()) {
+  @if (upcomingReservations().length > 0) {
+    <mat-card
+      class="mr-8! max-w-full! border-transparent!"
+      appearance="outlined">
+      <mat-card-header class="mb-4!">
+        <mat-card-title>Upcoming Reservations</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="table-responsive">
+          <table mat-table [dataSource]="upcomingReservations()">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>ID</th>
+              <td mat-cell *matCellDef="let reservation">
+                {{ reservation.id }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Name</th>
+              <td mat-cell *matCellDef="let reservation">
+                {{ reservation.users[0].first_name }}
+                {{ reservation.users[0].last_name }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="start">
+              <th mat-header-cell *matHeaderCellDef>Start</th>
+              <td mat-cell *matCellDef="let reservation">
+                {{ reservation.start | date: 'shortTime' }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="end">
+              <th mat-header-cell *matHeaderCellDef>End</th>
+              <td mat-cell *matCellDef="let reservation">
+                {{ reservation.end | date: 'shortTime' }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="seat">
+              <th mat-header-cell *matHeaderCellDef>Seat</th>
+              <td mat-cell *matCellDef="let reservation">
+                {{ reservation.seats[0].title }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let reservation">
+                <button
+                  mat-flat-button
+                  (click)="this.ambassadorService.checkIn(reservation)">
+                  Check-in
+                </button>
+                <button
+                  mat-flat-button
+                  class="tertiary-button ml-3"
+                  (click)="this.ambassadorService.cancel(reservation)">
+                  Cancel
+                </button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+            <tr
+              mat-row
+              *matRowDef="let reservation; columns: columnsToDisplay"></tr>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    <mat-card
+      class="mr-8! max-w-full! border-transparent!"
+      appearance="outlined">
+      <mat-card-header class="mb-4!">
+        <mat-card-title>Upcoming Reservations</mat-card-title>
+      </mat-card-header>
+      <mat-card-content><p>No upcoming reservations.</p></mat-card-content>
+    </mat-card>
+  }
+}
+@if (activeReservations()) {
+  @if (activeReservations().length > 0) {
+    <mat-card
+      class="mr-8! max-w-full! border-transparent!"
+      appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>Active Reservations</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="table-responsive">
+          <table mat-table [dataSource]="activeReservations()">
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>ID</th>
+              <td mat-cell *matCellDef="let reservation">
+                {{ reservation.id }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Name</th>
+              <td mat-cell *matCellDef="let reservation">
+                {{ reservation.users[0].first_name }}
+                {{ reservation.users[0].last_name }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="start">
+              <th mat-header-cell *matHeaderCellDef>Start</th>
+              <td mat-cell *matCellDef="let reservation">
+                {{ reservation.start | date: 'shortTime' }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="end">
+              <th mat-header-cell *matHeaderCellDef>End</th>
+              <td mat-cell *matCellDef="let reservation">
+                {{ reservation.end | date: 'shortTime' }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="seat">
+              <th mat-header-cell *matHeaderCellDef>Seat</th>
+              <td mat-cell *matCellDef="let reservation">
+                {{ reservation.seats[0].title }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Actions</th>
+              <td mat-cell *matCellDef="let reservation">
+                <button
+                  mat-flat-button
+                  class="tertiary-button"
+                  (click)="this.ambassadorService.checkOut(reservation)">
+                  Check-out</button
+                >&nbsp;
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+            <tr
+              mat-row
+              *matRowDef="let reservation; columns: columnsToDisplay"></tr>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    <mat-card
+      class="mr-8! max-w-full! border-transparent!"
+      appearance="outlined">
+      <mat-card-header class="mb-4!">
+        <mat-card-title>Active Reservations</mat-card-title>
+      </mat-card-header>
+      <mat-card-content><p>It's lonely in here.</p></mat-card-content>
+    </mat-card>
+  }
+}

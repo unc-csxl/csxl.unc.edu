@@ -1,4 +1,4 @@
-<mat-card appearance="outlined" class="border-transparent! max-w-full! mr-8!">
+<mat-card appearance="outlined" class="mr-8! max-w-full! border-transparent!">
   <mat-card-header>
     <mat-card-title>Role: {{ role.name }}</mat-card-title>
   </mat-card-header>
@@ -70,7 +70,7 @@
               {{ user.first_name }} {{ user.last_name }}
             </td>
             <td mat-footer-cell *matFooterCellDef>
-              @if(selectedUser) {
+              @if (selectedUser) {
                 <div class="p-4">
                   <button
                     mat-form-field
@@ -92,11 +92,11 @@
                   <mat-autocomplete
                     #auto="matAutocomplete"
                     (optionSelected)="onOptionSelected($event)">
-                    <mat-option
-                      *ngFor="let option of filteredUsers$ | async"
-                      [value]="option">
-                      {{ option.first_name }} {{ option.last_name }}
-                    </mat-option>
+                    @for (option of filteredUsers$ | async; track option) {
+                      <mat-option [value]="option">
+                        {{ option.first_name }} {{ option.last_name }}
+                      </mat-option>
+                    }
                   </mat-autocomplete>
                 </mat-form-field>
               }

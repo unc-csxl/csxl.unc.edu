@@ -3,23 +3,23 @@
   <form [formGroup]="createAssignmentForm">
     <div class="row">
       <user-chip-list [users]="[user]" />
-      @if(getApplication()?.application?.comp_227) {
-        <mat-chip>{{getApplication()?.application?.comp_227}} </mat-chip>
+      @if (getApplication()?.application?.comp_227) {
+        <mat-chip>{{ getApplication()?.application?.comp_227 }} </mat-chip>
       }
-      @if(getApplication()) {
-      <button
-        mat-button
-        class="primary-button"
-        (click)="openApplicationDialog()">
-        View Application
-      </button>
+      @if (getApplication()) {
+        <button
+          mat-button
+          class="primary-button"
+          (click)="openApplicationDialog()">
+          View Application
+        </button>
       }
     </div>
     <mat-form-field appearance="outline">
       <mat-label>Select Level</mat-label>
       <mat-select formControlName="level">
-        @for(level of hiringService.activeHiringlevels(); track level.id) {
-        <mat-option [value]="level">{{ level.title }}</mat-option>
+        @for (level of hiringService.activeHiringlevels(); track level.id) {
+          <mat-option [value]="level">{{ level.title }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
@@ -57,26 +57,42 @@
     @if (conflictCheck.assignments.length > 0) {
       <h2>Student Already Assigned to:</h2>
       <ul>
-        @for(assignment of conflictCheck.assignments; track assignment.id){
-          <ul>{{ assignment.instructors }}</ul>
+        @for (assignment of conflictCheck.assignments; track assignment.id) {
+          <ul>
+            {{
+              assignment.instructors
+            }}
+          </ul>
         }
       </ul>
     }
-
     @if (conflictCheck.priorities.length > 1) {
       <h2>Potential Conflicts:</h2>
       <table class="priorities">
         <thead>
-          <tr><th>Student Priority</th><th>Instructor Priority</th><th>Course</th></tr>
+          <tr>
+            <th>Student Priority</th>
+            <th>Instructor Priority</th>
+            <th>Course</th>
+          </tr>
         </thead>
         <tbody>
-        @for(priority of conflictCheck.priorities; track priority.course_site_id) {
-          <tr [ngClass]="{'selected': priority.course_site_id === data.courseSite.course_site_id}">
-            <td class="studentPriority">{{ priority.student_priority }}</td>
-            <td class="instructorPriority">{{ priority.instructor_priority }}</td>
-            <td class="courseTitle">{{ priority.course_title }}</td>
-          </tr>
-        }
+          @for (
+            priority of conflictCheck.priorities;
+            track priority.course_site_id
+          ) {
+            <tr
+              [ngClass]="{
+                selected:
+                  priority.course_site_id === data.courseSite.course_site_id
+              }">
+              <td class="studentPriority">{{ priority.student_priority }}</td>
+              <td class="instructorPriority">
+                {{ priority.instructor_priority }}
+              </td>
+              <td class="courseTitle">{{ priority.course_title }}</td>
+            </tr>
+          }
         </tbody>
       </table>
     }

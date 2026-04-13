@@ -1,4 +1,4 @@
-<mat-card appearance="outlined" class="border-transparent! max-w-full! mr-8!">
+<mat-card appearance="outlined" class="mr-8! max-w-full! border-transparent!">
   <form>
     <mat-card-header>
       <mat-card-title>Course Settings</mat-card-title>
@@ -17,18 +17,19 @@
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Select Course Sections</mat-label>
         <mat-chip-grid #chipGrid>
-          @for (sectionId of selectedSections(); track sectionId) { @if
-          (sectionForId(sectionId)) {
-          <mat-chip-row (removed)="remove(sectionForId(sectionId)!)">
-            {{ sectionForId(sectionId)!.subject_code }}
-            {{ sectionForId(sectionId)!.course_number }}-{{
-              sectionForId(sectionId)!.section_number
-            }}
-            <button matChipRemove>
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip-row>
-          } }
+          @for (sectionId of selectedSections(); track sectionId) {
+            @if (sectionForId(sectionId)) {
+              <mat-chip-row (removed)="remove(sectionForId(sectionId)!)">
+                {{ sectionForId(sectionId)!.subject_code }}
+                {{ sectionForId(sectionId)!.course_number }}-{{
+                  sectionForId(sectionId)!.section_number
+                }}
+                <button matChipRemove>
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-chip-row>
+            }
+          }
         </mat-chip-grid>
         <input
           name="currentSection"
@@ -40,14 +41,17 @@
         <mat-autocomplete
           #auto="matAutocomplete"
           (optionSelected)="selected($event)">
-          @if(selectedTerm.value) { @for (section of allSections(); track
-          section.id) { @if (!selectedSections().includes(section.id)) {
-          <mat-option [value]="section.id"
-            >{{ section.subject_code }} {{ section.course_number }}-{{
-              section.section_number
-            }}</mat-option
-          >
-          } } }
+          @if (selectedTerm.value) {
+            @for (section of allSections(); track section.id) {
+              @if (!selectedSections().includes(section.id)) {
+                <mat-option [value]="section.id"
+                  >{{ section.subject_code }} {{ section.course_number }}-{{
+                    section.section_number
+                  }}</mat-option
+                >
+              }
+            }
+          }
         </mat-autocomplete>
       </mat-form-field>
       <!-- GTA Field -->
@@ -58,10 +62,10 @@
       <user-lookup
         label="Undergraduate Teaching Assistants"
         [users]="utas"></user-lookup>
-        
+
       <mat-card-title>Office Hours Settings</mat-card-title>
-  
-      <mat-form-field appearance="outline" color="accent" class="w-full mt-4!">
+
+      <mat-form-field appearance="outline" color="accent" class="mt-4! w-full">
         <mat-label>Ticket Cooldown (in minutes)</mat-label>
         <input
           type="number"
@@ -69,16 +73,13 @@
           placeholder="Minutes students must wait before creating new ticket."
           [formControl]="ticketCooldown"
           [min]="0"
-          name="ticketCooldown"
-        />
-        @if(ticketCooldown.hasError('min')) {
-          <mat-error>
-            The value must be greater than 0 minutes.
-          </mat-error>
+          name="ticketCooldown" />
+        @if (ticketCooldown.hasError('min')) {
+          <mat-error> The value must be greater than 0 minutes. </mat-error>
         }
       </mat-form-field>
       <!-- Maximum Tickets Per Day -->
-      <mat-form-field appearance="outline" color="accent" class="w-full mt-4!">
+      <mat-form-field appearance="outline" color="accent" class="mt-4! w-full">
         <mat-label>Maximum Tickets Per Student Per Day</mat-label>
         <input
           type="number"
@@ -86,16 +87,13 @@
           placeholder="Maximum number of tickets a student can make in a 24hr period."
           [formControl]="maxTicketsInDay"
           [min]="1"
-          name="maxTicketsInDay"
-        />
-        @if(ticketCooldown.hasError('min')) {
-          <mat-error>
-            The value must be greater than 0.
-          </mat-error>
+          name="maxTicketsInDay" />
+        @if (ticketCooldown.hasError('min')) {
+          <mat-error> The value must be greater than 0. </mat-error>
         }
       </mat-form-field>
     </mat-card-content>
-    <mat-card-actions class="pb-4! justify-end! gap-3!">
+    <mat-card-actions class="justify-end! gap-3! pb-4!">
       <button mat-stroked-button type="button" (click)="resetForm()">
         Reset
       </button>

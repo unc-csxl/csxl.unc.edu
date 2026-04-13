@@ -1,6 +1,7 @@
 <mat-card
   [class]="
-    'max-w-[300px]! min-h-[174px]! m-0! ' + (course.role !== 'Student' && 'surface-container-card')
+    'm-0! min-h-[174px]! max-w-[300px]! ' +
+    (course.role !== 'Student' && 'surface-container-card')
   "
   appearance="outlined">
   <mat-card-header>
@@ -8,44 +9,46 @@
       {{ course.subject_code }} {{ course.number
       }}{{ course.role === 'Student' ? '-' + course.sections[0].number : '' }}
     </mat-card-title>
-    <mat-card-subtitle class="title-small w-[268px] whitespace-nowrap overflow-hidden text-ellipsis">{{
-      course.title
-    }}</mat-card-subtitle>
+    <mat-card-subtitle
+      class="title-small w-[268px] overflow-hidden text-ellipsis whitespace-nowrap"
+      >{{ course.title }}</mat-card-subtitle
+    >
   </mat-card-header>
   <mat-card-content class="grow">
     @for (section of course.sections; track section.number) {
-    <p class="my-0">
-      {{ course.sections.length > 1 ? 'Sec ' + section.number + ': ' : ''
-      }}{{ section.meeting_pattern }}
-    </p>
+      <p class="my-0">
+        {{ course.sections.length > 1 ? 'Sec ' + section.number + ': ' : ''
+        }}{{ section.meeting_pattern }}
+      </p>
     }
   </mat-card-content>
-  <mat-card-actions class="flex! flex-row! gap-2! justify-end! py-4!">
+  <mat-card-actions class="flex! flex-row! justify-end! gap-2! py-4!">
     @if (course.role === 'Student') {
-    <!-- <button mat-stroked-button color="secondary" type="submit">Details</button> -->
-    <button
-      mat-flat-button
-      color="primary"
-      type="submit"
-      [routerLink]="'/course/' + course.id + '/office-hours'">
-      Get Help
-    </button>
-    } @else { @if (course.role === 'Instructor') {
-    <button
-      mat-stroked-button
-      color="primary"
-      type="submit"
-      [routerLink]="'/hiring/' + course.id + '/preferences'">
-      Hiring
-    </button>
-    }
-    <button
-      mat-flat-button
-      color="primary"
-      type="submit"
-      [routerLink]="'/course/' + course.id + '/office-hours'">
-      Manage
-    </button>
+      <!-- <button mat-stroked-button color="secondary" type="submit">Details</button> -->
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [routerLink]="'/course/' + course.id + '/office-hours'">
+        Get Help
+      </button>
+    } @else {
+      @if (course.role === 'Instructor') {
+        <button
+          mat-stroked-button
+          color="primary"
+          type="submit"
+          [routerLink]="'/hiring/' + course.id + '/preferences'">
+          Hiring
+        </button>
+      }
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [routerLink]="'/course/' + course.id + '/office-hours'">
+        Manage
+      </button>
     }
   </mat-card-actions>
 </mat-card>

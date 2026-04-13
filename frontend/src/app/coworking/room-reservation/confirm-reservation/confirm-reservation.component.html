@@ -1,8 +1,8 @@
 <div class="m-4">
-  @if(reservation) {
-  <coworking-reservation-card
-    [reservation]="reservation"
-    (isConfirmed)="setConfirmation($event)">
-  </coworking-reservation-card>
+  @if (reservation) {
+    <coworking-reservation-card
+      [reservation]="reservation"
+      (isConfirmed)="setConfirmation($event)">
+    </coworking-reservation-card>
   }
 </div>
