@@ -1,4 +1,4 @@
-<mat-card appearance="outlined" class="border-transparent! max-w-full! mr-8!">
+<mat-card appearance="outlined" class="mr-8! max-w-full! border-transparent!">
   <mat-card-header>
     <mat-card-title>Role: {{ role.name }}</mat-card-title>
   </mat-card-header>
@@ -71,34 +71,34 @@
             </td>
             <td mat-footer-cell *matFooterCellDef>
               @if(selectedUser) {
-                <div class="p-4">
-                  <button
-                    mat-form-field
-                    mat-stroked-button
-                    (click)="changeSelectedMember()">
-                    {{ selectedUser.first_name }} {{ selectedUser.last_name }}
-                  </button>
-                </div>
+              <div class="p-4">
+                <button
+                  mat-form-field
+                  mat-stroked-button
+                  (click)="changeSelectedMember()">
+                  {{ selectedUser.first_name }} {{ selectedUser.last_name }}
+                </button>
+              </div>
               } @else {
-                <mat-form-field appearance="outline">
-                  <mat-label>User</mat-label>
-                  <input
-                    type="text"
-                    placeholder="Find User"
-                    aria-label="User"
-                    matInput
-                    [matAutocomplete]="auto"
-                    [formControl]="userLookup" />
-                  <mat-autocomplete
-                    #auto="matAutocomplete"
-                    (optionSelected)="onOptionSelected($event)">
-                    <mat-option
-                      *ngFor="let option of filteredUsers$ | async"
-                      [value]="option">
-                      {{ option.first_name }} {{ option.last_name }}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>User</mat-label>
+                <input
+                  type="text"
+                  placeholder="Find User"
+                  aria-label="User"
+                  matInput
+                  [matAutocomplete]="auto"
+                  [formControl]="userLookup" />
+                <mat-autocomplete
+                  #auto="matAutocomplete"
+                  (optionSelected)="onOptionSelected($event)">
+                  @for (option of filteredUsers$ | async; track option) {
+                  <mat-option [value]="option">
+                    {{ option.first_name }} {{ option.last_name }}
+                  </mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
               }
             </td>
           </ng-container>

@@ -21,7 +21,9 @@
           <span>Edit Hiring Levels</span>
         </button>
       </mat-menu>
-      <button mat-flat-button routerLink="/hiring/summary">HR Onboarding</button>
+      <button mat-flat-button routerLink="/hiring/summary">
+        HR Onboarding
+      </button>
       <mat-form-field class="term-selector" appearance="outline">
         <mat-label>Select Term</mat-label>
         <mat-select
@@ -92,7 +94,8 @@
               </p>
               <p>
                 <span class="text-badge secondary-background"
-                  >{{ element.total_cost | currency:'USD':'symbol':'1.2-2' }}</span
+                  >{{ element.total_cost | currency:'USD':'symbol':'1.2-2'
+                  }}</span
                 >&nbsp;cost
               </p>
               <div class="row">
@@ -128,12 +131,11 @@
                     expandedElement === element ? null : element;
                   $event.stopPropagation()
                 ">
-                <mat-icon *ngIf="expandedElement === element"
-                  >keyboard_arrow_up</mat-icon
-                >
-                <mat-icon *ngIf="expandedElement !== element"
-                  >keyboard_arrow_down</mat-icon
-                >
+                @if (expandedElement === element) {
+                <mat-icon>keyboard_arrow_up</mat-icon>
+                } @if (expandedElement !== element) {
+                <mat-icon>keyboard_arrow_down</mat-icon>
+                }
               </button>
             </div>
           </td>
@@ -150,10 +152,10 @@
                 element === expandedElement ? 'expanded' : 'collapsed'
               ">
               @if (element === expandedElement) {
-                <course-hiring-card
-                  [termId]="selectedTermId()!"
-                  [itemInput]="element"
-                  (updateData)="reloadData()" />
+              <course-hiring-card
+                [termId]="selectedTermId()!"
+                [itemInput]="element"
+                (updateData)="reloadData()" />
               }
             </div>
           </td>

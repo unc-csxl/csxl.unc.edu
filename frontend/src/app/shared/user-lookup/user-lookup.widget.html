@@ -4,19 +4,19 @@
     #chipGrid
     aria-label="Choose people"
     [disabled]="this.disabled">
-    <mat-chip-row *ngFor="let user of users" (removed)="onUserRemoved(user)">
-      <img
-        class="user-image"
-        *ngIf="user.github_avatar"
-        matChipAvatar
-        [src]="user.github_avatar" />
-      {{ user.first_name + ' ' + user.last_name }}
+    @for (user of users; track user) {
+    <mat-chip-row (removed)="onUserRemoved(user)">
+      @if (user.github_avatar) {
+      <img class="user-image" matChipAvatar [src]="user.github_avatar" />
+      } {{ user.first_name + ' ' + user.last_name }}
       <button
         matChipRemove
         [attr.aria-label]="'remove ' + user.first_name + ' ' + user.last_name">
         <mat-icon>cancel</mat-icon>
       </button>
     </mat-chip-row>
+    } @if ( this.maxSelected === null || this.users.length < this.maxSelected )
+    {
     <input
       #usersInput
       type="text"
@@ -25,18 +25,16 @@
       [matChipInputFor]="chipGrid"
       matInput
       [matAutocomplete]="auto"
-      [formControl]="userLookup"
-      *ngIf="
-        this.maxSelected === null || this.users.length < this.maxSelected
-      " />
+      [formControl]="userLookup" />
+    }
     <mat-autocomplete
       #auto="matAutocomplete"
       (optionSelected)="onUserAdded($event)">
-      <mat-option
-        *ngFor="let option of filteredUsers$ | async"
-        [value]="option">
+      @for (option of filteredUsers$ | async; track option) {
+      <mat-option [value]="option">
         {{ option.first_name }} {{ option.last_name }}
       </mat-option>
+      }
     </mat-autocomplete>
   </mat-chip-grid>
 </mat-form-field>

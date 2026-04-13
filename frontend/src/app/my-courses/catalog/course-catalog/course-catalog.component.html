@@ -1,4 +1,4 @@
-<mat-card appearance="outlined" class="border-transparent! max-w-full! mr-8!">
+<mat-card appearance="outlined" class="mr-8! max-w-full! border-transparent!">
   <mat-card-header>
     <mat-card-title>All Courses</mat-card-title>
   </mat-card-header>
@@ -6,13 +6,18 @@
     <table mat-table [dataSource]="courses" multiTemplateDataRows>
       <ng-container matColumnDef="code">
         <th mat-header-cell *matHeaderCellDef>Code</th>
-        <td class="border-b-0! border-b-transparent!" mat-cell *matCellDef="let element">
+        <td
+          class="border-b-0! border-b-transparent!"
+          mat-cell
+          *matCellDef="let element">
           {{ element.subject_code }} {{ element.number }}
         </td>
       </ng-container>
       <ng-container matColumnDef="title">
         <th mat-header-cell *matHeaderCellDef>Title</th>
-        <td class="border-b-0!" mat-cell *matCellDef="let element">{{ element.title }}</td>
+        <td class="border-b-0!" mat-cell *matCellDef="let element">
+          {{ element.title }}
+        </td>
       </ng-container>
       <ng-container matColumnDef="expand">
         <th mat-header-cell *matHeaderCellDef aria-label="row actions">
@@ -21,20 +26,19 @@
         <td class="border-b-0!" mat-cell *matCellDef="let element">
           <div class="flex flex-row-reverse">
             <button
-            mat-icon-button
-            aria-label="expand row"
-            (click)="
+              mat-icon-button
+              aria-label="expand row"
+              (click)="
               expandedElement = expandedElement === element ? null : element;
               $event.stopPropagation()
             ">
-            <mat-icon *ngIf="expandedElement === element"
-              >keyboard_arrow_up</mat-icon
-            >
-            <mat-icon *ngIf="expandedElement !== element"
-              >keyboard_arrow_down</mat-icon
-            >
-          </button>
-        </div>
+              @if (expandedElement === element) {
+              <mat-icon>keyboard_arrow_up</mat-icon>
+              } @if (expandedElement !== element) {
+              <mat-icon>keyboard_arrow_down</mat-icon>
+              }
+            </button>
+          </div>
         </td>
       </ng-container>
       <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
@@ -44,7 +48,7 @@
           *matCellDef="let element"
           [attr.colspan]="columnsToDisplayWithExpand.length">
           <div
-            class="overflow-hidden flex"
+            class="flex overflow-hidden"
             [@detailExpand]="
               element === expandedElement ? 'expanded' : 'collapsed'
             ">
@@ -68,6 +72,6 @@
         mat-row
         *matRowDef="let row; columns: ['expandedDetail']"
         class="h-0! border-b-0! border-b-transparent!"></tr>
-    </table>  
+    </table>
   </mat-card-content>
 </mat-card>

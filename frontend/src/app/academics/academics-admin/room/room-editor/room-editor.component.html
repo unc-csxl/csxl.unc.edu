@@ -3,20 +3,16 @@
   <!-- Update Room Card -->
   <mat-pane appearance="outlined">
     <mat-card-header>
-      <mat-card-title *ngIf="this.roomId === 'new'; else update">
-        Create Room
-      </mat-card-title>
-      <ng-template #update>
-        <mat-card-title> Update Room </mat-card-title>
-      </ng-template>
+      @if (this.roomId === 'new') {
+      <mat-card-title> Create Room </mat-card-title>
+      } @else {
+      <mat-card-title> Update Room </mat-card-title>
+      }
     </mat-card-header>
     <mat-card-content class="flex! flex-col! gap-4! pt-4!">
       <!-- Room ID Field -->
-      <mat-form-field
-        class="w-full"
-        appearance="outline"
-        color="accent"
-        *ngIf="roomId === 'new'">
+      @if (roomId === 'new') {
+      <mat-form-field class="w-full" appearance="outline" color="accent">
         <mat-label>Room ID</mat-label>
         <input
           matInput
@@ -25,6 +21,7 @@
           name="id"
           required />
       </mat-form-field>
+      }
       <!-- Room Nickname Field -->
       <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Room Nickname</mat-label>
@@ -71,7 +68,7 @@
         Reservable?
       </mat-slide-toggle>
     </mat-card-content>
-    <mat-card-actions class="flex! flex-row! justify-end! mb-2">
+    <mat-card-actions class="mb-2 flex! flex-row! justify-end!">
       <div class="flex flex-row gap-2">
         <button mat-stroked-button routerLink="/academics/admin/room">
           Cancel

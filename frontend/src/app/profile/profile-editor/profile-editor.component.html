@@ -1,21 +1,22 @@
 <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
   <mat-pane appearance="outlined">
-    <mat-card-header *ngIf="profile.id; else registration">
+    @if (profile.id) {
+    <mat-card-header>
       <mat-card-title>Update your Profile</mat-card-title>
     </mat-card-header>
-    <ng-template #registration>
-      <mat-card-header>
-        <mat-card-title
-          >Welcome to CSXL! Please verify and complete your profile
-          below.</mat-card-title
-        >
-        <mat-card-subtitle>
-          Once your profile is setup you will be able to take advantage of CSXL
-          initiatives such as enrolling in workshops, reserving a desk during
-          coworking hours, and more!
-        </mat-card-subtitle>
-      </mat-card-header>
-    </ng-template>
+    } @else {
+    <mat-card-header>
+      <mat-card-title
+        >Welcome to CSXL! Please verify and complete your profile
+        below.</mat-card-title
+      >
+      <mat-card-subtitle>
+        Once your profile is setup you will be able to take advantage of CSXL
+        initiatives such as enrolling in workshops, reserving a desk during
+        coworking hours, and more!
+      </mat-card-subtitle>
+    </mat-card-header>
+    }
     <mat-card-content class="flex! flex-col! gap-4! pt-4!">
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>First Name</mat-label>
@@ -44,9 +45,9 @@
           formControlName="email"
           name="email"
           required />
-        <mat-error *ngIf="profileForm.value.email"
-          >Must provide a valid UNC email address.</mat-error
-        >
+        @if (profileForm.value.email) {
+        <mat-error>Must provide a valid UNC email address.</mat-error>
+        }
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>LinkedIn Profile Link</mat-label>
@@ -82,7 +83,7 @@
           name="bio"></textarea>
       </mat-form-field>
     </mat-card-content>
-    <mat-card-actions class="pb-4! justify-end! gap-3!">
+    <mat-card-actions class="justify-end! gap-3! pb-4!">
       <button mat-stroked-button routerLink="/profile">Cancel</button>
       <button
         mat-flat-button

@@ -1,15 +1,18 @@
 <!-- HTML Structure of Admin Terms List -->
-<mat-card appearance="outlined" class="border-transparent! max-w-full! mr-8!">
+<mat-card appearance="outlined" class="mr-8! max-w-full! border-transparent!">
   <mat-card-content>
-    <div class="content" *ngIf="displayTerm() && sections(); else noTerm">
+    @if (displayTerm() && sections()) {
+    <div class="content">
       <div class="table-responsive">
         <table mat-table [dataSource]="sections()">
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>
               <div class="flex items-center py-4">
                 Sections
-                <div class="flex flex-row ml-auto gap-3 items-center">
-                  <mat-form-field class="w-[260px] mb-[-1.25em]" appearance="outline">
+                <div class="ml-auto flex flex-row items-center gap-3">
+                  <mat-form-field
+                    class="mb-[-1.25em] w-[260px]"
+                    appearance="outline">
                     <mat-label>Select Term</mat-label>
                     <mat-select
                       [(ngModel)]="displayTermId"
@@ -25,12 +28,16 @@
                 </div>
               </div>
             </th>
-            <td class="border-0! border-transparent! hover:cursor-pointer hover:bg-black/5! dark:hover:bg-white/5! hover:rounded-xl" mat-cell *matCellDef="let element">
-              <div class="flex flex-row w-full justify-between items-center" (click)="updateSection(element)">
+            <td
+              class="border-0! border-transparent! hover:cursor-pointer hover:rounded-xl hover:bg-black/5! dark:hover:bg-white/5!"
+              mat-cell
+              *matCellDef="let element">
+              <div
+                class="flex w-full flex-row items-center justify-between"
+                (click)="updateSection(element)">
                 <p>
-                  {{ element.subject_code }}
-                  {{ element.course_number }} - {{ element.section_number }}:
-                  {{ element.title }}
+                  {{ element.subject_code }} {{ element.course_number }} - {{
+                  element.section_number }}: {{ element.title }}
                 </p>
                 <div clas="ml-auto">
                   <button
@@ -47,12 +54,12 @@
         </table>
       </div>
     </div>
-    <ng-template #noTerm>
-      <mat-card appearance="outlined">
-        <mat-card-content>
-          <p>Please make a term first!</p>
-        </mat-card-content>
-      </mat-card>
-    </ng-template>
+    } @else {
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <p>Please make a term first!</p>
+      </mat-card-content>
+    </mat-card>
+    }
   </mat-card-content>
 </mat-card>
