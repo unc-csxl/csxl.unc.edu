@@ -41,6 +41,10 @@ RUN mkdir -p /etc/apt/keyrings \
     && apt-get install nodejs -y \
     && rm -rf /var/lib/apt/lists/*
 
+# Install pnpm via corepack
+RUN corepack enable \
+    && corepack prepare pnpm@10.17.1 --activate
+
 # Install Angular CLI Globally
 RUN npm install -g @angular/cli
 
