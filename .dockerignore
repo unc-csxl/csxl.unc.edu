@@ -1,0 +1,7 @@
+.angular
+.devcontainer
+.git
+.pnpm-store
+docs
+frontend/node_modules
+node_modules
