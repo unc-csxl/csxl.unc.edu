@@ -20,11 +20,15 @@
         [matChipInputFor]="chipGrid"
         matInput
         [matAutocomplete]="auto"
+        (keydown.enter)="onLookupKeydown($event)"
+        (keydown.tab)="onLookupKeydown($event)"
         [formControl]="roomLookup" />
     }
     <mat-autocomplete
       #auto="matAutocomplete"
       [displayWith]="displayRoom"
+      [autoActiveFirstOption]="true"
+      [autoSelectActiveOption]="true"
       (optionSelected)="onRoomAdded($event)">
       @for (room of filteredRooms$ | async; track room.id) {
         <mat-option [value]="room">

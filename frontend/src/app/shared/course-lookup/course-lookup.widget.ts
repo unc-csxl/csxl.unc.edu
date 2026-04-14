@@ -47,15 +47,19 @@ export class CourseLookup {
   public filteredCourses$: Observable<Course[]> =
     this.courseLookup.valueChanges.pipe(
       startWith(''),
-      map((value) => this.filterCourses(this.displayCourse(value)))
+      map((value) => {
+        const courses = this.filterCourses(this.displayCourse(value));
+        this.filteredCourses = courses;
+        return courses;
+      })
     );
 
   @ViewChild('courseInput') courseInput?: ElementRef<HTMLInputElement>;
+  private filteredCourses: Course[] = [];
 
   onCourseAdded(event: MatAutocompleteSelectedEvent): void {
     const course = event.option.value as Course;
-    this.clearLookup();
-    this.selectedCourseChange.emit(course);
+    this.selectCourse(course);
   }
 
   onCourseRemoved(): void {
@@ -75,12 +79,24 @@ export class CourseLookup {
     return `${course.subject_code} ${course.number}: ${course.title}`;
   };
 
+  onLookupKeydown(event: Event): void {
+    if (this.filteredCourses.length === 1) {
+      event.preventDefault();
+      this.selectCourse(this.filteredCourses[0]);
+    }
+  }
+
   private clearLookup(): void {
     if (this.courseInput) {
       this.courseInput.nativeElement.value = '';
     }
 
     this.courseLookup.setValue('', { emitEvent: false });
+  }
+
+  private selectCourse(course: Course): void {
+    this.clearLookup();
+    this.selectedCourseChange.emit(course);
   }
 
   private filterCourses(search: string): Course[] {

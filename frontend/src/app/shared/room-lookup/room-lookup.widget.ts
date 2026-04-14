@@ -45,15 +45,19 @@ export class RoomLookup {
   public roomLookup = new FormControl<string | Room>('');
   public filteredRooms$: Observable<Room[]> = this.roomLookup.valueChanges.pipe(
     startWith(''),
-    map((value) => this.filterRooms(this.displayRoom(value)))
+    map((value) => {
+      const rooms = this.filterRooms(this.displayRoom(value));
+      this.filteredRooms = rooms;
+      return rooms;
+    })
   );
 
   @ViewChild('roomInput') roomInput?: ElementRef<HTMLInputElement>;
+  private filteredRooms: Room[] = [];
 
   onRoomAdded(event: MatAutocompleteSelectedEvent): void {
     const room = event.option.value as Room;
-    this.clearLookup();
-    this.selectedRoomChange.emit(room);
+    this.selectRoom(room);
   }
 
   onRoomRemoved(): void {
@@ -74,12 +78,24 @@ export class RoomLookup {
     return location ? `${room.nickname} (${location})` : room.nickname;
   };
 
+  onLookupKeydown(event: Event): void {
+    if (this.filteredRooms.length === 1) {
+      event.preventDefault();
+      this.selectRoom(this.filteredRooms[0]);
+    }
+  }
+
   private clearLookup(): void {
     if (this.roomInput) {
       this.roomInput.nativeElement.value = '';
     }
 
     this.roomLookup.setValue('', { emitEvent: false });
+  }
+
+  private selectRoom(room: Room): void {
+    this.clearLookup();
+    this.selectedRoomChange.emit(room);
   }
 
   private filterRooms(search: string): Room[] {

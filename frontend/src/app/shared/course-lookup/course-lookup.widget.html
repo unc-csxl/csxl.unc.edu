@@ -20,11 +20,15 @@
         [matChipInputFor]="chipGrid"
         matInput
         [matAutocomplete]="auto"
+        (keydown.enter)="onLookupKeydown($event)"
+        (keydown.tab)="onLookupKeydown($event)"
         [formControl]="courseLookup" />
     }
     <mat-autocomplete
       #auto="matAutocomplete"
       [displayWith]="displayCourse"
+      [autoActiveFirstOption]="true"
+      [autoSelectActiveOption]="true"
       (optionSelected)="onCourseAdded($event)">
       @for (course of filteredCourses$ | async; track course.id) {
         <mat-option [value]="course">

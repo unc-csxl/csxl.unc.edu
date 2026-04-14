@@ -20,9 +20,9 @@ import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import {
   Observable,
-  ReplaySubject,
   debounceTime,
   filter,
+  map,
   mergeMap,
   startWith
 } from 'rxjs';
@@ -45,11 +45,10 @@ export class UserLookup implements OnInit {
   @Output() usersChanged: EventEmitter<PublicProfile[]> = new EventEmitter();
 
   userLookup = new FormControl();
+  private filteredUsers: Profile[] = [];
 
   @ViewChild('usersInput') usersInput!: ElementRef<HTMLInputElement>;
-  private filteredUsers: ReplaySubject<Profile[]> = new ReplaySubject();
-  public filteredUsers$: Observable<Profile[]> =
-    this.filteredUsers.asObservable();
+  public filteredUsers$: Observable<Profile[]>;
 
   constructor(private profileService: ProfileService) {
     // Configure the filtered users list based on the form
@@ -57,7 +56,11 @@ export class UserLookup implements OnInit {
       startWith(''),
       filter((search: string) => search.length > 2),
       debounceTime(100),
-      mergeMap((search) => this.profileService.search(search))
+      mergeMap((search) => this.profileService.search(search)),
+      map((users) => {
+        this.filteredUsers = users;
+        return users;
+      })
     );
   }
 
@@ -72,9 +75,29 @@ export class UserLookup implements OnInit {
 
   /** Handler for selecting an option in the who chip grid. */
   public onUserAdded(event: MatAutocompleteSelectedEvent) {
-    let user = event.option.value as Profile;
-    if (this.users.filter((e) => e.id === user.id).length == 0) {
-      let organizer: PublicProfile = {
+    this.addUser(event.option.value as Profile);
+  }
+
+  /** Handler for selecting an option in the who chip grid. */
+  public onUserRemoved(person: PublicProfile) {
+    this.users.splice(this.users.indexOf(person), 1);
+    this.userLookup.setValue('');
+    this.usersChanged.emit(this.users);
+  }
+
+  onLookupKeydown(event: Event): void {
+    if (this.filteredUsers.length === 1) {
+      event.preventDefault();
+      this.addUser(this.filteredUsers[0]);
+    }
+  }
+
+  private addUser(user: Profile): void {
+    if (
+      this.users.filter((existingUser) => existingUser.id === user.id)
+        .length === 0
+    ) {
+      const organizer: PublicProfile = {
         id: user.id!,
         onyen: user.onyen,
         first_name: user.first_name!,
@@ -89,14 +112,8 @@ export class UserLookup implements OnInit {
       };
       this.users.push(organizer);
     }
-    this.usersInput.nativeElement.value = '';
-    this.userLookup.setValue('');
-    this.usersChanged.emit(this.users);
-  }
 
-  /** Handler for selecting an option in the who chip grid. */
-  public onUserRemoved(person: PublicProfile) {
-    this.users.splice(this.users.indexOf(person), 1);
+    this.usersInput.nativeElement.value = '';
     this.userLookup.setValue('');
     this.usersChanged.emit(this.users);
   }
