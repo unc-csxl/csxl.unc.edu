@@ -1,0 +1,36 @@
+<mat-form-field class="form-field" appearance="outline" color="accent">
+  <mat-label>{{ label }}</mat-label>
+  <mat-chip-grid #chipGrid aria-label="Choose a room" [disabled]="disabled">
+    @if (selectedRoom) {
+      <mat-chip-row (removed)="onRoomRemoved()">
+        {{ displayRoom(selectedRoom) }}
+        <button
+          matChipRemove
+          [attr.aria-label]="'remove ' + displayRoom(selectedRoom)">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip-row>
+    }
+    @if (!selectedRoom) {
+      <input
+        #roomInput
+        type="text"
+        placeholder="Search rooms..."
+        aria-label="Search rooms"
+        [matChipInputFor]="chipGrid"
+        matInput
+        [matAutocomplete]="auto"
+        [formControl]="roomLookup" />
+    }
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      [displayWith]="displayRoom"
+      (optionSelected)="onRoomAdded($event)">
+      @for (room of filteredRooms$ | async; track room.id) {
+        <mat-option [value]="room">
+          {{ displayRoom(room) }}
+        </mat-option>
+      }
+    </mat-autocomplete>
+  </mat-chip-grid>
+</mat-form-field>
