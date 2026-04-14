@@ -7,11 +7,17 @@
  * @license MIT
  */
 
-import { Component, WritableSignal, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import {
+  Component,
+  DestroyRef,
+  WritableSignal,
+  inject,
+  signal
+} from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormGroup } from '@angular/forms';
 import { ApplicationFormField } from './application-forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
 import { ApplicationsService } from '../applications.service';
 import { Application, ApplicationSectionChoice } from '../applications.model';
 import { profileResolver } from 'src/app/profile/profile.resolver';
@@ -19,8 +25,13 @@ import { Profile } from 'src/app/models.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Term } from 'src/app/academics/academics.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
-import { Observable, concat, of, timer } from 'rxjs';
-import { map, shareReplay, switchMap } from 'rxjs/operators';
+import { Observable, combineLatest, concat, of, timer } from 'rxjs';
+import {
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  switchMap
+} from 'rxjs/operators';
 
 @Component({
   selector: 'app-application-form',
@@ -28,6 +39,8 @@ import { map, shareReplay, switchMap } from 'rxjs/operators';
   standalone: false
 })
 export class ApplicationFormComponent {
+  private readonly destroyRef = inject(DestroyRef);
+
   /** Route information to be used in the routing module */
   public static Route = {
     path: ':term/:type',
@@ -39,11 +52,11 @@ export class ApplicationFormComponent {
   };
 
   /** Form */
-  formGroup: FormGroup;
-  fields: ApplicationFormField[];
+  formGroup!: FormGroup;
+  fields!: ApplicationFormField[];
   selectedSections: WritableSignal<ApplicationSectionChoice[]> = signal([]);
 
-  application: Application;
+  application!: Application;
 
   term$: Observable<Term>;
   showApplicationAssignmentCard$: Observable<boolean>;
@@ -59,17 +72,62 @@ export class ApplicationFormComponent {
     protected applicationsService: ApplicationsService,
     protected academicsService: AcademicsService
   ) {
-    // Load the profile
-    const data = this.route.snapshot.data as {
-      profile: Profile;
-    };
-    const profile = data.profile;
-    // Load the form
-    let type = this.route.snapshot.params['type'];
-    [this.formGroup, this.fields] = applicationsService.getForm(type);
-    // Load an exising application, if it exists
-    let termId = this.route.snapshot.params['term'];
-    this.application = {
+    const termId$ = this.route.paramMap.pipe(
+      map((params: ParamMap) => params.get('term') ?? ''),
+      distinctUntilChanged()
+    );
+    const type$ = this.route.paramMap.pipe(
+      map((params: ParamMap) => params.get('type') ?? ''),
+      distinctUntilChanged()
+    );
+    const profile$ = this.route.data.pipe(
+      map((data: Data) => (data as { profile: Profile }).profile)
+    );
+
+    combineLatest([termId$, type$, profile$])
+      .pipe(
+        switchMap(([termId, type, profile]: [string, string, Profile]) => {
+          [this.formGroup, this.fields] =
+            this.applicationsService.getForm(type);
+          this.application = this.buildEmptyApplication(profile, termId, type);
+          this.formGroup.reset(this.application);
+          this.selectedSections.set([]);
+
+          return this.applicationsService.getApplication(termId).pipe(
+            map((application: Application | null) => ({
+              application:
+                application ?? this.buildEmptyApplication(profile, termId, type)
+            }))
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(({ application }: { application: Application }) => {
+        this.application = application;
+        this.formGroup.reset(application);
+        this.selectedSections.set(application.preferred_sections);
+      });
+
+    this.term$ = termId$.pipe(
+      switchMap((termId: string) => this.academicsService.getTerm(termId)),
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
+    this.showApplicationAssignmentCard$ = this.term$.pipe(
+      switchMap((term: Term) => this.watchApplicationAssignmentCard(term))
+    );
+    this.term = toSignal(this.term$);
+    this.showApplicationAssignmentCard = toSignal(
+      this.showApplicationAssignmentCard$,
+      { initialValue: false }
+    );
+  }
+
+  private buildEmptyApplication(
+    profile: Profile,
+    termId: string,
+    type: string
+  ): Application {
+    return {
       id: null,
       user_id: profile.id!,
       term_id: termId,
@@ -93,42 +151,61 @@ export class ApplicationFormComponent {
       preferred_sections: [],
       assignments: []
     };
-    this.applicationsService.getApplication(termId).subscribe((application) => {
-      if (application) {
-        this.application = application;
-        this.formGroup.patchValue(application!);
-        this.selectedSections.set(application!.preferred_sections);
-      }
-    });
+  }
 
-    this.term$ = this.academicsService
-      .getTerm(termId)
-      .pipe(shareReplay({ bufferSize: 1, refCount: true }));
-    this.showApplicationAssignmentCard$ = this.term$.pipe(
-      switchMap((term) => {
-        const termStart = new Date(term.start);
+  private shouldShowApplicationAssignmentCard(term: Term): boolean {
+    const now = Date.now();
+    const termStart = new Date(term.start).getTime();
 
-        if (Number.isNaN(termStart.getTime())) {
-          return of(false);
-        }
+    if (Number.isNaN(termStart)) {
+      return false;
+    }
 
-        const delayUntilTermStarts = termStart.getTime() - Date.now();
+    const applicationsOpen = new Date(term.applications_open).getTime();
+    const applicationsClose = new Date(term.applications_close).getTime();
+    const applicationWindowIsOpen =
+      !Number.isNaN(applicationsOpen) &&
+      !Number.isNaN(applicationsClose) &&
+      applicationsOpen <= now &&
+      now <= applicationsClose;
 
-        if (delayUntilTermStarts <= 0) {
-          return of(true);
-        }
+    if (applicationWindowIsOpen) {
+      return false;
+    }
 
-        return concat(
-          of(false),
-          timer(delayUntilTermStarts).pipe(map(() => true))
-        );
-      })
+    return now >= termStart;
+  }
+
+  private watchApplicationAssignmentCard(term: Term): Observable<boolean> {
+    const shouldShowAssignmentCard =
+      this.shouldShowApplicationAssignmentCard(term);
+    const nextTransitionDelay = this.getNextAssignmentCardTransitionDelay(term);
+
+    if (nextTransitionDelay === null) {
+      return of(shouldShowAssignmentCard);
+    }
+
+    return concat(
+      of(shouldShowAssignmentCard),
+      timer(nextTransitionDelay).pipe(
+        switchMap(() => this.watchApplicationAssignmentCard(term))
+      )
     );
-    this.term = toSignal(this.term$);
-    this.showApplicationAssignmentCard = toSignal(
-      this.showApplicationAssignmentCard$,
-      { initialValue: false }
-    );
+  }
+
+  private getNextAssignmentCardTransitionDelay(term: Term): number | null {
+    const now = Date.now();
+    const transitionTimes = [
+      new Date(term.applications_open).getTime(),
+      new Date(term.applications_close).getTime(),
+      new Date(term.start).getTime()
+    ].filter((time): time is number => !Number.isNaN(time) && time > now);
+
+    if (transitionTimes.length === 0) {
+      return null;
+    }
+
+    return Math.max(Math.min(...transitionTimes) - now, 1);
   }
 
   onSubmit() {
@@ -143,13 +220,13 @@ export class ApplicationFormComponent {
           : this.applicationsService.updateApplication(this.application);
 
       result.subscribe({
-        next: (_) => {
+        next: (_: Application) => {
           this.router.navigate(['/my-courses/']);
           this.snackBar.open(`Thank you for submitting your application!`, '', {
             duration: 2000
           });
         },
-        error: (_) => {
+        error: (_: unknown) => {
           this.snackBar.open(`Error: Application not submitted.`, '', {
             duration: 2000
           });

@@ -49,6 +49,7 @@
     "eslint": "~9.9.0",
     "eslint-config-prettier": "~9.1.0",
     "eslint-plugin-prettier": "~5.2.1",
+    "playwright": "^1.59.1",
     "postcss": "^8.5.3",
     "prettier": "~3.3.3",
     "prettier-plugin-tailwindcss": "^0.7.1",

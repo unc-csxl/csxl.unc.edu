@@ -1,0 +1,31 @@
+{
+  "baseUrl": "http://localhost:1560",
+  "headless": true,
+  "viewport": {
+    "width": 1440,
+    "height": 1200
+  },
+  "steps": [
+    {
+      "action": "goto",
+      "url": "/auth/as/rhonda/999999999"
+    },
+    {
+      "action": "waitForLoadState",
+      "state": "networkidle"
+    },
+    {
+      "action": "goto",
+      "url": "/apply/Curr/new_uta"
+    },
+    {
+      "action": "waitForSelector",
+      "selector": "body"
+    },
+    {
+      "action": "screenshot",
+      "path": "/tmp/example-apply-page.png",
+      "fullPage": true
+    }
+  ]
+}
