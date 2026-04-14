@@ -45,6 +45,9 @@ RUN mkdir -p /etc/apt/keyrings \
 RUN corepack enable \
     && corepack prepare pnpm@10.17.1 --activate
 
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /uvx /usr/local/bin/
+
 # Install Angular CLI Globally
 RUN npm install -g @angular/cli
 
@@ -108,13 +111,6 @@ RUN arch="$(arch)"; \
     tar -xvzf oc.tgz && \
     sudo mv oc /usr/bin/oc && \
     rm kubectl oc.tgz README.md
-
-# Install Database Dependencies
-COPY backend/requirements.txt /workspace/backend/requirements.txt
-WORKDIR /workspace/backend
-RUN python3 -m ensurepip
-RUN python3 -m pip install -r requirements.txt
-
 
 # Expose server ports
 EXPOSE 1560 1561 1562

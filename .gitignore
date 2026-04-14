@@ -3,6 +3,7 @@ __pycache__
 node_modules
 .angular
 .pnpm-store
+.venv
 deploy_key*
 .env
 .DS_Store

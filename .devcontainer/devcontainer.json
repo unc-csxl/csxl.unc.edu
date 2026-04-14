@@ -9,7 +9,7 @@
         1561,
         1562
     ],
-    "postCreateCommand": "pnpm install && pnpm run prepare && cd frontend && pnpm install",
+    "postCreateCommand": "pnpm install && pnpm run prepare && cd frontend && pnpm install && cd ../backend && uv sync",
     "customizations": {
         "vscode": {
             "extensions": [
