@@ -2,6 +2,7 @@
 .devcontainer
 .git
 .pnpm-store
+backend/.venv
 docs
 frontend/node_modules
 node_modules

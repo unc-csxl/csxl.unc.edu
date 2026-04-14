@@ -25,6 +25,6 @@ WORKDIR /workspace
 COPY --from=build /workspace/static/browser /workspace/static
 COPY ./backend /workspace/backend
 COPY ./alembic.ini /workspace/alembic.ini
-CMD ["/workspace/backend/.venv/bin/python", "-m", "uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "3"]
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "3"]
 ENV TZ="America/New_York"
 EXPOSE 8080
