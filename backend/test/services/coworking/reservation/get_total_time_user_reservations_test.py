@@ -39,12 +39,15 @@ __authors__ = [
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
 
+
 def test_get_total_time_user_reservations_student(reservation_svc: ReservationService):
     hours = reservation_svc.get_total_time_user_reservations(user_data.user)
     assert hours == "4.5"
 
 
-def test_get_total_time_user_reservations_ambassador(reservation_svc: ReservationService):
+def test_get_total_time_user_reservations_ambassador(
+    reservation_svc: ReservationService,
+):
     hours = reservation_svc.get_total_time_user_reservations(user_data.ambassador)
     assert hours == "6"
 

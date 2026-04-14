@@ -87,7 +87,6 @@ class CourseSiteService:
         terms = []
         entities.sort(key=lambda x: x.section.term.start)
         for term, term_memberships in groupby(entities, lambda x: x.section.term):
-
             # Since the output `term_memberships` is an iterator, we cannot iterate over the list
             # more than once, which we need to do below. So, this copies the original iterator
             # into a standard list so that we can iterate over it twice.
@@ -298,22 +297,27 @@ class CourseSiteService:
                     seen_staff.add(staff_key)
                     deduplicated_entities.append(member)
 
-        # Apply the role-based ordering to deduplicated entities
-        deduplicated_entities.sort(
-            key=lambda x: (
-                # Primary sort: role priority
-                {
-                    RosterRole.INSTRUCTOR: 1,
-                    RosterRole.GTA: 2,
-                    RosterRole.UTA: 3,
-                    RosterRole.STUDENT: 4,
-                }.get(x.member_role, 5),
-                # Secondary sort: section number (only for students)
-                x.section.number if x.member_role == RosterRole.STUDENT else "",
-                # Third sort: last name (A->Z)
-                x.user.last_name,
+        if pagination_params.order_by != "":
+            deduplicated_entities.sort(
+                key=lambda x: getattr(x.user, pagination_params.order_by)
             )
-        )
+        else:
+            # Apply the role-based ordering to deduplicated entities
+            deduplicated_entities.sort(
+                key=lambda x: (
+                    # Primary sort: role priority
+                    {
+                        RosterRole.INSTRUCTOR: 1,
+                        RosterRole.GTA: 2,
+                        RosterRole.UTA: 3,
+                        RosterRole.STUDENT: 4,
+                    }.get(x.member_role, 5),
+                    # Secondary sort: section number (only for students)
+                    x.section.number if x.member_role == RosterRole.STUDENT else "",
+                    # Third sort: last name (A->Z)
+                    x.user.last_name,
+                )
+            )
 
         # Calculate the correct total length after deduplication
         total_length = len(deduplicated_entities)
@@ -574,7 +578,7 @@ class CourseSiteService:
         for section in section_entities:
             if section.course_site_id != None:
                 raise CoursePermissionException(
-                    f"Section with ID: { section.id} is already in another course site."
+                    f"Section with ID: {section.id} is already in another course site."
                 )
 
         # Create the course site, add, and save so the id field populates.
@@ -680,7 +684,7 @@ class CourseSiteService:
         for section in new_section_entities:
             if section.course_site_id:
                 raise CoursePermissionException(
-                    f"Section with ID: { section.id} is already in another course site."
+                    f"Section with ID: {section.id} is already in another course site."
                 )
 
             section.course_site_id = updated_site.id

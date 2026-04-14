@@ -1,4 +1,4 @@
-"""Migration for recurring office hour events. 
+"""Migration for recurring office hour events.
 
 Revision ID: 41c5d192f495
 Revises: 684f2df8b00e

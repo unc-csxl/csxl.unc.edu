@@ -1,5 +1,6 @@
 {
   "name": "csxl.unc.edu",
+  "packageManager": "pnpm@10.17.1",
   "scripts": {
     "prepare": "husky"
   },

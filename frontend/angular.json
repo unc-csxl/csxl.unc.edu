@@ -57,6 +57,7 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
+            "hmr": true,
             "port": 1562
           },
           "configurations": {
@@ -86,6 +87,11 @@
   },
   "cli": {
     "analytics": false,
+    "cache": {
+      "enabled": true,
+      "environment": "local",
+      "path": ".angular/cache"
+    },
     "schematicCollections": ["@angular-eslint/schematics"]
   },
   "schematics": {

@@ -119,7 +119,6 @@ author_associations = [
 
 
 def insert_fake_data(session: Session):
-
     # Step 1: Add articles to database
     for article in articles:
         entity = ArticleEntity.from_draft(article)

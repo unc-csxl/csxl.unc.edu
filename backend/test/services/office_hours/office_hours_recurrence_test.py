@@ -129,9 +129,11 @@ def test_update_recurring_oh_event_instructor(
         office_hours_data.updated_recurrence_pattern.end_date
         - office_hours_data.updated_recurrence_pattern.start_date
     )
+    start_weekday = office_hours_data.updated_recurrence_pattern.start_date.weekday()
     expected_modified_events_length = 0
     for i in range(updated_recurrence_time_delta.days + 1):
-        if updated_recurrence_pattern_array[i % len(updated_recurrence_pattern_array)]:
+        weekday_index = (start_weekday + i) % len(updated_recurrence_pattern_array)
+        if updated_recurrence_pattern_array[weekday_index]:
             expected_modified_events_length += 1
 
     assert len(modified_events) == expected_modified_events_length

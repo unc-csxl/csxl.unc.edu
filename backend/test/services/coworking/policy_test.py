@@ -4,12 +4,22 @@ from ....services.coworking import PolicyService
 from .fixtures import policy_svc
 
 
-from ....services.coworking.policy import OH_HOURS, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+from ....services.coworking.policy import (
+    OH_HOURS,
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY,
+)
 from datetime import datetime, timedelta
 
 __authors__ = ["Yuvraj Jain"]
 __copyright__ = "Copyright 2024"
 __license__ = "MIT"
+
 
 def test_office_hours_monday(policy_svc: PolicyService):
     today = datetime.now()

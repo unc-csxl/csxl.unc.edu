@@ -10,7 +10,7 @@ from ...database import _engine_str
 from ...env import getenv
 from ... import entities
 
-POSTGRES_DATABASE = f'{getenv("POSTGRES_DATABASE")}_test'
+POSTGRES_DATABASE = f"{getenv('POSTGRES_DATABASE')}_test"
 POSTGRES_USER = getenv("POSTGRES_USER")
 
 __authors__ = ["Kris Jordan"]

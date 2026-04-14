@@ -15,7 +15,7 @@ from ...models.coworking import (
     ReservationRequest,
     ReservationPartial,
     ReservationState,
-    ReservationMapDetails
+    ReservationMapDetails,
 )
 
 __authors__ = ["Kris Jordan, Yuvraj Jain"]

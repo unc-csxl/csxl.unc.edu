@@ -420,7 +420,7 @@ def test_draft_reservation_crosses_weekly_limit(
     reservation_svc: ReservationService, time: dict[str, datetime]
 ):
     user_data.user.accepted_community_agreement = True
-    
+
     # Make filler reservations to reach weekly limit
     temp_draft_1 = ReservationRequest(
         seats=[],
@@ -430,9 +430,7 @@ def test_draft_reservation_crosses_weekly_limit(
         users=[user_data.user],
     )
 
-    reservation_svc.draft_reservation(
-        user_data.user, temp_draft_1
-    )
+    reservation_svc.draft_reservation(user_data.user, temp_draft_1)
 
     temp_draft_2 = ReservationRequest(
         seats=[],
@@ -442,9 +440,7 @@ def test_draft_reservation_crosses_weekly_limit(
         users=[user_data.user],
     )
 
-    reservation_svc.draft_reservation(
-        user_data.user, temp_draft_2
-    )
+    reservation_svc.draft_reservation(user_data.user, temp_draft_2)
 
     exceed_limit_draft = ReservationRequest(
         seats=[],
@@ -455,6 +451,4 @@ def test_draft_reservation_crosses_weekly_limit(
     )
 
     with pytest.raises(ReservationException):
-        reservation_svc.draft_reservation(
-            user_data.user, exceed_limit_draft
-        )
+        reservation_svc.draft_reservation(user_data.user, exceed_limit_draft)

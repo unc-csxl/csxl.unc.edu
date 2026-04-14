@@ -7,7 +7,12 @@ from fastapi import APIRouter, Depends
 from ..authentication import registered_user
 from ...services.coworking.reservation import ReservationService
 from ...models import User
-from ...models.coworking import Reservation, ReservationPartial, ReservationRequest, ReservationState
+from ...models.coworking import (
+    Reservation,
+    ReservationPartial,
+    ReservationRequest,
+    ReservationState,
+)
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023 - 2024"
@@ -62,7 +67,11 @@ def create_walkin_reservation(
     # that normally take place otherwise), reusing existing methods here is fine for now.
     reservation_draft = reservation_svc.draft_reservation(subject, reservation_request)
     # Confirm the Draft Reservation
-    reservation_partial = ReservationPartial(id=reservation_draft.id, state=ReservationState.CONFIRMED)
-    reservation_confirmed = reservation_svc.change_reservation(subject, reservation_partial)
+    reservation_partial = ReservationPartial(
+        id=reservation_draft.id, state=ReservationState.CONFIRMED
+    )
+    reservation_confirmed = reservation_svc.change_reservation(
+        subject, reservation_partial
+    )
     # Check Reservation In
     return reservation_svc.staff_checkin_reservation(subject, reservation_confirmed)

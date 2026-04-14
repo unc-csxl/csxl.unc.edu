@@ -156,9 +156,11 @@ def test_change_reservation_confirmed_checkin_room(
         room=group_a,
         state=ReservationState.CONFIRMED,
         users=[user_data.user],
-        seats=[]
+        seats=[],
     )
-    assert True == reservation_svc._change_state(reservation, delta=ReservationState.CHECKED_IN)
+    assert True == reservation_svc._change_state(
+        reservation, delta=ReservationState.CHECKED_IN
+    )
 
 
 def test_change_reservation_change_seats_not_implemented(

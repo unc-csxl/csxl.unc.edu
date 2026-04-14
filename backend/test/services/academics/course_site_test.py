@@ -52,7 +52,7 @@ def test_get_course_site_roster(course_site_svc: CourseSiteService):
     )
     assert isinstance(roster, Paginated)
     assert isinstance(roster.items[0], CourseMemberOverview)
-    assert roster.length == 5
+    assert roster.length == 4
 
 
 def test_get_course_site_roster_order_by(course_site_svc: CourseSiteService):
@@ -63,7 +63,7 @@ def test_get_course_site_roster_order_by(course_site_svc: CourseSiteService):
     )
     assert isinstance(roster, Paginated)
     assert isinstance(roster.items[0], CourseMemberOverview)
-    assert roster.length == 5
+    assert roster.length == 4
 
     for i in range(len(roster.items) - 1):
         assert roster.items[i].last_name <= roster.items[i + 1].last_name
