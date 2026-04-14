@@ -52,14 +52,11 @@
           required />
       </mat-form-field>
       <!-- Section Room -->
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Select Room</mat-label>
-        <mat-select [formControl]="room">
-          @for (room of rooms; track room) {
-            <mat-option [value]="room"> {{ room.nickname }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+      <room-lookup
+        label="Room"
+        [rooms]="rooms"
+        [selectedRoom]="room.value"
+        (selectedRoomChange)="room.setValue($event)"></room-lookup>
 
       <!-- User Selection / Instructors Form Control -->
       <user-lookup label="Instructors" [users]="instructors"></user-lookup>
@@ -91,13 +88,10 @@
     </mat-card-content>
     <mat-card-actions class="mb-4 flex! flex-row! justify-end!">
       <div class="flex flex-row gap-2">
-        <button
-          mat-stroked-button
-          type="button"
-          routerLink="/academics/admin/section">
+        <button mat-stroked-button type="button" (click)="onCancel()">
           Cancel
         </button>
-        <button mat-flat-button type="submit" [disabled]="sectionForm.invalid">
+        <button mat-flat-button type="submit" [disabled]="isSubmitDisabled()">
           Save
         </button>
       </div>

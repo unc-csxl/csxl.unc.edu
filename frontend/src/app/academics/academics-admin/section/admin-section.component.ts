@@ -27,6 +27,8 @@ import {
   standalone: false
 })
 export class AdminSectionComponent {
+  private defaultTermId: string | null;
+
   public static Route = {
     path: 'section',
     component: AdminSectionComponent,
@@ -66,18 +68,23 @@ export class AdminSectionComponent {
     };
 
     this.terms = data.terms;
+    this.defaultTermId = data.currentTerm?.id ?? this.terms[0]?.id ?? null;
 
-    // Set initial display term
-    this.displayTermId = data.currentTerm?.id ?? null;
-    this.displayTerm = signal(this.selectedTerm());
-    // Initialize the sections list
-    this.resetSections();
+    this.displayTermId = null;
+    this.displayTerm = signal(undefined);
+
+    this.route.queryParamMap.subscribe((queryParams) => {
+      this.displayTermId = this.resolveDisplayTermId(queryParams.get('term'));
+      this.loadSections();
+    });
   }
 
   /** Event handler to open the Section Editor to create a new term */
   createSection(): void {
     // Navigate to the section editor
-    this.router.navigate(['academics', 'section', 'edit', 'new']);
+    this.router.navigate(['academics', 'section', 'edit', 'new'], {
+      queryParams: this.sectionQueryParams()
+    });
   }
 
   /** Event handler to open the Section Editor to update a section
@@ -85,7 +92,9 @@ export class AdminSectionComponent {
    */
   updateSection(section: Section): void {
     // Navigate to the section editor
-    this.router.navigate(['academics', 'section', 'edit', section.id]);
+    this.router.navigate(['academics', 'section', 'edit', section.id], {
+      queryParams: this.sectionQueryParams()
+    });
   }
 
   /** Delete a section object from the backend database table using the backend HTTP delete request.
@@ -115,8 +124,28 @@ export class AdminSectionComponent {
     return this.terms.find((term) => term.id == this.displayTermId);
   }
 
-  /** Resets the section data based on the selected term. */
-  resetSections() {
+  onDisplayTermChange(termId: string | null): void {
+    if (!termId || termId === this.displayTermId) {
+      return;
+    }
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { term: termId }
+    });
+  }
+
+  private resolveDisplayTermId(termId: string | null): string | null {
+    const selectedTerm = this.terms.find((term) => term.id === termId);
+    return selectedTerm?.id ?? this.defaultTermId;
+  }
+
+  private sectionQueryParams(): { term: string } | {} {
+    return this.displayTermId ? { term: this.displayTermId } : {};
+  }
+
+  /** Loads the section data based on the selected term. */
+  private loadSections() {
     this.displayTerm.set(this.selectedTerm());
     if (this.displayTerm()) {
       this.academicsService
@@ -124,6 +153,8 @@ export class AdminSectionComponent {
         .subscribe((sections) => {
           this.sections.set(sections);
         });
+    } else {
+      this.sections.set([]);
     }
   }
 }

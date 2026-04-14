@@ -15,8 +15,8 @@
                       appearance="outline">
                       <mat-label>Select Term</mat-label>
                       <mat-select
-                        [(ngModel)]="displayTermId"
-                        (selectionChange)="resetSections()">
+                        [ngModel]="displayTermId"
+                        (ngModelChange)="onDisplayTermChange($event)">
                         @for (term of terms; track term.id) {
                           <mat-option [value]="term.id">{{
                             term.name

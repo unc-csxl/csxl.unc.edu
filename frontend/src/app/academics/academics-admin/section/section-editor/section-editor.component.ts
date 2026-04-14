@@ -67,6 +67,8 @@ const canActivateEditor: CanActivateFn = (
   standalone: false
 })
 export class SectionEditorComponent {
+  private incomingTermId: string | null;
+
   /** Route information to be used in the Routing Module */
   public static Route: Route = {
     path: 'section/edit/:id',
@@ -158,6 +160,7 @@ export class SectionEditorComponent {
 
     /** Get id from the url */
     this.sectionIdString = this.route.snapshot.params['id'];
+    this.incomingTermId = this.route.snapshot.queryParamMap.get('term');
 
     /** Set section form data */
     this.sectionForm.setValue({
@@ -186,7 +189,11 @@ export class SectionEditorComponent {
     });
 
     /** Select the term, course, and room, if it exists. */
-    let termFilter = this.terms.filter((t) => t.id == this.section.term_id);
+    let initialTermId =
+      this.sectionIdString === 'new'
+        ? this.incomingTermId
+        : this.section.term_id;
+    let termFilter = this.terms.filter((t) => t.id == initialTermId);
     let courseFilter = this.courses.filter(
       (c) => c.id == this.section.course_id
     );
@@ -221,6 +228,10 @@ export class SectionEditorComponent {
    * @returns {void}
    */
   onSubmit(): void {
+    if (this.isSubmitDisabled()) {
+      return;
+    }
+
     if (this.sectionForm.valid) {
       this.section.id = +this.sectionIdString;
       this.section.number = this.sectionForm.value.number ?? '';
@@ -258,7 +269,9 @@ export class SectionEditorComponent {
    * @returns {void}
    */
   private onSuccess(section: Section): void {
-    this.router.navigate(['/academics/admin/section']);
+    this.router.navigate(['/academics/admin/section'], {
+      queryParams: this.sectionAdminQueryParams()
+    });
 
     let message: string =
       this.sectionIdString === 'new' ? 'Section Created' : 'Section Updated';
@@ -278,5 +291,25 @@ export class SectionEditorComponent {
     this.snackBar.open(message, '', {
       duration: 2000
     });
+  }
+
+  onCancel(): void {
+    this.router.navigate(['/academics/admin/section'], {
+      queryParams: this.sectionAdminQueryParams()
+    });
+  }
+
+  isSubmitDisabled(): boolean {
+    return (
+      this.sectionForm.invalid ||
+      this.term.invalid ||
+      this.course.invalid ||
+      this.room.invalid
+    );
+  }
+
+  private sectionAdminQueryParams(): { term: string } | {} {
+    let termId = this.term.value?.id ?? this.incomingTermId;
+    return termId ? { term: termId } : {};
   }
 }
