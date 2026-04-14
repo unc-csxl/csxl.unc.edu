@@ -223,9 +223,9 @@ Please add a link to your UNLISTED (NOT PRIVATE!) YouTube video below. Be sure t
       'It is also possible to receive credit for COMP 227, Effective Peer Teaching In Computer Science, instead of monetary compensation for being a UTA. Students who choose this option will meet with the COMP 227 instructor as a class once a week (must be available Thursdays from 2-3:15pm) to learn about best practices in CS education and how to apply them as UTAs. The time served as a UTA is considered a practicum associated with the course which fulfills the EE general education requirement tag.',
     fieldType: FormFieldType.DROP_DOWN,
     dropdownItems: [
-      'Monetary compensation only'
-      // 'COMP 227 credit only',
-      // 'Open to either 227 credit or compensation'
+      'Monetary compensation only',
+      'COMP 227 credit only',
+      'Open to either 227 credit or compensation'
     ],
     required: true
   }
