@@ -28,10 +28,14 @@
         [matChipInputFor]="chipGrid"
         matInput
         [matAutocomplete]="auto"
+        (keydown.enter)="onLookupKeydown($event)"
+        (keydown.tab)="onLookupKeydown($event)"
         [formControl]="userLookup" />
     }
     <mat-autocomplete
       #auto="matAutocomplete"
+      [autoActiveFirstOption]="true"
+      [autoSelectActiveOption]="true"
       (optionSelected)="onUserAdded($event)">
       @for (option of filteredUsers$ | async; track option) {
         <mat-option [value]="option">

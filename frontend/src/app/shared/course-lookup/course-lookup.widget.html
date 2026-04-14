@@ -1,38 +1,38 @@
 <mat-form-field class="form-field" appearance="outline" color="accent">
   <mat-label>{{ label }}</mat-label>
-  <mat-chip-grid #chipGrid aria-label="Choose a room" [disabled]="disabled">
-    @if (selectedRoom) {
-      <mat-chip-row (removed)="onRoomRemoved()">
-        {{ displayRoom(selectedRoom) }}
+  <mat-chip-grid #chipGrid aria-label="Choose a course" [disabled]="disabled">
+    @if (selectedCourse) {
+      <mat-chip-row (removed)="onCourseRemoved()">
+        {{ displayCourse(selectedCourse) }}
         <button
           matChipRemove
-          [attr.aria-label]="'remove ' + displayRoom(selectedRoom)">
+          [attr.aria-label]="'remove ' + displayCourse(selectedCourse)">
           <mat-icon>cancel</mat-icon>
         </button>
       </mat-chip-row>
     }
-    @if (!selectedRoom) {
+    @if (!selectedCourse) {
       <input
-        #roomInput
+        #courseInput
         type="text"
-        placeholder="Search rooms..."
-        aria-label="Search rooms"
+        placeholder="Search courses..."
+        aria-label="Search courses"
         [matChipInputFor]="chipGrid"
         matInput
         [matAutocomplete]="auto"
         (keydown.enter)="onLookupKeydown($event)"
         (keydown.tab)="onLookupKeydown($event)"
-        [formControl]="roomLookup" />
+        [formControl]="courseLookup" />
     }
     <mat-autocomplete
       #auto="matAutocomplete"
-      [displayWith]="displayRoom"
+      [displayWith]="displayCourse"
       [autoActiveFirstOption]="true"
       [autoSelectActiveOption]="true"
-      (optionSelected)="onRoomAdded($event)">
-      @for (room of filteredRooms$ | async; track room.id) {
-        <mat-option [value]="room">
-          {{ displayRoom(room) }}
+      (optionSelected)="onCourseAdded($event)">
+      @for (course of filteredCourses$ | async; track course.id) {
+        <mat-option [value]="course">
+          {{ displayCourse(course) }}
         </mat-option>
       }
     </mat-autocomplete>

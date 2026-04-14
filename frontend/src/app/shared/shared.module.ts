@@ -25,6 +25,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SocialMediaIcon } from '../shared/social-media-icon/social-media-icon.widget';
 import { SearchBar } from './search-bar/search-bar.widget';
 import { RouterModule } from '@angular/router';
+import { CourseLookup } from './course-lookup/course-lookup.widget';
 import { RoomLookup } from './room-lookup/room-lookup.widget';
 import { UserLookup } from './user-lookup/user-lookup.widget';
 import { CommunityAgreement } from './community-agreement/community-agreement.widget';
@@ -51,6 +52,7 @@ import { MatFilterChipDialog } from './mat/filter-chip/dialog/filter-chip-dialog
   declarations: [
     SocialMediaIcon,
     SearchBar,
+    CourseLookup,
     RoomLookup,
     UserLookup,
     UserChipList,
@@ -93,6 +95,7 @@ import { MatFilterChipDialog } from './mat/filter-chip/dialog/filter-chip-dialog
   exports: [
     SocialMediaIcon,
     SearchBar,
+    CourseLookup,
     RoomLookup,
     UserLookup,
     UserChipList,
