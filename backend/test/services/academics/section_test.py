@@ -211,7 +211,6 @@ def test_root_add_section_member(section_member_svc: SectionMemberService):
 
 
 def test_user_add_section_member(section_member_svc: SectionMemberService):
-
     with pytest.raises(UserPermissionException):
         section_member_svc.add_section_member(
             subject=user_data.student,

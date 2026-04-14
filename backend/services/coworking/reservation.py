@@ -293,7 +293,9 @@ class ReservationService:
                     room_type_map[room.id] = (
                         "Pairing Room"
                         if room.capacity == 2
-                        else "Small Group" if room.capacity < 6 else "Large Group"
+                        else "Small Group"
+                        if room.capacity < 6
+                        else "Large Group"
                     )
             return ReservationMapDetails(
                 reserved_date_map=reserved_date_map,
@@ -367,7 +369,9 @@ class ReservationService:
             room_type_map[room.id] = (
                 "Pairing Room"
                 if room.capacity == 2
-                else "Small Group" if room.capacity < 6 else "Large Group"
+                else "Small Group"
+                if room.capacity < 6
+                else "Large Group"
             )
 
         self._transform_date_map_for_unavailable(reserved_date_map)

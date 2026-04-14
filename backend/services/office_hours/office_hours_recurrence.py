@@ -73,11 +73,10 @@ class OfficeHoursRecurrenceService:
         # Create office hour events
         new_events = []
         current_date = recurrence_pattern.start_date
-        current_event = event
+        event_template = event.model_copy(deep=True)
+        event_template.recurrence_pattern_id = recurrence_pattern_entity.id
 
-        current_event.recurrence_pattern_id = recurrence_pattern_entity.id
-
-        original_td = current_event.end_time - current_event.start_time
+        original_td = event_template.end_time - event_template.start_time
 
         # put valid date strings into list
         days_recur = []
@@ -116,8 +115,9 @@ class OfficeHoursRecurrenceService:
             day = current_date.weekday()
 
             if Weekday(day) in days_recur:
+                current_event = event_template.model_copy(deep=True)
                 # new date is the start date of original event with "current date" instead (leave the time!)
-                current_event.start_time = event.start_time.replace(
+                current_event.start_time = event_template.start_time.replace(
                     year=current_date.year,
                     month=current_date.month,
                     day=current_date.day,

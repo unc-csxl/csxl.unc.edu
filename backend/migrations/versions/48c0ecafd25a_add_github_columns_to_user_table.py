@@ -1,10 +1,11 @@
 """Add GitHub integration columns to user table
 
 Revision ID: 48c0ecafd25a
-Revises: 
+Revises:
 Create Date: 2023-04-01 09:28:21.368072
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 

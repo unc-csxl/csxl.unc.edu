@@ -115,7 +115,6 @@ class SectionMemberService:
 
         section_memberships: list[SectionMemberEntity] = []
         for oh_section in oh_sections:
-
             # Check If Membership Exists
             membership = (
                 self._session.query(SectionMemberEntity)
@@ -191,7 +190,6 @@ class SectionMemberService:
                     and row["Student"] != "Student, Test"
                     and len(row["Student"]) > 0
                 ):
-
                     # Ensure that the uploaded CSV only contains one section
                     unique_sections.add(row["Section"])
                     if len(unique_sections) > 1:

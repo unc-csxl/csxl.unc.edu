@@ -4,7 +4,6 @@ There is no reason to instantiate this class directly. Instead, look toward the 
 Additionally, import from the top-level entities file which indexes all entity implementations.
 """
 
-
 from sqlalchemy.orm import DeclarativeBase
 
 

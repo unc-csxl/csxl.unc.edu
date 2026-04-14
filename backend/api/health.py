@@ -3,7 +3,6 @@
 Production systems monitor these end points upon deployment, and at regular intervals, to ensure the service is running.
 """
 
-
 from fastapi import APIRouter, Depends
 from ..services.health import HealthService
 

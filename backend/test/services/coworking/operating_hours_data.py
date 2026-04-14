@@ -48,11 +48,12 @@ def insert_fake_data(session: Session, time: dict[str, datetime]):
     )
 
     three_days_from_today = OperatingHours(
-        id=4, start=time[AN_HOUR_AGO] + 3 * ONE_DAY, end=time[IN_EIGHT_HOURS] + 3 * ONE_DAY
+        id=4,
+        start=time[AN_HOUR_AGO] + 3 * ONE_DAY,
+        end=time[IN_EIGHT_HOURS] + 3 * ONE_DAY,
     )
 
     all = [today, future, tomorrow, three_days_from_today]
-
 
     for operating_hours in all:
         entity = OperatingHoursEntity.from_model(operating_hours)

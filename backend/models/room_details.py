@@ -19,6 +19,7 @@ class RoomDetails(Room):
     This model is based on the `RoomEntity` model, which defines the shape
     of the `Room` database in the PostgreSQL database.
     """
+
     building: str
     room: str
     capacity: int

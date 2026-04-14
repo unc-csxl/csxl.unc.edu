@@ -197,17 +197,13 @@ class OfficeHoursService:
             event_end_time=queue_entity.end_time,
             event_location=queue_entity.room.nickname,
             event_location_description=queue_entity.location_description,
-            ticket=(
-                active_ticket.to_overview_model()
-                if active_ticket else None
-            ),
+            ticket=(active_ticket.to_overview_model() if active_ticket else None),
             queue_position=queue_position,
         )
 
     def _to_oh_queue_overview(
         self, user: User, oh_event: OfficeHoursEntity
     ) -> OfficeHourQueueOverview:
-
         ticket_entities = self._session.scalars(
             select(OfficeHoursTicketEntity)
             .where(OfficeHoursTicketEntity.office_hours_id == oh_event.id)
@@ -380,7 +376,6 @@ class OfficeHoursService:
         return office_hours_entity.to_primary_details_model()
 
     def _check_site_admin_permissions(self, user: User, site_id: int):
-
         # Use an enhanced query to check if a course site exists.
         course_site_exists_query = exists().where(CourseSiteEntity.id == site_id)
         course_site_exists = self._session.query(course_site_exists_query).scalar()
@@ -430,7 +425,6 @@ class OfficeHoursService:
             )
 
     def _check_site_student_permissions(self, user: User, site_id: int):
-
         # Use an enhanced query to check if a course site exists.
         course_site_exists_query = exists().where(CourseSiteEntity.id == site_id)
         course_site_exists = self._session.query(course_site_exists_query).scalar()

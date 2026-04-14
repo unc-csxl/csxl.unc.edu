@@ -5,7 +5,6 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 
 class WebSocketMiddleware(BaseHTTPMiddleware):
-
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:  # type: ignore
         if scope["type"] == "websocket":
             websocket = WebSocket(scope, receive=receive, send=send)

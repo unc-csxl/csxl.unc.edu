@@ -178,7 +178,7 @@ Angular 21 with `@angular/build:application` already uses esbuild (not webpack).
        "sqlalchemy>=2.0.30,<2.1.0",
        "alembic>=1.13.1,<1.14.0",
        "pygithub>=2.3.0,<2.4.0",
-       "black>=24.4.2,<24.5.0",
+      "ruff>=0.11.8,<0.12.0",
        "setuptools>=70.0.0,<70.1.0",
        "bs4>=0.0.2",
    ]

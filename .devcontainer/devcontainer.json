@@ -15,7 +15,7 @@
             "extensions": [
                 "ms-python.python",
                 "ms-python.vscode-pylance",
-                "ms-python.black-formatter",
+                "charliermarsh.ruff",
                 "GitHub.vscode-pull-request-github",
                 "angular.ng-template",
                 "matthewpi.caddyfile-support",
@@ -33,7 +33,7 @@
                     "editor.defaultFormatter": "esbenp.prettier-vscode"
                 },
                 "[python]": {
-                    "editor.defaultFormatter": "ms-python.black-formatter"
+                    "editor.defaultFormatter": "charliermarsh.ruff"
                 },
                 "[html]": {
                     "editor.formatOnSave": false,

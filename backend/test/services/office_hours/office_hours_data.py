@@ -350,13 +350,12 @@ oh_tickets = [
     comp_110_called_ticket,
     comp_110_closed_ticket,
     ticket_cooldown_closed_ticket,
-    ticket_maximum_closed_ticket
+    ticket_maximum_closed_ticket,
 ]
 ticket_user_pairings = [comp_110_ticket_creators]
 
 
 def insert_fake_data(session: Session):
-
     # Step 1: Add sites to database
 
     for site in sites:
