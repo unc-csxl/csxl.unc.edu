@@ -19,7 +19,7 @@ COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /uvx /usr/local/bin/
 COPY ./backend/pyproject.toml /workspace/backend/pyproject.toml
 COPY ./backend/uv.lock /workspace/backend/uv.lock
 WORKDIR /workspace/backend
-RUN uv sync --frozen --no-dev --link-mode=copy \
+RUN uv sync --frozen --no-dev --link-mode=copy --no-managed-python --python python3.12 \
     && chmod -R a+rx /workspace/backend/.venv/bin
 ENV PATH="/workspace/backend/.venv/bin:$PATH"
 WORKDIR /workspace
