@@ -7,7 +7,8 @@
  * @license MIT
  */
 
-import { Component, WritableSignal, effect, signal } from '@angular/core';
+import { Component, WritableSignal, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormGroup } from '@angular/forms';
 import { ApplicationFormField } from './application-forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,7 +19,8 @@ import { Profile } from 'src/app/models.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Term } from 'src/app/academics/academics.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
-import { Observable } from 'rxjs';
+import { Observable, concat, of, timer } from 'rxjs';
+import { map, shareReplay, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-application-form',
@@ -36,10 +38,6 @@ export class ApplicationFormComponent {
     }
   };
 
-  // TODO: Do not hard code this logic and always remember JS months are 0 indexed (:
-  showApplicationAssignmentCard =
-    new Date().getTime() > new Date(2026, 0, 15).getTime();
-
   /** Form */
   formGroup: FormGroup;
   fields: ApplicationFormField[];
@@ -48,6 +46,11 @@ export class ApplicationFormComponent {
   application: Application;
 
   term$: Observable<Term>;
+  showApplicationAssignmentCard$: Observable<boolean>;
+  term = toSignal<Term | undefined>(of(undefined));
+  showApplicationAssignmentCard = toSignal(of(false), {
+    initialValue: false
+  });
 
   constructor(
     private route: ActivatedRoute,
@@ -98,7 +101,34 @@ export class ApplicationFormComponent {
       }
     });
 
-    this.term$ = this.academicsService.getTerm(termId);
+    this.term$ = this.academicsService
+      .getTerm(termId)
+      .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+    this.showApplicationAssignmentCard$ = this.term$.pipe(
+      switchMap((term) => {
+        const termStart = new Date(term.start);
+
+        if (Number.isNaN(termStart.getTime())) {
+          return of(false);
+        }
+
+        const delayUntilTermStarts = termStart.getTime() - Date.now();
+
+        if (delayUntilTermStarts <= 0) {
+          return of(true);
+        }
+
+        return concat(
+          of(false),
+          timer(delayUntilTermStarts).pipe(map(() => true))
+        );
+      })
+    );
+    this.term = toSignal(this.term$);
+    this.showApplicationAssignmentCard = toSignal(
+      this.showApplicationAssignmentCard$,
+      { initialValue: false }
+    );
   }
 
   onSubmit() {

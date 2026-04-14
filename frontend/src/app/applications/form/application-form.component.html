@@ -1,7 +1,7 @@
-@if (showApplicationAssignmentCard) {
+@if (showApplicationAssignmentCard()) {
   <mat-pane>
     <mat-card-header>
-      <mat-card-title>{{ (term$ | async)?.name }} Assignment</mat-card-title>
+      <mat-card-title>{{ term()?.name }} Assignment</mat-card-title>
     </mat-card-header>
     @if (this.application.assignments.length > 0) {
       <mat-card-content class="pt-3!">
