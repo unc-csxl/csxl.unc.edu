@@ -75,7 +75,7 @@ When collaborating on a shared branch, we recommend pulling with rebasing such t
 2. Pull any progress on the branch your collaborator(s) may have pushed:
     * `get pull origin --rebase [branch-name]`
 3. Reset your development database with fresh data:
-    * `python3 -m backend.script.reset_demo` (if this fails, see the [database documentation](docs/database.md))
+    * `uv run --project backend python -m backend.script.reset_demo` (if this fails, see the [database documentation](docs/database.md))
 
 As per the above section, when you reach progress points large and small, you are encouraged to push to collaborative branches so that you and your partners on the branch do not diverge to significantly.
 
@@ -159,7 +159,7 @@ Once you have confirmed everything you are working on is committed appropriately
 Finally, fetch latest changes and switch to the branch you are looking to work on and reset the database:
 
 1. `git fetch origin && git switch [branch-name]`
-2. `python3 -m backend.script.reset_demo`
+2. `uv run --project backend python -m backend.script.reset_demo`
 
 If you're looking to take on a new Issue or Subtask, you'll switch to `main` or the issue branch, respectively, and create a new branch as discussed in the beginning work sections above.
 

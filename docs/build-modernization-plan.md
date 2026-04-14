@@ -30,7 +30,7 @@
 
 ## Migration Milestones
 
-Each milestone is a discrete, merge-ready commit on the `refactor/build-modernization` branch. Every milestone should pass `honcho start` (dev) and `docker build .` (prod) before moving on.
+Each milestone is a discrete, merge-ready commit on the `refactor/build-modernization` branch. Every milestone should pass `uv run --project backend honcho start` (dev) and `docker build .` (prod) before moving on.
 
 ---
 
@@ -97,7 +97,7 @@ Each milestone is a discrete, merge-ready commit on the `refactor/build-moderniz
 
 **Validation:**
 - `cd frontend && pnpm run build` succeeds
-- `honcho start` launches all 3 processes
+- `uv run --project backend honcho start` launches all 3 processes
 - `docker build -t csxl-test .` succeeds
 
 ---
@@ -212,14 +212,14 @@ Angular 21 with `@angular/build:application` already uses esbuild (not webpack).
    RUN uv sync --frozen --no-dev
    ```
 7. Update `devcontainer.json` `postCreateCommand` if backend install is needed post-create
-8. Verify `honcho start` — uvicorn still starts backend
+8. Verify `uv run --project backend honcho start` — uvicorn still starts backend
 9. Verify `pytest` still runs
 10. Commit: `build: migrate backend to uv`
 
 **Validation:**
 - `cd /workspace/backend && uv sync` succeeds
-- `uvicorn --port=1561 --reload backend.main:app` starts
-- `python3 -m pytest` passes
+- `uv run --project backend uvicorn --port=1561 --reload backend.main:app` starts
+- `uv run --project backend pytest` passes
 - `docker build -t csxl-test .` succeeds
 
 ---
@@ -237,8 +237,8 @@ Angular 21 with `@angular/build:application` already uses esbuild (not webpack).
 2. Remove orphaned lockfiles
 3. Final smoke test of full dev workflow:
    - Rebuild devcontainer from scratch
-   - `honcho start` — all services run
-   - Run `pytest`
+   - `uv run --project backend honcho start` — all services run
+   - Run `uv run --project backend pytest`
    - Run `pnpm run build` in frontend
 4. Final smoke test of production:
    - `docker build -t csxl-test .`
@@ -281,13 +281,13 @@ Each milestone is a separate commit. The branch can be merged to `main` after al
 pnpm install                          # Root (husky/commitlint)
 cd frontend && pnpm install           # Frontend deps
 cd backend && uv sync                 # Backend deps
-honcho start                          # Start all dev services
+uv run --project backend honcho start # Start all dev services
 
 # Production build
 docker build -t csxl .                # Full prod image
 
 # Tests
-cd backend && python3 -m pytest       # Backend tests
+cd backend && uv run pytest           # Backend tests
 cd frontend && pnpm run lint          # Frontend lint
 cd frontend && pnpm run build         # Frontend prod build check
 ```

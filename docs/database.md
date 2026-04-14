@@ -22,7 +22,7 @@ POSTGRES_DATABASE=csxl
 
 The development script to create the `csxl` database in PostgeSQL is in `backend/script/create_database.py`
 
-To execute the script: `python3 -m backend.script.create_database`
+To execute the script: `uv run --project backend python -m backend.script.create_database`
 
 ### Deleting the Database
 
@@ -30,9 +30,9 @@ In development, when table schema and relationships are changing, you may run in
 
 The development script to delete the `csxl` database in PostgreSQL is in `backend/script/delete_database.py`
 
-To execute the script: `python3 -m backend.script.delete_database`
+To execute the script: `uv run --project backend python -m backend.script.delete_database`
 
-To create the database, as discussed in the previous section, `python3 -m backend.script.create_database`
+To create the database, as discussed in the previous section, `uv run --project backend python -m backend.script.create_database`
 
 Finally, complete the steps below to reload development data into the database.
 
@@ -46,7 +46,7 @@ When giving a demonstration of a feature and interacting with it, it's often hel
 
 As an example, for student organizations, the demo data script will load all active student organizations as of start of Fall 2023. However, the testing data reset (below) will only load a small subset of them for automated testing purposes.
 
-To reset your development environment with demo data: `python3 -m backend.script.reset_demo`
+To reset your development environment with demo data: `uv run --project backend python -m backend.script.reset_demo`
 
 #### 2. Reset to Testing Data
 
@@ -54,7 +54,7 @@ When writing integration tests of backend services with the database, we establi
 
 We make it possible to load the data from our integration test suite into the development environment for two reasons, first, to let you see what the test data looks like from the running application, and second, so that you can access the test data from the PostgreSQL data viewer, described below, in the event that your tests are behaving in a surprising fashion and need to confirm the data that resides in the database at the start of testing.
 
-To reset your development environment with testing data: `python3 -m backend.script.reset_testing`
+To reset your development environment with testing data: `uv run --project backend python -m backend.script.reset_testing`
 
 ### Using PostgreSQL Viewer (VSCode Plugin)
 
