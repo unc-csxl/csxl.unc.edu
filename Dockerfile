@@ -1,11 +1,12 @@
 # Front-end Build Steps
 FROM node:22 as build
 COPY ./frontend/package.json /workspace/frontend/package.json
+COPY ./frontend/pnpm-lock.yaml /workspace/frontend/pnpm-lock.yaml
 COPY ./frontend/angular.json /workspace/frontend/angular.json
 WORKDIR /workspace/frontend
-RUN npm install -g yarn --force
-RUN yarn global add @angular/cli
-RUN yarn install
+RUN corepack enable \
+	&& corepack prepare pnpm@10.17.1 --activate
+RUN pnpm install --frozen-lockfile
 ENV SHELL=/bin/bash
 RUN ng analytics disable
 COPY ./frontend/src /workspace/frontend/src

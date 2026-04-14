@@ -2,6 +2,7 @@
 __pycache__
 node_modules
 .angular
+.pnpm-store
 deploy_key*
 .env
 .DS_Store
