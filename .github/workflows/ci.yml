@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v6
@@ -48,7 +48,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
           cache: pnpm
           cache-dependency-path: frontend/pnpm-lock.yaml
 
@@ -83,7 +83,7 @@ jobs:
       POSTGRES_DATABASE: csxl
       POSTGRES_HOST: localhost
       POSTGRES_PASSWORD: postgres
-      POSTGRES_PORT: '5432'
+      POSTGRES_PORT: "5432"
       POSTGRES_USER: postgres
       HOST: localhost
       JWT_SECRET: test-jwt-secret
@@ -97,7 +97,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v6
@@ -125,7 +125,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
           cache: pnpm
           cache-dependency-path: frontend/pnpm-lock.yaml
 
