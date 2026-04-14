@@ -20,17 +20,11 @@
         </mat-select>
       </mat-form-field>
       <!-- Section Course -->
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Select Course</mat-label>
-        <mat-select [formControl]="course">
-          @for (course of courses; track course) {
-            <mat-option [value]="course">
-              {{ course.subject_code }} {{ course.number }}:
-              {{ course.title }}</mat-option
-            >
-          }
-        </mat-select>
-      </mat-form-field>
+      <course-lookup
+        label="Course"
+        [courses]="courses"
+        [selectedCourse]="course.value"
+        (selectedCourseChange)="course.setValue($event)"></course-lookup>
       <!-- Section Number Field -->
       <mat-form-field appearance="outline" color="accent" class="w-full">
         <mat-label>Section Number</mat-label>

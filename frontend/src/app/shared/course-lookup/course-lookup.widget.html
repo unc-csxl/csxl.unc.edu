@@ -1,0 +1,36 @@
+<mat-form-field class="form-field" appearance="outline" color="accent">
+  <mat-label>{{ label }}</mat-label>
+  <mat-chip-grid #chipGrid aria-label="Choose a course" [disabled]="disabled">
+    @if (selectedCourse) {
+      <mat-chip-row (removed)="onCourseRemoved()">
+        {{ displayCourse(selectedCourse) }}
+        <button
+          matChipRemove
+          [attr.aria-label]="'remove ' + displayCourse(selectedCourse)">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip-row>
+    }
+    @if (!selectedCourse) {
+      <input
+        #courseInput
+        type="text"
+        placeholder="Search courses..."
+        aria-label="Search courses"
+        [matChipInputFor]="chipGrid"
+        matInput
+        [matAutocomplete]="auto"
+        [formControl]="courseLookup" />
+    }
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      [displayWith]="displayCourse"
+      (optionSelected)="onCourseAdded($event)">
+      @for (course of filteredCourses$ | async; track course.id) {
+        <mat-option [value]="course">
+          {{ displayCourse(course) }}
+        </mat-option>
+      }
+    </mat-autocomplete>
+  </mat-chip-grid>
+</mat-form-field>
