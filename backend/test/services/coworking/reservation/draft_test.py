@@ -1,55 +1,41 @@
-"""ReservationService#draft_reservation method tests"""
+"""ReservationService#draft_reservation method tests."""
 
-import pytest
 from unittest.mock import create_autospec
 
+import pytest
+from sqlalchemy.orm import Session
+
+from .....models.coworking import ReservationRequest, ReservationState
+from .....models.coworking.seat import SeatIdentity
+from .....models.user import UserIdentity
 from .....services import PermissionService
 from .....services.coworking import ReservationService
 from .....services.coworking.reservation import ReservationException
-from .....models.coworking import ReservationState, ReservationRequest
-
-from .....models.user import UserIdentity
-from .....models.coworking.seat import SeatIdentity
-
-# Imported fixtures provide dependencies injected for the tests as parameters.
-# Dependent fixtures (seat_svc) are required to be imported in the testing module.
-from ..fixtures import (
-    reservation_svc,
-    permission_svc,
-    seat_svc,
-    policy_svc,
-    operating_hours_svc,
+from .scenario import (
+    arrange_standard_reservation_scenario,
+    make_reservation_service,
+    make_test_request,
 )
 from ..time import *
-
-# Import the setup_teardown fixture explicitly to load entities in database.
-# The order in which these fixtures run is dependent on their imported alias.
-# Since there are relationship dependencies between the entities, order matters.
-from ...core_data import setup_insert_data_fixture as insert_order_0
-from ..operating_hours_data import fake_data_fixture as insert_order_1
-from ...room_data import fake_data_fixture as insert_order_2
-from ..seat_data import fake_data_fixture as insert_order_3
-from .reservation_data import fake_data_fixture as insert_order_4
-
-# Import the fake model data in a namespace for test assertions
-from ...core_data import user_data
-from .. import operating_hours_data
-from .. import seat_data
-from ... import room_data
-from . import reservation_data
 
 __authors__ = ["Kris Jordan, Yuvraj Jain"]
 __copyright__ = "Copyright 2023-24"
 __license__ = "MIT"
 
 
-def test_draft_reservation_open_seats(
-    reservation_svc: ReservationService, time: dict[str, datetime]
-):
-    """Request with an open seat."""
-    reservation = reservation_svc.draft_reservation(
-        user_data.ambassador, reservation_data.test_request()
-    )
+pytestmark = pytest.mark.integration
+
+
+def test_draft_reservation_open_seats(session: Session, time: dict[str, datetime]):
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    request = make_test_request(scenario)
+
+    # Act
+    reservation = reservation_svc.draft_reservation(scenario.ambassador, request)
+
+    # Assert
     assert reservation is not None
     assert reservation.id is not None
     assert reservation.state == ReservationState.DRAFT
@@ -59,396 +45,444 @@ def test_draft_reservation_open_seats(
     assert_equal_times(time[NOW], reservation.updated_at)
     assert len(reservation.seats) == 1
     assert len(reservation.users) == 1
-    assert reservation.users[0].id == user_data.ambassador.id
+    assert reservation.users[0].id == scenario.ambassador.id
 
 
-def test_draft_reservation_in_past(
-    reservation_svc: ReservationService, time: dict[str, datetime]
-):
-    """Request a reservation that starts in the past. Its start should be now, instead."""
-    reservation = reservation_svc.draft_reservation(
-        user_data.ambassador,
-        reservation_data.test_request({"start": time[THIRTY_MINUTES_AGO]}),
-    )
+def test_draft_reservation_in_past(session: Session, time: dict[str, datetime]):
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    request = make_test_request(scenario, {"start": time[THIRTY_MINUTES_AGO]})
+
+    # Act
+    reservation = reservation_svc.draft_reservation(scenario.ambassador, request)
+
+    # Assert
     assert_equal_times(time[NOW], reservation.start)
 
 
-def test_draft_reservation_beyond_walkin_limit(reservation_svc: ReservationService):
-    """Walkin time limit should be bounded by PolicyService#walkin_initial_duration"""
-    reservation = reservation_svc.draft_reservation(
-        user_data.user,
-        reservation_data.test_request(
-            {
-                "users": [UserIdentity(**user_data.user.model_dump())],
-                "start": reservation_data.reservation_1.end,
-                "end": reservation_data.reservation_1.end
-                + reservation_svc._policy_svc.walkin_initial_duration(user_data.user)
-                + timedelta(minutes=10),
-            }
-        ),
+def test_draft_reservation_beyond_walkin_limit(
+    session: Session, time: dict[str, datetime]
+):
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    request = make_test_request(
+        scenario,
+        {
+            "users": [UserIdentity(**scenario.user.model_dump())],
+            "start": scenario.reservation_1.end,
+            "end": scenario.reservation_1.end
+            + reservation_svc._policy_svc.walkin_initial_duration(scenario.user)
+            + timedelta(minutes=10),
+        },
     )
-    assert_equal_times(reservation_data.reservation_1.end, reservation.start)
+
+    # Act
+    reservation = reservation_svc.draft_reservation(scenario.user, request)
+
+    # Assert
+    assert_equal_times(scenario.reservation_1.end, reservation.start)
     assert_equal_times(
-        reservation_data.reservation_1.end
-        + reservation_svc._policy_svc.walkin_initial_duration(user_data.user),
+        scenario.reservation_1.end
+        + reservation_svc._policy_svc.walkin_initial_duration(scenario.user),
         reservation.end,
     )
 
 
-def test_draft_reservation_some_taken_seats(reservation_svc: ReservationService):
-    """Request with list of some taken, some open seats."""
-    reservation = reservation_svc.draft_reservation(
-        user_data.ambassador,
-        reservation_data.test_request(
-            {
-                "seats": [
-                    SeatIdentity(
-                        **reservation_data.reservation_1.seats[0].model_dump()
-                    ),
-                    SeatIdentity(**seat_data.monitor_seat_01.model_dump()),
-                ]
-            }
-        ),
+def test_draft_reservation_some_taken_seats(session: Session, time: dict[str, datetime]):
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    request = make_test_request(
+        scenario,
+        {
+            "seats": [
+                SeatIdentity(id=scenario.reservation_1.seats[0].id),
+                SeatIdentity(id=scenario.monitor_seat_01.id),
+            ]
+        },
     )
+
+    # Act
+    reservation = reservation_svc.draft_reservation(scenario.ambassador, request)
+
+    # Assert
     assert len(reservation.seats) == 1
-    assert reservation.seats[0].id == seat_data.monitor_seat_01.id
+    assert reservation.seats[0].id == scenario.monitor_seat_01.id
 
 
 def test_draft_reservation_seat_availability_truncated(
-    reservation_svc: ReservationService,
+    session: Session, time: dict[str, datetime]
 ):
-    """When walkin requested and seat is reserved later on."""
-    reservation = reservation_svc.draft_reservation(
-        user_data.user,
-        reservation_data.test_request(
-            {
-                "users": [UserIdentity(**user_data.user.model_dump())],
-                "start": reservation_data.reservation_1.end,
-                "end": operating_hours_data.today.end,
-                "seats": [
-                    SeatIdentity(**seat.model_dump())
-                    for seat in reservation_data.reservation_4.seats
-                ],
-            }
-        ),
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    request = make_test_request(
+        scenario,
+        {
+            "users": [UserIdentity(**scenario.user.model_dump())],
+            "start": scenario.reservation_1.end,
+            "end": scenario.today.end,
+            "seats": [SeatIdentity(id=seat.id) for seat in scenario.reservation_4.seats],
+        },
     )
-    assert_equal_times(reservation_data.reservation_4.start, reservation.end)
+
+    # Act
+    reservation = reservation_svc.draft_reservation(scenario.user, request)
+
+    # Assert
+    assert_equal_times(scenario.reservation_4.start, reservation.end)
     assert len(reservation.seats) == 1
 
 
-def test_draft_reservation_future(reservation_svc: ReservationService):
-    """When a reservation is in the future, it has longer limits."""
-    future_reservation_limit = (
-        reservation_svc._policy_svc.maximum_initial_reservation_duration(user_data.user)
+def test_draft_reservation_future(session: Session, time: dict[str, datetime]):
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    future_reservation_limit = reservation_svc._policy_svc.maximum_initial_reservation_duration(
+        scenario.user
     )
-    start = operating_hours_data.future.start
-    end = operating_hours_data.future.start + future_reservation_limit
-    reservation = reservation_svc.draft_reservation(
-        user_data.ambassador,
-        reservation_data.test_request(
-            {
-                "seats": [
-                    SeatIdentity(**seat.model_dump())
-                    for seat in seat_data.reservable_seats
-                ],
-                "start": start,
-                "end": end,
-            }
-        ),
+    start = scenario.future.start
+    end = scenario.future.start + future_reservation_limit
+    request = make_test_request(
+        scenario,
+        {
+            "seats": [SeatIdentity(id=seat.id) for seat in scenario.reservable_seats],
+            "start": start,
+            "end": end,
+        },
     )
+
+    # Act
+    reservation = reservation_svc.draft_reservation(scenario.ambassador, request)
+
+    # Assert
     assert_equal_times(start, reservation.start)
     assert_equal_times(end, reservation.end)
 
 
-def test_draft_reservation_future_unreservable(reservation_svc: ReservationService):
-    """When a reservation is not a walk-in, only unreservable seats are available."""
+def test_draft_reservation_future_unreservable(
+    session: Session, time: dict[str, datetime]
+):
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    start = scenario.tomorrow.start
+    end = scenario.tomorrow.start + ONE_HOUR
+    request = make_test_request(
+        scenario,
+        {
+            "seats": [SeatIdentity(id=seat.id) for seat in scenario.unreservable_seats],
+            "start": start,
+            "end": end,
+        },
+    )
+
+    # Act / Assert
     with pytest.raises(ReservationException):
-        start = operating_hours_data.tomorrow.start
-        end = operating_hours_data.tomorrow.start + ONE_HOUR
-        reservation = reservation_svc.draft_reservation(
-            user_data.ambassador,
-            reservation_data.test_request(
-                {
-                    "seats": [
-                        SeatIdentity(**seat.model_dump())
-                        for seat in seat_data.unreservable_seats
-                    ],
-                    "start": start,
-                    "end": end,
-                }
-            ),
-        )
+        reservation_svc.draft_reservation(scenario.ambassador, request)
 
 
-def test_draft_reservation_all_closed_seats(reservation_svc: ReservationService):
-    """Request with all closed seats errors."""
+def test_draft_reservation_all_closed_seats(
+    session: Session, time: dict[str, datetime]
+):
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    request = make_test_request(
+        scenario,
+        {
+            "seats": [SeatIdentity(id=scenario.reservation_1.seats[0].id)],
+            "end": scenario.reservation_1.end + timedelta(minutes=8),
+        },
+    )
+
+    # Act / Assert
     with pytest.raises(ReservationException):
-        reservation = reservation_svc.draft_reservation(
-            user_data.ambassador,
-            reservation_data.test_request(
-                {
-                    "seats": [
-                        SeatIdentity(
-                            **reservation_data.reservation_1.seats[0].model_dump()
-                        ),
-                    ],
-                    "end": reservation_data.reservation_1.end + timedelta(minutes=8),
-                }
-            ),
-        )
+        reservation_svc.draft_reservation(scenario.ambassador, request)
 
 
 def test_draft_reservation_has_reservation_conflict(
-    reservation_svc: ReservationService,
+    session: Session, time: dict[str, datetime]
 ):
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    request = make_test_request(
+        scenario,
+        {
+            "users": [UserIdentity(**scenario.user.model_dump())],
+            "end": time[NOW] + TEN_MINUTES,
+        },
+    )
+
+    # Act / Assert
     with pytest.raises(ReservationException):
-        reservation = reservation_svc.draft_reservation(
-            user_data.user,
-            reservation_data.test_request(
-                {
-                    "users": [UserIdentity(**user_data.user.model_dump())],
-                    "end": datetime.now() + TEN_MINUTES,
-                }
-            ),
-        )
+        reservation_svc.draft_reservation(scenario.user, request)
 
 
 def test_draft_walkin_reservation_has_walkin_reservation_conflict(
-    reservation_svc: ReservationService, time: dict[str, datetime]
+    session: Session, time: dict[str, datetime]
 ):
-    """If conflicting reservation is another walkin, a ReservationException is raised."""
-    reservation = reservation_svc.draft_reservation(
-        user_data.ambassador,
-        reservation_data.test_request({"start": time[THIRTY_MINUTES_AGO]}),
-    )
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    request = make_test_request(scenario, {"start": time[THIRTY_MINUTES_AGO]})
+
+    # Act
+    reservation = reservation_svc.draft_reservation(scenario.ambassador, request)
+
+    # Assert
     assert reservation.walkin
     with pytest.raises(ReservationException):
-        # Repeat request
-        reservation = reservation_svc.draft_reservation(
-            user_data.ambassador,
-            reservation_data.test_request({"start": time[THIRTY_MINUTES_AGO]}),
-        )
+        reservation_svc.draft_reservation(scenario.ambassador, request)
 
 
 def test_draft_reservation_in_middle_of_another(
-    reservation_svc: ReservationService, time: dict[str, datetime]
+    session: Session, time: dict[str, datetime]
 ):
-    """If conflicting reservation is in the middle of another reservation the user has a ReservationError is expected."""
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    request = make_test_request(
+        scenario,
+        {
+            "start": scenario.today.end - ONE_HOUR + FIVE_MINUTES,
+            "end": scenario.today.end - ONE_HOUR + FIVE_MINUTES * 4,
+        },
+    )
+
+    # Act / Assert
     with pytest.raises(ReservationException):
-        # Conflict request
-        reservation_svc.draft_reservation(
-            user_data.ambassador,
-            reservation_data.test_request(
-                {
-                    "start": operating_hours_data.today.end - ONE_HOUR + FIVE_MINUTES,
-                    "end": operating_hours_data.today.end - ONE_HOUR + FIVE_MINUTES * 4,
-                }
-            ),
-        )
+        reservation_svc.draft_reservation(scenario.ambassador, request)
 
 
 def test_draft_reservation_has_conflict_but_ok(
-    reservation_svc: ReservationService, time: dict[str, datetime]
+    session: Session, time: dict[str, datetime]
 ):
-    """This test case is for when a user has a reservation in the future (say in 30 minutes) and
-    wants to make a drop-in visit right now, leading up to the reservation. Since the initial request
-    is for one-hour, we need to check that the drop-in appointment is truncated to just _before_
-    the next reservation begins."""
-    conflict = reservation_data.reservation_4
-    reservation = reservation_svc.draft_reservation(
-        user_data.root,
-        reservation_data.test_request(
-            {
-                "start": time[NOW],
-                "end": conflict.start + THIRTY_MINUTES,
-                "users": [UserIdentity(**user_data.root.model_dump())],
-            }
-        ),
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    conflict = scenario.reservation_4
+    request = make_test_request(
+        scenario,
+        {
+            "start": time[NOW],
+            "end": conflict.start + THIRTY_MINUTES,
+            "users": [UserIdentity(**scenario.root.model_dump())],
+        },
     )
+
+    # Act
+    reservation = reservation_svc.draft_reservation(scenario.root, request)
+
+    # Assert
     assert reservation.id is not None
     assert_equal_times(conflict.start, reservation.end)
 
 
-def test_draft_reservation_has_no_users(reservation_svc: ReservationService):
+def test_draft_reservation_has_no_users(session: Session, time: dict[str, datetime]):
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    request = make_test_request(scenario, {"users": []})
+
+    # Act / Assert
     with pytest.raises(ReservationException):
-        reservation = reservation_svc.draft_reservation(
-            user_data.user, reservation_data.test_request({"users": []})
-        )
+        reservation_svc.draft_reservation(scenario.user, request)
 
 
-def test_draft_reservation_permissions(reservation_svc: ReservationService):
+def test_draft_reservation_permissions(session: Session, time: dict[str, datetime]):
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
     permission_svc = create_autospec(PermissionService)
     permission_svc.enforce.return_value = None
-    reservation_svc._permission_svc = permission_svc
-    reservation = reservation_svc.draft_reservation(
-        user_data.root, reservation_data.test_request()
-    )
+    reservation_svc = make_reservation_service(session, permission_svc)
+    request = make_test_request(scenario)
+
+    # Act
+    reservation = reservation_svc.draft_reservation(scenario.root, request)
+
+    # Assert
     assert reservation.id is not None
     permission_svc.enforce.assert_called_once_with(
-        user_data.root,
+        scenario.root,
         "coworking.reservation.manage",
-        f"user/{user_data.ambassador.id}",
+        f"user/{scenario.ambassador.id}",
     )
 
 
 def test_draft_reservation_multiple_users_not_implemented(
-    reservation_svc: ReservationService,
+    session: Session, time: dict[str, datetime]
 ):
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    request = make_test_request(
+        scenario,
+        {
+            "users": [
+                UserIdentity(**scenario.root.model_dump()),
+                UserIdentity(**scenario.ambassador.model_dump()),
+            ]
+        },
+    )
+
+    # Act / Assert
     with pytest.raises(NotImplementedError):
-        reservation_svc.draft_reservation(
-            user_data.ambassador,
-            reservation_data.test_request(
-                {
-                    "users": [
-                        UserIdentity(**user_data.root.model_dump()),
-                        UserIdentity(**user_data.ambassador.model_dump()),
-                    ]
-                }
-            ),
-        )
+        reservation_svc.draft_reservation(scenario.ambassador, request)
 
 
 def test_draft_reservation_user_did_not_accepted_agreement(
-    reservation_svc: ReservationService,
+    session: Session, time: dict[str, datetime]
 ):
-    """This test ensures that a user cannot make a reservation if they did not accept community agreement"""
-    user_data.user.accepted_community_agreement = False
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    scenario.user.accepted_community_agreement = False
+    reservation_svc = make_reservation_service(session)
+    request = make_test_request(
+        scenario,
+        {"users": [UserIdentity(**scenario.user.model_dump())]},
+    )
 
+    # Act / Assert
     with pytest.raises(ReservationException):
-        reservation = reservation_svc.draft_reservation(
-            user_data.user,
-            reservation_data.test_request(
-                {"users": [UserIdentity(**user_data.user.model_dump())]}
-            ),
-        )
+        reservation_svc.draft_reservation(scenario.user, request)
 
 
 def test_draft_reservation_room_time_conflict(
-    reservation_svc: ReservationService, time: dict[str, datetime]
+    session: Session, time: dict[str, datetime]
 ):
-    """Users should not be able to reserve a room when it is already reserved."""
-    # Overlaps beginning
-    start = reservation_data.reservation_6.start - timedelta(minutes=30)
-    end = reservation_data.reservation_6.start + timedelta(minutes=30)
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    start = scenario.reservation_6.start - timedelta(minutes=30)
+    end = scenario.reservation_6.start + timedelta(minutes=30)
     conflict_draft = ReservationRequest(
         seats=[],
-        room=room_data.group_a,
+        room=scenario.group_a,
         start=start,
         end=end,
-        users=[user_data.ambassador],
+        users=[scenario.ambassador],
     )
-    with pytest.raises(ReservationException):
-        reservation_svc.draft_reservation(user_data.ambassador, conflict_draft)
 
-    # Overlaps same
-    conflict_draft.start = reservation_data.reservation_6.start
-    conflict_draft.end = reservation_data.reservation_6.end
+    # Act / Assert
     with pytest.raises(ReservationException):
-        reservation_svc.draft_reservation(user_data.ambassador, conflict_draft)
+        reservation_svc.draft_reservation(scenario.ambassador, conflict_draft)
 
-    # Overlaps in the middle
-    conflict_draft.start = reservation_data.reservation_6.start + timedelta(minutes=30)
-    conflict_draft.end = reservation_data.reservation_6.end - timedelta(minutes=30)
+    conflict_draft.start = scenario.reservation_6.start
+    conflict_draft.end = scenario.reservation_6.end
     with pytest.raises(ReservationException):
-        reservation_svc.draft_reservation(user_data.ambassador, conflict_draft)
+        reservation_svc.draft_reservation(scenario.ambassador, conflict_draft)
 
-    # Overlaps at the end
-    conflict_draft.start = reservation_data.reservation_6.end - timedelta(minutes=30)
-    conflict_draft.end = reservation_data.reservation_6.end + timedelta(minutes=30)
+    conflict_draft.start = scenario.reservation_6.start + timedelta(minutes=30)
+    conflict_draft.end = scenario.reservation_6.end - timedelta(minutes=30)
     with pytest.raises(ReservationException):
-        reservation_svc.draft_reservation(user_data.ambassador, conflict_draft)
+        reservation_svc.draft_reservation(scenario.ambassador, conflict_draft)
+
+    conflict_draft.start = scenario.reservation_6.end - timedelta(minutes=30)
+    conflict_draft.end = scenario.reservation_6.end + timedelta(minutes=30)
+    with pytest.raises(ReservationException):
+        reservation_svc.draft_reservation(scenario.ambassador, conflict_draft)
 
 
 def test_draft_reservation_room_no_time_conflict_before(
-    reservation_svc: ReservationService, time: dict[str, datetime]
+    session: Session, time: dict[str, datetime]
 ):
-    """Users should be able to reserve a room up to the next reservation."""
-    start = reservation_data.reservation_6.start - timedelta(minutes=30)
-    end = reservation_data.reservation_6.start
-    conflict_draft = ReservationRequest(
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    request = ReservationRequest(
         seats=[],
-        room=room_data.group_b,
-        start=start,
-        end=end,
-        users=[user_data.ambassador],
+        room=scenario.group_b,
+        start=scenario.reservation_6.start - timedelta(minutes=30),
+        end=scenario.reservation_6.start,
+        users=[scenario.ambassador],
     )
-    reservation = reservation_svc.draft_reservation(
-        user_data.ambassador, conflict_draft
-    )
+
+    # Act
+    reservation = reservation_svc.draft_reservation(scenario.ambassador, request)
+
+    # Assert
     assert reservation.id is not None
 
 
 def test_draft_reservation_room_no_time_conflict_after(
-    reservation_svc: ReservationService, time: dict[str, datetime]
+    session: Session, time: dict[str, datetime]
 ):
-    """Users should be able to reserve a room directly following a reservation end."""
-    start = reservation_data.reservation_6.end
-    end = reservation_data.reservation_6.end + timedelta(minutes=30)
-    conflict_draft = ReservationRequest(
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    request = ReservationRequest(
         seats=[],
-        room=room_data.group_b,
-        start=start,
-        end=end,
-        users=[user_data.ambassador],
+        room=scenario.group_b,
+        start=scenario.reservation_6.end,
+        end=scenario.reservation_6.end + timedelta(minutes=30),
+        users=[scenario.ambassador],
     )
-    reservation = reservation_svc.draft_reservation(
-        user_data.ambassador, conflict_draft
-    )
+
+    # Act
+    reservation = reservation_svc.draft_reservation(scenario.ambassador, request)
+
+    # Assert
     assert reservation.id is not None
 
 
 def test_draft_reservation_different_room_time_conflict(
-    reservation_svc: ReservationService, time: dict[str, datetime]
+    session: Session, time: dict[str, datetime]
 ):
-    """Users should be able to reserve rooms with time conflicts if they are different rooms."""
-    start = reservation_data.reservation_6.start
-    end = reservation_data.reservation_6.end
-    conflict_draft = ReservationRequest(
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+    request = ReservationRequest(
         seats=[],
-        room=room_data.group_b,  # Existing test reservation is group_a
-        start=start,
-        end=end,
-        users=[user_data.ambassador],
+        room=scenario.group_b,
+        start=scenario.reservation_6.start,
+        end=scenario.reservation_6.end,
+        users=[scenario.ambassador],
     )
-    reservation = reservation_svc.draft_reservation(
-        user_data.ambassador, conflict_draft
-    )
+
+    # Act
+    reservation = reservation_svc.draft_reservation(scenario.ambassador, request)
+
+    # Assert
     assert reservation.id is not None
 
 
 def test_draft_reservation_crosses_weekly_limit(
-    reservation_svc: ReservationService, time: dict[str, datetime]
+    session: Session, time: dict[str, datetime]
 ):
-    user_data.user.accepted_community_agreement = True
-
-    # Make filler reservations to reach weekly limit
+    # Arrange
+    scenario = arrange_standard_reservation_scenario(session, time)
+    scenario.user.accepted_community_agreement = True
+    reservation_svc = make_reservation_service(session)
     temp_draft_1 = ReservationRequest(
         seats=[],
-        room=room_data.group_a,
-        start=operating_hours_data.three_days_from_today.start,
-        end=operating_hours_data.three_days_from_today.start + timedelta(hours=2),
-        users=[user_data.user],
+        room=scenario.group_a,
+        start=scenario.three_days_from_today.start,
+        end=scenario.three_days_from_today.start + timedelta(hours=2),
+        users=[scenario.user],
     )
-
-    reservation_svc.draft_reservation(user_data.user, temp_draft_1)
-
     temp_draft_2 = ReservationRequest(
         seats=[],
-        room=room_data.group_a,
-        start=operating_hours_data.three_days_from_today.start + timedelta(hours=2),
-        end=operating_hours_data.three_days_from_today.start + timedelta(hours=4),
-        users=[user_data.user],
+        room=scenario.group_a,
+        start=scenario.three_days_from_today.start + timedelta(hours=2),
+        end=scenario.three_days_from_today.start + timedelta(hours=4),
+        users=[scenario.user],
     )
-
-    reservation_svc.draft_reservation(user_data.user, temp_draft_2)
-
     exceed_limit_draft = ReservationRequest(
         seats=[],
-        room=room_data.group_a,
-        start=operating_hours_data.three_days_from_today.start + timedelta(hours=4),
-        end=operating_hours_data.three_days_from_today.start + timedelta(hours=6),
-        users=[user_data.user],
+        room=scenario.group_a,
+        start=scenario.three_days_from_today.start + timedelta(hours=4),
+        end=scenario.three_days_from_today.start + timedelta(hours=6),
+        users=[scenario.user],
     )
 
+    # Act
+    reservation_svc.draft_reservation(scenario.user, temp_draft_1)
+    reservation_svc.draft_reservation(scenario.user, temp_draft_2)
+
+    # Assert
     with pytest.raises(ReservationException):
-        reservation_svc.draft_reservation(user_data.user, exceed_limit_draft)
+        reservation_svc.draft_reservation(scenario.user, exceed_limit_draft)

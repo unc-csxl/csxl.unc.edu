@@ -29,6 +29,7 @@ from .....services.coworking import (
     ReservationService,
     SeatService,
 )
+from ...reset_table_id_seq import reset_table_id_seq
 from ..time import *
 
 
@@ -348,6 +349,11 @@ def arrange_standard_reservation_scenario(
     session.add_all(
         ReservationEntity.from_model(model, session) for model in reservations
     )
+    reset_table_id_seq(session, SeatEntity, SeatEntity.id, len(seats) + 1)
+    reset_table_id_seq(
+        session, OperatingHoursEntity, OperatingHoursEntity.id, len(operating_hours) + 1
+    )
+    reset_table_id_seq(session, ReservationEntity, ReservationEntity.id, len(reservations) + 1)
     session.commit()
 
     return ReservationScenario(
