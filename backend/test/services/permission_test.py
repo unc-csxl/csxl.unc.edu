@@ -21,7 +21,9 @@ def test_no_permission(session: Session, permission_svc: PermissionService):
     scenario = arrange_auth_scenario(session)
 
     # Act / Assert
-    assert permission_svc.check(scenario.user, "permission.grant", "permission") is False
+    assert (
+        permission_svc.check(scenario.user, "permission.grant", "permission") is False
+    )
     assert permission_svc.check(scenario.user, "user.delete", "user/1") is False
 
 
@@ -29,7 +31,9 @@ def test_grant_role_permission(session: Session, permission_svc: PermissionServi
     """Tests that you can grant a permission to a role"""
     # Arrange
     scenario = arrange_auth_scenario(session)
-    assert permission_svc.check(scenario.ambassador, "checkin.delete", "checkin") is False
+    assert (
+        permission_svc.check(scenario.ambassador, "checkin.delete", "checkin") is False
+    )
     p = Permission(action="checkin.delete", resource="*")
 
     # Act
@@ -43,7 +47,9 @@ def test_grant_user_permission(session: Session, permission_svc: PermissionServi
     """Tests that you can grant a permission to a user"""
     # Arrange
     scenario = arrange_auth_scenario(session)
-    assert permission_svc.check(scenario.ambassador, "checkin.delete", "checkin") is False
+    assert (
+        permission_svc.check(scenario.ambassador, "checkin.delete", "checkin") is False
+    )
     p = Permission(action="checkin.delete", resource="*")
 
     # Act
@@ -75,8 +81,7 @@ def test_revoke_role_permission(session: Session, permission_svc: PermissionServ
 
     # Assert
     assert (
-        permission_svc.check(scenario.ambassador, "checkin.create", "checkin")
-        is False
+        permission_svc.check(scenario.ambassador, "checkin.create", "checkin") is False
     )
 
 
@@ -120,9 +125,7 @@ def test_root_resource_access(session: Session, permission_svc: PermissionServic
     scenario = arrange_auth_scenario(session)
 
     # Act / Assert
-    assert permission_svc.check(
-        scenario.root, "access_control.grant", "access_control"
-    )
+    assert permission_svc.check(scenario.root, "access_control.grant", "access_control")
     assert permission_svc.check(scenario.root, "user.delete", "user/1")
 
 

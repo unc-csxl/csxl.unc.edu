@@ -24,10 +24,12 @@ pytestmark = pytest.mark.integration
 def make_policy_mock() -> PolicyService:
     policy_svc = MagicMock(spec=PolicyService)
     policy_svc.walkin_window.return_value = PolicyService().walkin_window(None)
-    policy_svc.walkin_initial_duration.return_value = PolicyService().walkin_initial_duration(
+    policy_svc.walkin_initial_duration.return_value = (
+        PolicyService().walkin_initial_duration(None)
+    )
+    policy_svc.reservation_window.return_value = PolicyService().reservation_window(
         None
     )
-    policy_svc.reservation_window.return_value = PolicyService().reservation_window(None)
     policy_svc.minimum_reservation_duration.return_value = (
         PolicyService().minimum_reservation_duration()
     )
@@ -306,9 +308,9 @@ def test_get_map_reserved_times_by_date(
         }
     )
     reservation_svc._query_confirmed_reservations_by_date_and_room = MagicMock(
-        side_effect=lambda date, room_id: [subject_room_reservation]
-        if room_id == "SN135"
-        else []
+        side_effect=lambda date, room_id: (
+            [subject_room_reservation] if room_id == "SN135" else []
+        )
     )
     reservation_svc._query_xl_reservations_by_date_for_user = MagicMock(return_value=[])
 

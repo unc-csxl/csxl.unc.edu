@@ -70,18 +70,14 @@ def test_list(article_svc: ArticleService, article_scenario: ArticleScenario):
     assert len(articles.items) == 3
 
 
-def test_list_not_admin(
-    article_svc: ArticleService, article_scenario: ArticleScenario
-):
+def test_list_not_admin(article_svc: ArticleService, article_scenario: ArticleScenario):
     """Ensures that non-admins cannot access all articles."""
     with pytest.raises(UserPermissionException):
         pagination_params = PaginationParams(page=0, page_size=10, filter="")
         article_svc.list(article_scenario.auth.student, pagination_params)
 
 
-def test_create_article(
-    article_svc: ArticleService, article_scenario: ArticleScenario
-):
+def test_create_article(article_svc: ArticleService, article_scenario: ArticleScenario):
     """Ensures that the admin can create an article"""
     article = article_svc.create_article(
         article_scenario.auth.root,
@@ -102,9 +98,7 @@ def test_create_article_no_permissions(
         )
 
 
-def test_edit_article(
-    article_svc: ArticleService, article_scenario: ArticleScenario
-):
+def test_edit_article(article_svc: ArticleService, article_scenario: ArticleScenario):
     """Ensures that the admin can edit an article"""
     edited_article = article_scenario.article_one.model_copy(deep=True)
     edited_article.title = "New title"
@@ -135,9 +129,7 @@ def test_edit_article_does_not_exist(
         )
 
 
-def test_delete_article(
-    article_svc: ArticleService, article_scenario: ArticleScenario
-):
+def test_delete_article(article_svc: ArticleService, article_scenario: ArticleScenario):
     """Ensures that the admin can delete an article"""
     article_svc.delete_article(
         article_scenario.auth.root, article_scenario.article_one.id

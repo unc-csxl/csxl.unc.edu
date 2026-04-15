@@ -1,14 +1,20 @@
 """Tests for the OfficeHoursService."""
 
+from datetime import datetime, timedelta
 import pytest
+from types import SimpleNamespace
+from unittest.mock import create_autospec
 from sqlalchemy.orm import Session
 
+from ....entities.office_hours.office_hours_entity import OfficeHoursEntity
 from ....models.academics.my_courses import (
     OfficeHourQueueOverview,
     OfficeHourGetHelpOverview,
     OfficeHourEventRoleOverview,
+    OfficeHourTicketOverview,
 )
 from ....models.office_hours.office_hours import OfficeHours
+from ....models.office_hours.ticket import TicketState
 from ....models.roster_role import RosterRole
 from ....services.office_hours import OfficeHoursService
 from ....services.exceptions import CoursePermissionException, ResourceNotFoundException
@@ -62,9 +68,7 @@ def test_get_office_hour_queue_not_staff(session: Session):
 
     # Act / Assert
     with pytest.raises(CoursePermissionException):
-        oh_svc.get_office_hour_queue(
-            scenario.student, scenario.current_office_hours.id
-        )
+        oh_svc.get_office_hour_queue(scenario.student, scenario.current_office_hours.id)
 
 
 def test_get_help_overview(session: Session):
@@ -111,6 +115,15 @@ def test_get_help_overview_not_student(session: Session):
         )
 
 
+def test_get_help_overview_not_found(session: Session):
+    scenario = arrange_office_hours_scenario(session)
+    oh_svc = make_office_hours_service(session)
+
+    with pytest.raises(ResourceNotFoundException):
+        oh_svc.get_office_hour_get_help_overview(scenario.student, 404)
+        pytest.fail()
+
+
 def test_get_oh_event_role(session: Session):
     """Ensures that the instructor can access their office hour role"""
     # Arrange
@@ -134,9 +147,7 @@ def test_get_oh_event_role_student(session: Session):
     oh_svc = make_office_hours_service(session)
 
     # Act
-    role = oh_svc.get_oh_event_role(
-        scenario.student, scenario.current_office_hours.id
-    )
+    role = oh_svc.get_oh_event_role(scenario.student, scenario.current_office_hours.id)
 
     # Assert
     assert isinstance(role, OfficeHourEventRoleOverview)
@@ -151,9 +162,105 @@ def test_get_oh_event_role_not_member(session: Session):
 
     # Act / Assert
     with pytest.raises(CoursePermissionException):
-        oh_svc.get_oh_event_role(
-            scenario.ambassador, scenario.current_office_hours.id
-        )
+        oh_svc.get_oh_event_role(scenario.ambassador, scenario.current_office_hours.id)
+
+
+def test_get_oh_event_role_not_found(session: Session):
+    scenario = arrange_office_hours_scenario(session)
+    oh_svc = make_office_hours_service(session)
+
+    with pytest.raises(CoursePermissionException):
+        oh_svc.get_oh_event_role(scenario.instructor, 404)
+        pytest.fail()
+
+
+def test_get_entity_or_raise_not_found(session: Session):
+    arrange_office_hours_scenario(session)
+    oh_svc = make_office_hours_service(session)
+
+    with pytest.raises(ResourceNotFoundException):
+        oh_svc._get_entity_or_raise(OfficeHoursEntity, 404)
+        pytest.fail()
+
+
+def test_check_site_student_permissions_not_found(session: Session):
+    scenario = arrange_office_hours_scenario(session)
+    oh_svc = make_office_hours_service(session)
+
+    with pytest.raises(ResourceNotFoundException):
+        oh_svc._check_site_student_permissions(scenario.student, 404)
+        pytest.fail()
+
+
+def test_queue_overview_includes_queued_ticket_unit():
+    ticket = SimpleNamespace(
+        state=TicketState.QUEUED,
+        to_overview_model=lambda: OfficeHourTicketOverview(
+            id=1,
+            created_at=datetime.now(),
+            called_at=None,
+            closed_at=None,
+            state=TicketState.QUEUED.to_string(),
+            type="Conceptual Help",
+            description="Need help",
+            creators=[],
+            caller=None,
+            has_concerns=False,
+            caller_notes=None,
+        ),
+    )
+    session = create_autospec(Session)
+    session.scalars.return_value.all.return_value = [ticket]
+    oh_svc = OfficeHoursService(session)
+
+    overview = oh_svc._to_oh_queue_overview(
+        SimpleNamespace(id=1),
+        SimpleNamespace(
+            id=1,
+            type=SimpleNamespace(to_string=lambda: "Office Hours"),
+            start_time=datetime.now(),
+            end_time=datetime.now() + timedelta(hours=1),
+        ),
+    )
+
+    assert len(overview.queue) == 1
+    assert overview.queue[0].id == 1
+
+
+def test_queue_overview_includes_other_called_ticket_unit():
+    ticket = SimpleNamespace(
+        state=TicketState.CALLED,
+        caller=SimpleNamespace(user_id=2),
+        to_overview_model=lambda: OfficeHourTicketOverview(
+            id=2,
+            created_at=datetime.now(),
+            called_at=datetime.now(),
+            closed_at=None,
+            state=TicketState.CALLED.to_string(),
+            type="Conceptual Help",
+            description="Need help",
+            creators=[],
+            caller=None,
+            has_concerns=False,
+            caller_notes=None,
+        ),
+    )
+    session = create_autospec(Session)
+    session.scalars.return_value.all.return_value = [ticket]
+    oh_svc = OfficeHoursService(session)
+
+    overview = oh_svc._to_oh_queue_overview(
+        SimpleNamespace(id=1),
+        SimpleNamespace(
+            id=1,
+            type=SimpleNamespace(to_string=lambda: "Office Hours"),
+            start_time=datetime.now(),
+            end_time=datetime.now() + timedelta(hours=1),
+        ),
+    )
+
+    assert len(overview.other_called) == 1
+    assert overview.other_called[0].id == 2
 
 
 def test_create_oh_event_instructor(session: Session):

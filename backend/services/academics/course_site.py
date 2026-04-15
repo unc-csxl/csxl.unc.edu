@@ -725,7 +725,7 @@ class CourseSiteService:
                     self._session.add(section_member_entity)
                 else:
                     if existing_entity.member_role != RosterRole.INSTRUCTOR:
-                        existing_entity.member_role == RosterRole.GTA
+                        existing_entity.member_role = RosterRole.GTA
 
         # Edit the staff - UTAs
         # 1. Remove all UTAs, then add new ones.
@@ -763,7 +763,7 @@ class CourseSiteService:
                     self._session.add(section_member_entity)
                 else:
                     if existing_entity.member_role != RosterRole.INSTRUCTOR:
-                        existing_entity.member_role == RosterRole.UTA
+                        existing_entity.member_role = RosterRole.UTA
 
         # Save all changes in one commit
         self._session.commit()

@@ -61,9 +61,7 @@ def test_staff_checkin_idempotence(
     assert reservation.state == ReservationState.CHECKED_IN
 
 
-def test_staff_checkin_not_found(
-    session: Session, time: dict[str, datetime]
-):
+def test_staff_checkin_not_found(session: Session, time: dict[str, datetime]):
     """ResourceNotFoundException expected when reservation does not exist."""
     # Arrange
     scenario = arrange_standard_reservation_scenario(session, time)

@@ -1,4 +1,5 @@
 """ReservationService#get_reservation tests."""
+
 from unittest.mock import create_autospec, call
 
 import pytest

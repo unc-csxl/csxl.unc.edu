@@ -20,6 +20,7 @@ __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
+
 @pytest.fixture()
 def application_scenario(session) -> ApplicationScenario:
     return arrange_application_scenario(session)
@@ -110,7 +111,9 @@ def test_update_application_other_user(
     """Ensure that users cannot update applications for other users."""
     with pytest.raises(UserPermissionException):
         updated_application = application_scenario.application_one.model_copy(deep=True)
-        application_svc.update(application_scenario.auth.instructor, updated_application)
+        application_svc.update(
+            application_scenario.auth.instructor, updated_application
+        )
         pytest.fail()
 
 
@@ -121,7 +124,9 @@ def test_update_application_not_found(
     with pytest.raises(ResourceNotFoundException):
         updated_application = application_scenario.new_application.model_copy(deep=True)
         updated_application.academic_hours = 888
-        application_svc.update(application_scenario.auth.ambassador, updated_application)
+        application_svc.update(
+            application_scenario.auth.ambassador, updated_application
+        )
         pytest.fail()
 
 

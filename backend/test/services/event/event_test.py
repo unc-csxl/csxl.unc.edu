@@ -2,9 +2,11 @@
 
 # PyTest
 import pytest
+from types import SimpleNamespace
 from unittest.mock import create_autospec
 from backend.models.pagination import PaginationParams
 from sqlalchemy.orm import Session
+from ....entities.event_entity import EventEntity
 
 from backend.services.exceptions import (
     EventRegistrationException,
@@ -29,6 +31,7 @@ from .scenario import EventScenario, arrange_event_scenario, date_maker
 @pytest.fixture()
 def event_scenario(session: Session) -> EventScenario:
     return arrange_event_scenario(session)
+
 
 # Test Functions
 
@@ -707,3 +710,190 @@ def test_get_event_status(
     assert status is not None
     assert status.featured is not None
     assert len(status.registered) == 1
+
+
+def test_get_event_status_unauthenticated(
+    event_svc_integration: EventService, event_scenario: EventScenario
+):
+    status = event_svc_integration.get_event_status_unauthenticated()
+
+    assert status.featured is not None
+    assert status.registered == []
+
+
+def test_create_event_missing_organization(
+    event_svc_integration: EventService, event_scenario: EventScenario
+):
+    with pytest.raises(ResourceNotFoundException):
+        event_svc_integration.create(
+            event_scenario.auth.root,
+            event_scenario.to_add.model_copy(update={"organization_slug": "missing"}),
+        )
+        pytest.fail()
+
+
+def test_update_event_missing_organization(
+    event_svc_integration: EventService, event_scenario: EventScenario
+):
+    with pytest.raises(ResourceNotFoundException):
+        event_svc_integration.update(
+            event_scenario.auth.root,
+            event_scenario.updated_event_one.model_copy(
+                update={"organization_slug": "missing"}
+            ),
+        )
+        pytest.fail()
+
+
+def test_get_registrations_of_event_not_found(
+    event_svc_integration: EventService, event_scenario: EventScenario
+):
+    with pytest.raises(ResourceNotFoundException):
+        event_svc_integration.get_registrations_of_event(
+            event_scenario.auth.root,
+            event_scenario.event_one.model_copy(update={"id": 404}),
+        )
+        pytest.fail()
+
+
+def test_register_for_missing_event(
+    event_svc_integration: EventService,
+    event_scenario: EventScenario,
+):
+    with pytest.raises(ResourceNotFoundException):
+        event_svc_integration.register(
+            event_scenario.auth.root,
+            event_scenario.auth.root,
+            event_scenario.event_one.model_copy(update={"id": 404}),
+        )
+        pytest.fail()
+
+
+def test_get_event_status_falls_back_to_first_upcoming(
+    session: Session,
+    event_svc_integration: EventService,
+    event_scenario: EventScenario,
+):
+    for event_id in [
+        event_scenario.event_one.id,
+        event_scenario.event_two.id,
+        event_scenario.event_three.id,
+    ]:
+        session.get(EventEntity, event_id).organization_id = event_scenario.organizations.cads.id
+    session.commit()
+
+    status = event_svc_integration.get_event_status(event_scenario.auth.user)
+
+    assert status.featured is not None
+    assert status.featured.id == event_scenario.event_one.id
+
+
+def test_get_event_status_unauthenticated_falls_back_to_first_upcoming(
+    session: Session,
+    event_svc_integration: EventService,
+    event_scenario: EventScenario,
+):
+    for event_id in [
+        event_scenario.event_one.id,
+        event_scenario.event_two.id,
+        event_scenario.event_three.id,
+    ]:
+        session.get(EventEntity, event_id).organization_id = event_scenario.organizations.cads.id
+    session.commit()
+
+    status = event_svc_integration.get_event_status_unauthenticated()
+
+    assert status.featured is not None
+    assert status.featured.id == event_scenario.event_one.id
+
+
+def make_event_overview(event_id: int) -> EventOverview:
+    return EventOverview(
+        id=event_id,
+        name="Event",
+        start=date_maker(days_in_future=1, hour=10, minutes=0),
+        end=date_maker(days_in_future=1, hour=11, minutes=0),
+        location="Sitterson",
+        description="Sample",
+        public=True,
+        number_registered=0,
+        registration_limit=10,
+        organization_id=1,
+        organization_slug="org",
+        organization_icon="icon",
+        organization_name="Org",
+        organizers=[],
+        user_registration_type=None,
+        image_url=None,
+        override_registration_url=None,
+    )
+
+
+def test_get_event_status_unit_falls_back_without_preferred_organization():
+    featured = make_event_overview(123)
+    event = SimpleNamespace(
+        organization_id=1,
+        to_overview_model=lambda _subject=None: featured,
+    )
+    session = create_autospec(Session)
+    session.scalars.side_effect = [
+        SimpleNamespace(all=lambda: [event]),
+        SimpleNamespace(all=lambda: []),
+    ]
+
+    status = EventService(
+        session,
+        create_autospec(OrganizationService),
+        create_autospec(OrganizationService),
+    ).get_event_status(SimpleNamespace(id=1))
+
+    assert status.featured.id == 123
+
+
+def test_get_event_status_unauthenticated_unit_falls_back_without_preferred_organization():
+    featured = make_event_overview(456)
+    event = SimpleNamespace(
+        organization_id=1,
+        to_overview_model=lambda: featured,
+    )
+    session = create_autospec(Session)
+    session.scalars.return_value.all.return_value = [event]
+
+    status = EventService(session).get_event_status_unauthenticated()
+
+    assert status.featured.id == 456
+
+
+def test_get_event_status_unit_prefers_preferred_organization():
+    featured = make_event_overview(789)
+    event = SimpleNamespace(
+        organization_id=37,
+        to_overview_model=lambda _subject=None: featured,
+    )
+    session = create_autospec(Session)
+    session.scalars.side_effect = [
+        SimpleNamespace(all=lambda: [event]),
+        SimpleNamespace(all=lambda: []),
+    ]
+
+    status = EventService(
+        session,
+        create_autospec(OrganizationService),
+        create_autospec(OrganizationService),
+    ).get_event_status(SimpleNamespace(id=1))
+
+    assert status.featured.id == 789
+
+
+def test_get_event_status_unauthenticated_unit_prefers_preferred_organization():
+    featured = make_event_overview(790)
+    event = SimpleNamespace(
+        organization_id=37,
+        to_overview_model=lambda: featured,
+    )
+    session = create_autospec(Session)
+    session.scalars.return_value.all.return_value = [event]
+
+    status = EventService(session).get_event_status_unauthenticated()
+
+    assert status.featured.id == 790

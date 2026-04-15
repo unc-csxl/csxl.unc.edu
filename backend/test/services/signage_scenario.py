@@ -21,7 +21,10 @@ from ...models.articles import ArticleDraft, ArticleState
 from ...models.coworking import Reservation, ReservationState
 from ...models.event import EventDraft
 from ...models.office_hours.course_site import CourseSite
-from ...models.office_hours.event_type import OfficeHoursEventModeType, OfficeHoursEventType
+from ...models.office_hours.event_type import (
+    OfficeHoursEventModeType,
+    OfficeHoursEventType,
+)
 from ...models.office_hours.office_hours import OfficeHours
 from ...models.organization import Organization
 from ...models.public_user import PublicUser
@@ -232,8 +235,7 @@ def arrange_signage_scenario(session: Session) -> SignageScenario:
         ),
     ]
     session.add_all(
-        EventEntity.from_draft_model(event, organization.id)
-        for event in event_drafts
+        EventEntity.from_draft_model(event, organization.id) for event in event_drafts
     )
     reset_table_id_seq(session, EventEntity, EventEntity.id, 4)
 

@@ -119,7 +119,7 @@ class SectionMemberService:
             membership = (
                 self._session.query(SectionMemberEntity)
                 .where(SectionMemberEntity.user_id == subject.id)
-                .where(SectionEntity.office_hours_id == oh_section.id)
+                .where(SectionEntity.course_site_id == oh_section.id)
                 .where(SectionMemberEntity.section_id == SectionEntity.id)
                 .one_or_none()
             )
@@ -132,7 +132,7 @@ class SectionMemberService:
         for oh_section in oh_sections:
             academic_sections = (
                 self._session.query(SectionEntity)
-                .filter(SectionEntity.office_hours_id == oh_section.id)
+                .filter(SectionEntity.course_site_id == oh_section.id)
                 .all()
             )
 

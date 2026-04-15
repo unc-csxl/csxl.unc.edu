@@ -87,7 +87,9 @@ def make_reservation_service(
     policy_svc: PolicyService | None = None,
 ) -> ReservationService:
     permission = (
-        permission_svc if permission_svc is not None else create_autospec(PermissionService)
+        permission_svc
+        if permission_svc is not None
+        else create_autospec(PermissionService)
     )
     return ReservationService(
         session,
@@ -354,9 +356,7 @@ def arrange_standard_reservation_scenario(
     session.add_all(UserEntity.from_model(model) for model in users)
     session.add_all(RoomEntity.from_model(model) for model in rooms)
     session.add_all(SeatEntity.from_model(model) for model in seats)
-    session.add_all(
-        OperatingHoursEntity.from_model(model) for model in operating_hours
-    )
+    session.add_all(OperatingHoursEntity.from_model(model) for model in operating_hours)
     session.flush()
     session.add_all(
         ReservationEntity.from_model(model, session) for model in reservations
@@ -365,7 +365,9 @@ def arrange_standard_reservation_scenario(
     reset_table_id_seq(
         session, OperatingHoursEntity, OperatingHoursEntity.id, len(operating_hours) + 1
     )
-    reset_table_id_seq(session, ReservationEntity, ReservationEntity.id, len(reservations) + 1)
+    reset_table_id_seq(
+        session, ReservationEntity, ReservationEntity.id, len(reservations) + 1
+    )
     session.commit()
 
     return ReservationScenario(

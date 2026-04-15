@@ -99,7 +99,9 @@ def test_draft_reservation_beyond_walkin_limit(
     )
 
 
-def test_draft_reservation_some_taken_seats(session: Session, time: dict[str, datetime]):
+def test_draft_reservation_some_taken_seats(
+    session: Session, time: dict[str, datetime]
+):
     # Arrange
     scenario = arrange_standard_reservation_scenario(session, time)
     reservation_svc = make_reservation_service(session)
@@ -133,7 +135,9 @@ def test_draft_reservation_seat_availability_truncated(
             "users": [UserIdentity(**scenario.user.model_dump())],
             "start": scenario.reservation_1.end,
             "end": scenario.today.end,
-            "seats": [SeatIdentity(id=seat.id) for seat in scenario.reservation_4.seats],
+            "seats": [
+                SeatIdentity(id=seat.id) for seat in scenario.reservation_4.seats
+            ],
         },
     )
 
@@ -149,8 +153,8 @@ def test_draft_reservation_future(session: Session, time: dict[str, datetime]):
     # Arrange
     scenario = arrange_standard_reservation_scenario(session, time)
     reservation_svc = make_reservation_service(session)
-    future_reservation_limit = reservation_svc._policy_svc.maximum_initial_reservation_duration(
-        scenario.user
+    future_reservation_limit = (
+        reservation_svc._policy_svc.maximum_initial_reservation_duration(scenario.user)
     )
     start = scenario.future.start
     end = scenario.future.start + future_reservation_limit

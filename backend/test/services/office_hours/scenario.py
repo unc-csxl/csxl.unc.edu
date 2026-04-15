@@ -133,7 +133,9 @@ def arrange_office_hours_scenario(session: Session) -> OfficeHoursScenario:
     session.add(TermEntity.from_model(term))
     session.add(CourseEntity.from_model(course))
     session.add(RoomEntity.from_model(room))
-    session.add_all(UserEntity.from_model(user) for user in [instructor, student, ambassador, root])
+    session.add_all(
+        UserEntity.from_model(user) for user in [instructor, student, ambassador, root]
+    )
     session.add(CourseSiteEntity.from_model(course_site))
 
     section_entity = SectionEntity.from_model(section)
@@ -262,7 +264,9 @@ def arrange_office_hours_scenario(session: Session) -> OfficeHoursScenario:
             cancelled_ticket_entity,
         ]
     )
-    reset_table_id_seq(session, CourseSiteEntity, CourseSiteEntity.id, course_site.id + 1)
+    reset_table_id_seq(
+        session, CourseSiteEntity, CourseSiteEntity.id, course_site.id + 1
+    )
     reset_table_id_seq(session, SectionEntity, SectionEntity.id, section.id + 1)
     reset_table_id_seq(
         session,

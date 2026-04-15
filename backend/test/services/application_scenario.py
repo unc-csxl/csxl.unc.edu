@@ -298,7 +298,9 @@ def arrange_application_scenario(session: Session) -> ApplicationScenario:
         ),
     ]
 
-    session.add_all(ApplicationEntity.from_model(application) for application in applications)
+    session.add_all(
+        ApplicationEntity.from_model(application) for application in applications
+    )
     reset_table_id_seq(session, ApplicationEntity, ApplicationEntity.id, 6)
     session.flush()
 

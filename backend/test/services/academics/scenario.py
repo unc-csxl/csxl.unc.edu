@@ -453,7 +453,10 @@ def arrange_academics_scenario(session: Session) -> AcademicsScenario:
     comp110_instructor = section_members[4]
 
     session.add_all(
-        [TermEntity.from_model(term) for term in [previous_term, current_term, future_term]]
+        [
+            TermEntity.from_model(term)
+            for term in [previous_term, current_term, future_term]
+        ]
     )
     session.add_all(CourseEntity.from_model(course) for course in courses)
     session.add(RoomEntity.from_model(virtual_room))

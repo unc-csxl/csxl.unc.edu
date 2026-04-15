@@ -1,6 +1,8 @@
 """Tests for the OfficeHoursTicketService."""
 
 from datetime import datetime, timedelta
+from types import SimpleNamespace
+from unittest.mock import create_autospec
 
 import pytest
 from sqlalchemy.orm import Session
@@ -9,8 +11,12 @@ from ....models.academics.my_courses import OfficeHourTicketOverview
 from ....models.academics.section import Section
 from ....models.academics.section_member import SectionMemberDraft
 from ....models.office_hours.course_site import CourseSite
-from ....models.office_hours.ticket import NewOfficeHoursTicket, OfficeHoursTicketClosePayload
+from ....models.office_hours.ticket import (
+    NewOfficeHoursTicket,
+    OfficeHoursTicketClosePayload,
+)
 from ....models.office_hours.ticket import TicketState
+from ....models.office_hours.ticket_type import TicketType
 from ....models.roster_role import RosterRole
 from ....models.user import User
 from ....entities.academics.section_entity import SectionEntity
@@ -66,7 +72,9 @@ def arrange_additional_student(
     )
     session.add(membership)
     session.flush()
-    reset_table_id_seq(session, SectionMemberEntity, SectionMemberEntity.id, membership.id + 1)
+    reset_table_id_seq(
+        session, SectionMemberEntity, SectionMemberEntity.id, membership.id + 1
+    )
     session.commit()
     return user
 
@@ -182,9 +190,7 @@ def test_call_ticket(session: Session):
     oh_ticket_svc = make_office_hours_ticket_service(session)
 
     # Act
-    called = oh_ticket_svc.call_ticket(
-        scenario.instructor, scenario.queued_ticket.id
-    )
+    called = oh_ticket_svc.call_ticket(scenario.instructor, scenario.queued_ticket.id)
 
     # Assert
     assert called.state == TicketState.CALLED.to_string()
@@ -259,9 +265,7 @@ def test_cancel_ticket(session: Session):
     oh_ticket_svc = make_office_hours_ticket_service(session)
 
     # Act
-    called = oh_ticket_svc.cancel_ticket(
-        scenario.instructor, scenario.queued_ticket.id
-    )
+    called = oh_ticket_svc.cancel_ticket(scenario.instructor, scenario.queued_ticket.id)
 
     # Assert
     assert called.state == TicketState.CANCELED.to_string()
@@ -296,12 +300,51 @@ def test_cancel_ticket_student(session: Session):
     oh_ticket_svc = make_office_hours_ticket_service(session)
 
     # Act
-    called = oh_ticket_svc.cancel_ticket(
-        scenario.student, scenario.queued_ticket.id
-    )
+    called = oh_ticket_svc.cancel_ticket(scenario.student, scenario.queued_ticket.id)
 
     # Assert
     assert called.state == TicketState.CANCELED.to_string()
+
+
+def test_open_ticket_requires_course_site(session: Session):
+    scenario = arrange_office_hours_scenario(session)
+    oh_ticket_svc = make_office_hours_ticket_service(session)
+    new_ticket = NewOfficeHoursTicket(
+        description="Need help",
+        type=TicketType.CONCEPTUAL_HELP,
+        office_hours_id=404,
+    )
+
+    with pytest.raises(CoursePermissionException):
+        oh_ticket_svc.create_ticket(scenario.student, new_ticket)
+        pytest.fail()
+
+
+def test_create_ticket_unit_requires_course_entity():
+    session = create_autospec(Session)
+    session.scalars.side_effect = [
+        SimpleNamespace(
+            unique=lambda: SimpleNamespace(
+                all=lambda: [
+                    SimpleNamespace(user_id=1, member_role=RosterRole.STUDENT)
+                ]
+            )
+        ),
+        SimpleNamespace(all=lambda: []),
+        SimpleNamespace(one_or_none=lambda: None),
+    ]
+    oh_ticket_svc = OfficeHourTicketService(session)
+
+    with pytest.raises(CoursePermissionException):
+        oh_ticket_svc.create_ticket(
+            SimpleNamespace(id=1),
+            NewOfficeHoursTicket(
+                description="Need help",
+                type=TicketType.CONCEPTUAL_HELP,
+                office_hours_id=1,
+            ),
+        )
+        pytest.fail()
 
 
 # Close Ticket Tests
@@ -324,7 +367,9 @@ def test_close_ticket(session: Session):
     assert called.state == TicketState.CLOSED.to_string()
 
 
-@pytest.mark.parametrize("ticket_attr", ["queued_ticket", "closed_ticket", "cancelled_ticket"])
+@pytest.mark.parametrize(
+    "ticket_attr", ["queued_ticket", "closed_ticket", "cancelled_ticket"]
+)
 def test_close_ticket_not_called(session: Session, ticket_attr: str):
     """Ensures that only called tickets can be closed."""
     # Arrange
@@ -348,9 +393,7 @@ def test_close_ticket_not_found(session: Session):
 
     # Act / Assert
     with pytest.raises(ResourceNotFoundException):
-        oh_ticket_svc.close_ticket(
-            scenario.instructor, 404, make_close_payload()
-        )
+        oh_ticket_svc.close_ticket(scenario.instructor, 404, make_close_payload())
 
 
 def test_close_ticket_not_member(session: Session):

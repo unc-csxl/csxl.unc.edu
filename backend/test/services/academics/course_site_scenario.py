@@ -264,7 +264,10 @@ def arrange_course_site_scenario(session: Session) -> CourseSiteScenario:
             id=1,
             title="New Course Site",
             term_id=academics.current_term.id,
-            section_ids=[academics.comp_110_001_current_term.id, academics.comp_101_001.id],
+            section_ids=[
+                academics.comp_110_001_current_term.id,
+                academics.comp_101_001.id,
+            ],
             utas=[],
             gtas=[],
         ),

@@ -941,10 +941,6 @@ class HiringService:
             .join(HiringAssignmentEntity.user)
             .join(HiringAssignmentEntity.hiring_level)
         )
-        # Count the number of rows before applying pagination and filter
-        count_query = select(func.count()).select_from(
-            assignments_query.distinct(HiringAssignmentEntity.id).subquery()
-        )
 
         # Filter based on search entry
         if pagination_params.filter != "":
@@ -957,7 +953,10 @@ class HiringService:
                 HiringLevelEntity.title.ilike(f"%{query}%"),
             )
             assignments_query = assignments_query.where(criteria)
-            count_query = count_query.where(criteria)
+
+        count_query = select(func.count()).select_from(
+            assignments_query.distinct(HiringAssignmentEntity.id).subquery()
+        )
 
         # Calculate offset and limit for pagination
         offset = pagination_params.page * pagination_params.page_size

@@ -57,7 +57,7 @@ def arrange_article_scenario(session: Session) -> ArticleScenario:
         last_modified=now - timedelta(days=2),
         is_announcement=True,
         organization_id=None,
-            authors=[_author(auth.root)],
+        authors=[_author(auth.root)],
     )
     article_one = ArticleDraft(
         id=1,
@@ -71,7 +71,7 @@ def arrange_article_scenario(session: Session) -> ArticleScenario:
         last_modified=now - timedelta(days=1),
         is_announcement=False,
         organization_id=None,
-            authors=[_author(auth.root)],
+        authors=[_author(auth.root)],
     )
     article_two = ArticleDraft(
         id=2,
@@ -85,7 +85,7 @@ def arrange_article_scenario(session: Session) -> ArticleScenario:
         last_modified=now,
         is_announcement=False,
         organization_id=None,
-            authors=[_author(auth.root)],
+        authors=[_author(auth.root)],
     )
     new_article = ArticleDraft(
         id=3,
@@ -99,7 +99,7 @@ def arrange_article_scenario(session: Session) -> ArticleScenario:
         last_modified=now + timedelta(minutes=1),
         is_announcement=False,
         organization_id=None,
-            authors=[_author(auth.root)],
+        authors=[_author(auth.root)],
     )
 
     articles = [announcement, article_one, article_two]

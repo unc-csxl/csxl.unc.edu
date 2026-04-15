@@ -29,9 +29,7 @@ __license__ = "MIT"
 pytestmark = pytest.mark.integration
 
 
-def test_seat_availability_in_past(
-    session: Session, time: dict[str, datetime]
-):
+def test_seat_availability_in_past(session: Session, time: dict[str, datetime]):
     """There is no seat availability in the past."""
     # Arrange
     scenario = arrange_standard_reservation_scenario(session, time)

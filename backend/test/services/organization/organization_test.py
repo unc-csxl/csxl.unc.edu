@@ -98,7 +98,9 @@ def test_create_organization_as_root(
     scenario = arrange_organization_scenario(session)
 
     # Act
-    created_organization = organization_svc_integration.create(auth.root, scenario.to_add)
+    created_organization = organization_svc_integration.create(
+        auth.root, scenario.to_add
+    )
 
     # Assert
     assert created_organization is not None

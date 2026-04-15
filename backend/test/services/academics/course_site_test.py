@@ -2,6 +2,7 @@
 
 import pytest
 
+from ....entities.academics.section_member_entity import SectionMemberEntity
 from ....models.pagination import PaginationParams, Paginated
 from ....models.academics.my_courses import (
     TermOverview,
@@ -9,6 +10,7 @@ from ....models.academics.my_courses import (
     OfficeHoursOverview,
     CourseSiteOverview,
 )
+from ....models.public_user import PublicUser
 from ....models.office_hours.course_site import CourseSite, UpdatedCourseSite
 from ....services.academics.course_site import CourseSiteService
 from ....services.exceptions import CoursePermissionException, ResourceNotFoundException
@@ -25,6 +27,17 @@ __license__ = "MIT"
 @pytest.fixture()
 def course_site_scenario(session) -> CourseSiteScenario:
     return arrange_course_site_scenario(session)
+
+
+def public_user_for(user) -> PublicUser:
+    return PublicUser(
+        id=user.id,
+        onyen=user.onyen,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        pronouns=user.pronouns,
+        email=user.email,
+    )
 
 
 def test_get_user_course_sites(
@@ -145,7 +158,9 @@ def test_get_future_office_hour_events(
     assert isinstance(office_hours, Paginated)
     assert office_hours.length == 7
     assert isinstance(office_hours.items[0], OfficeHoursOverview)
-    assert office_hours.items[0].id == course_site_scenario.comp_110_future_office_hours.id
+    assert (
+        office_hours.items[0].id == course_site_scenario.comp_110_future_office_hours.id
+    )
 
 
 def test_get_future_office_hour_events_not_member(
@@ -175,7 +190,9 @@ def test_get_past_office_hour_events(
     assert isinstance(office_hours, Paginated)
     assert office_hours.length == 1
     assert isinstance(office_hours.items[0], OfficeHoursOverview)
-    assert office_hours.items[0].id == course_site_scenario.comp_110_past_office_hours.id
+    assert (
+        office_hours.items[0].id == course_site_scenario.comp_110_past_office_hours.id
+    )
 
 
 def test_get_past_office_hour_events_not_member(
@@ -192,7 +209,9 @@ def test_get_past_office_hour_events_not_member(
         pytest.fail()
 
 
-def test_create(course_site_svc: CourseSiteService, course_site_scenario: CourseSiteScenario):
+def test_create(
+    course_site_svc: CourseSiteService, course_site_scenario: CourseSiteScenario
+):
     """Ensures that instructors can create course sites."""
     course_site = course_site_svc.create(
         course_site_scenario.academics.auth.instructor,
@@ -251,7 +270,9 @@ def test_create_term_already_in_site(
         pytest.fail()
 
 
-def test_update(course_site_svc: CourseSiteService, course_site_scenario: CourseSiteScenario):
+def test_update(
+    course_site_svc: CourseSiteService, course_site_scenario: CourseSiteScenario
+):
     """Ensures that instructors can update course sites."""
     course_site = course_site_svc.update(
         course_site_scenario.academics.auth.instructor,
@@ -269,7 +290,9 @@ def test_update_term_mismatch(
     with pytest.raises(CoursePermissionException):
         course_site_svc.update(
             course_site_scenario.academics.auth.instructor,
-            course_site_scenario.updated_comp_110_site_term_mismatch.model_copy(deep=True),
+            course_site_scenario.updated_comp_110_site_term_mismatch.model_copy(
+                deep=True
+            ),
         )
         pytest.fail()
 
@@ -293,7 +316,9 @@ def test_update_term_nonmember(
     with pytest.raises(CoursePermissionException):
         course_site_svc.update(
             course_site_scenario.academics.auth.instructor,
-            course_site_scenario.updated_course_site_term_nonmember.model_copy(deep=True),
+            course_site_scenario.updated_course_site_term_nonmember.model_copy(
+                deep=True
+            ),
         )
         pytest.fail()
 
@@ -333,12 +358,16 @@ def test_update_term_already_in_site(
     with pytest.raises(CoursePermissionException):
         course_site_svc.update(
             course_site_scenario.academics.auth.instructor,
-            course_site_scenario.updated_course_site_term_already_in_site.model_copy(deep=True),
+            course_site_scenario.updated_course_site_term_already_in_site.model_copy(
+                deep=True
+            ),
         )
         pytest.fail()
 
 
-def test_get(course_site_svc: CourseSiteService, course_site_scenario: CourseSiteScenario):
+def test_get(
+    course_site_svc: CourseSiteService, course_site_scenario: CourseSiteScenario
+):
     """Ensures that a member can access the overview of a course site."""
     overview = course_site_svc.get(
         course_site_scenario.academics.auth.instructor,
@@ -359,3 +388,99 @@ def test_get_no_access(
             course_site_scenario.comp_110_site.id,
         )
         pytest.fail()
+
+
+def test_get_requires_instructor_membership(
+    course_site_svc: CourseSiteService, course_site_scenario: CourseSiteScenario
+):
+    with pytest.raises(CoursePermissionException):
+        course_site_svc.get(
+            course_site_scenario.academics.auth.uta,
+            course_site_scenario.comp_110_site.id,
+        )
+        pytest.fail()
+
+
+def test_get_not_found(
+    course_site_svc: CourseSiteService, course_site_scenario: CourseSiteScenario
+):
+    with pytest.raises(CoursePermissionException):
+        course_site_svc.get(course_site_scenario.academics.auth.instructor, 404)
+        pytest.fail()
+
+
+def test_update_reassigns_existing_uta_to_gta(
+    session,
+    course_site_svc: CourseSiteService,
+    course_site_scenario: CourseSiteScenario,
+):
+    updated_site = course_site_scenario.updated_comp_110_site.model_copy(deep=True)
+    updated_site.gtas = [public_user_for(course_site_scenario.academics.auth.uta)]
+    updated_site.utas = []
+
+    course_site_svc.update(
+        course_site_scenario.academics.auth.instructor,
+        updated_site,
+    )
+
+    membership = session.query(SectionMemberEntity).filter_by(
+        section_id=course_site_scenario.academics.comp_110_001_current_term.id,
+        user_id=course_site_scenario.academics.auth.uta.id,
+    ).one()
+    assert membership.member_role.name == "GTA"
+
+
+def test_update_reassigns_existing_gta_to_uta(
+    session,
+    course_site_svc: CourseSiteService,
+    course_site_scenario: CourseSiteScenario,
+):
+    membership = session.query(SectionMemberEntity).filter_by(
+        section_id=course_site_scenario.academics.comp_110_001_current_term.id,
+        user_id=course_site_scenario.academics.auth.uta.id,
+    ).one()
+    membership.member_role = membership.member_role.GTA
+    session.commit()
+
+    updated_site = course_site_scenario.updated_comp_110_site.model_copy(deep=True)
+    updated_site.gtas = []
+    updated_site.utas = [public_user_for(course_site_scenario.academics.auth.uta)]
+
+    course_site_svc.update(
+        course_site_scenario.academics.auth.instructor,
+        updated_site,
+    )
+
+    refreshed_membership = session.query(SectionMemberEntity).filter_by(
+        section_id=course_site_scenario.academics.comp_110_001_current_term.id,
+        user_id=course_site_scenario.academics.auth.uta.id,
+    ).one()
+    assert refreshed_membership.member_role.name == "UTA"
+
+
+def test_update_keeps_existing_gta_visible_to_uta_reassignment_path(
+    session,
+    course_site_svc: CourseSiteService,
+    course_site_scenario: CourseSiteScenario,
+):
+    membership = session.query(SectionMemberEntity).filter_by(
+        section_id=course_site_scenario.academics.comp_110_001_current_term.id,
+        user_id=course_site_scenario.academics.auth.uta.id,
+    ).one()
+    membership.member_role = membership.member_role.GTA
+    session.commit()
+
+    updated_site = course_site_scenario.updated_comp_110_site.model_copy(deep=True)
+    updated_site.gtas = [public_user_for(course_site_scenario.academics.auth.uta)]
+    updated_site.utas = [public_user_for(course_site_scenario.academics.auth.uta)]
+
+    course_site_svc.update(
+        course_site_scenario.academics.auth.instructor,
+        updated_site,
+    )
+
+    refreshed_membership = session.query(SectionMemberEntity).filter_by(
+        section_id=course_site_scenario.academics.comp_110_001_current_term.id,
+        user_id=course_site_scenario.academics.auth.uta.id,
+    ).one()
+    assert refreshed_membership.member_role.name == "UTA"

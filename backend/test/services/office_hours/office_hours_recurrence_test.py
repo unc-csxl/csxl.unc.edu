@@ -118,6 +118,29 @@ def make_recurrence_pattern(
     )
 
 
+def test_create_recurring_requires_matching_days(session: Session):
+    site, room = arrange_course_site(session)
+    office_hours_svc = create_autospec(OfficeHoursService)
+    service = OfficeHoursRecurrenceService(session, office_hours_svc)
+
+    with pytest.raises(RecurringOfficeHourEventException):
+        service.create_events(
+            make_new_event(site.id, room.id),
+            make_recurrence_pattern(
+                start_date=datetime(2026, 4, 21, 0, 0),
+                end_date=datetime(2026, 4, 21, 23, 59),
+                recur_monday=True,
+                recur_tuesday=False,
+                recur_wednesday=False,
+                recur_thursday=False,
+                recur_friday=False,
+                recur_saturday=False,
+                recur_sunday=False,
+            ),
+        )
+        pytest.fail()
+
+
 def expected_event_count(pattern: NewOfficeHoursRecurrencePattern) -> int:
     count = 0
     current_date = pattern.start_date

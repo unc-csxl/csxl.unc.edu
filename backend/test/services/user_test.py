@@ -62,6 +62,21 @@ def test_get_by_id_nonexistent(user_svc_integration: UserService):
         user_svc_integration.get_by_id(423)
 
 
+def test_get_by_onyen(session: Session, user_svc_integration: UserService):
+    scenario = arrange_auth_scenario(session)
+
+    user = user_svc_integration.get_by_onyen(scenario.root, scenario.ambassador.onyen)
+
+    assert user.id == scenario.ambassador.id
+    assert user.onyen == scenario.ambassador.onyen
+
+
+def test_get_by_onyen_nonexistent(user_svc_integration: UserService):
+    with pytest.raises(ResourceNotFoundException):
+        user_svc_integration.get_by_onyen(None, "missing")
+        pytest.fail()
+
+
 def test_search_by_first_name(session: Session, user_svc: UserService):
     """Test that a user can be retrieved by Searching for their first name."""
     # Arrange
@@ -396,9 +411,7 @@ def test_update_user_enforces_permission(
     )
 
 
-def test_new_user_accepted_agreement_is_false(
-    session: Session, user_svc: UserService
-):
+def test_new_user_accepted_agreement_is_false(session: Session, user_svc: UserService):
     """Test that makes sure newly registered users have not accepted the agreement"""
     # Arrange
     scenario = arrange_auth_scenario(session)

@@ -226,12 +226,15 @@ def arrange_event_scenario(session: Session) -> EventScenario:
     organizations = arrange_organization_scenario(session)
     scenario = build_event_scenario(auth, organizations)
     organizations_by_slug = {
-        organization.slug: organization.id for organization in organizations.organizations
+        organization.slug: organization.id
+        for organization in organizations.organizations
     }
 
     for event in scenario.events:
         session.add(
-            EventEntity.from_draft_model(event, organizations_by_slug[event.organization_slug])
+            EventEntity.from_draft_model(
+                event, organizations_by_slug[event.organization_slug]
+            )
         )
 
     session.commit()

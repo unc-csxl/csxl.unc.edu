@@ -54,7 +54,9 @@ def build_auth_scenario() -> AuthScenario:
     ambassador_role = Role(id=2, name="ambassadors")
 
     root_permission = Permission(id=1, action="*", resource="*")
-    ambassador_permission = Permission(id=2, action="checkin.create", resource="checkin")
+    ambassador_permission = Permission(
+        id=2, action="checkin.create", resource="checkin"
+    )
     ambassador_permission_coworking_reservation = Permission(
         id=3,
         action="coworking.reservation.*",

@@ -26,9 +26,7 @@ __license__ = "MIT"
 pytestmark = pytest.mark.integration
 
 
-def test_get_seat_reservations_none(
-    session: Session, time: dict[str, datetime]
-):
+def test_get_seat_reservations_none(session: Session, time: dict[str, datetime]):
     """Get all reservations for a time range with no reservations."""
     # Arrange
     scenario = arrange_standard_reservation_scenario(session, time)
@@ -45,9 +43,7 @@ def test_get_seat_reservations_none(
     assert len(reservations) == 0
 
 
-def test_get_seat_reservations_active(
-    session: Session, time: dict[str, datetime]
-):
+def test_get_seat_reservations_active(session: Session, time: dict[str, datetime]):
     """Get all reservations that are active (not cancelled or checked out)."""
     # Arrange
     scenario = arrange_standard_reservation_scenario(session, time)
