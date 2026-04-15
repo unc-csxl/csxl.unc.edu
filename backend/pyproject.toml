@@ -26,6 +26,9 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["test"]
+markers = [
+    "integration: tests that exercise the database",
+]
 
 [tool.ruff]
 target-version = "py312"
