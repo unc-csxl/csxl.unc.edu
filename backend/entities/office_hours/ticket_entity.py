@@ -72,7 +72,8 @@ class OfficeHoursTicketEntity(EntityBase):
 
     # One-to-many relationship of OfficeHoursTicket to section member(s)
     creators: Mapped[list["SectionMemberEntity"]] = relationship(
-        secondary=user_created_tickets_table
+        secondary=user_created_tickets_table,
+        back_populates="created_oh_tickets",
     )
 
     # One-to-one relationship of OfficeHoursTicket to UTA that has called it; optional field
