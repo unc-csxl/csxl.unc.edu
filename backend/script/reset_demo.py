@@ -18,15 +18,15 @@ from ..database import engine
 from ..env import getenv
 from .. import entities
 
-from ..test.services import role_data, user_data, permission_data, room_data
-from ..test.services.organization import organization_demo_data
-from ..test.services.event import event_demo_data
-from ..test.services.coworking import seat_data, operating_hours_data, time
-from ..test.services.coworking.reservation import reservation_data
-from ..test.services.academics import course_data, term_data, section_data
-from ..test.services.office_hours import office_hours_data
-from ..test.services.academics.hiring import hiring_data
-from ..test.services.articles import article_data
+from .demo_data import role_data, user_data, permission_data, room_data
+from .demo_data.organization import organization_demo_data
+from .demo_data.event import event_demo_data
+from .demo_data.coworking import seat_data, operating_hours_data, time
+from .demo_data.coworking.reservation import reservation_data
+from .demo_data.academics import course_data, term_data, section_data
+from .demo_data.office_hours import office_hours_data
+from .demo_data.academics.hiring import hiring_data
+from .demo_data.articles import article_data
 
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]
 __copyright__ = "Copyright 2023"

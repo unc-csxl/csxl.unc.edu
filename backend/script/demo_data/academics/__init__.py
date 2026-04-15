@@ -1,0 +1,1 @@
+"""Academic demo seed data."""
