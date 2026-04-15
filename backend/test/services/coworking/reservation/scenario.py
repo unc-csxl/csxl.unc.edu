@@ -30,7 +30,19 @@ from .....services.coworking import (
     SeatService,
 )
 from ...reset_table_id_seq import reset_table_id_seq
-from ..time import *
+from ..time import (
+    AN_HOUR_AGO,
+    IN_EIGHT_HOURS,
+    IN_TEN_MINUTES,
+    IN_THIRTY_MINUTES,
+    IN_THREE_HOURS,
+    IN_TWO_HOURS,
+    NOW,
+    ONE_DAY,
+    ONE_HOUR,
+    THIRTY_MINUTES,
+    THIRTY_MINUTES_AGO,
+)
 
 
 @dataclass

@@ -1,16 +1,14 @@
 """Tests for ReservationService#get_map_reservations_for_date and helper functions."""
 
-from datetime import date, datetime, time as Time
+from datetime import datetime, time as Time, timedelta
 from unittest.mock import MagicMock, patch
 
 import pytest
 from sqlalchemy.orm import Session
 
-from backend.models.coworking.availability import RoomState
-from .....services.coworking import PolicyService, ReservationService
-from .....services import PermissionService
+from .....services.coworking import PolicyService
 from .scenario import arrange_standard_reservation_scenario, make_reservation_service
-from ..time import *
+from ..time import NOW, ONE_HOUR, time_data
 
 __authors__ = [
     "Nick Wherthey",
@@ -221,6 +219,7 @@ def test_query_confirmed_reservations_by_date_and_room(
 
 
 def test_get_reservable_rooms(session: Session):
+    # Arrange
     arrange_standard_reservation_scenario(session, time_data())
     reservation_svc = make_reservation_service(session)
 
@@ -237,6 +236,7 @@ def test_get_reservable_rooms(session: Session):
 def test_query_xl_reservations_by_date_for_user(
     session: Session, time: dict[str, datetime]
 ):
+    # Arrange
     scenario = arrange_standard_reservation_scenario(session, time)
     reservation_svc = make_reservation_service(session)
 
@@ -407,3 +407,142 @@ def test_get_map_reserved_times_by_date_today_dynamic(
     # Assert
     # We only see 6 time slots rather than 8 because operating hours started an hour ago
     assert reservation_details.number_of_time_slots == 6
+
+
+def test_get_map_reserved_times_by_date_skips_elapsed_today_reservations(
+    session: Session, time: dict[str, datetime]
+):
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+
+    # Arrange
+    fixed_now = datetime(2026, 4, 15, 12, 15)
+    reservation_svc._get_reservable_rooms = MagicMock(return_value=[scenario.group_a])
+    reservation_svc._operating_hours_svc.schedule = MagicMock(
+        return_value=[
+            scenario.today.model_copy(
+                update={
+                    "start": datetime(2026, 4, 15, 10, 0),
+                    "end": datetime(2026, 4, 15, 14, 0),
+                }
+            )
+        ]
+    )
+    elapsed_reservation = scenario.reservation_6.model_copy(
+        update={
+            "start": datetime(2026, 4, 15, 10, 0),
+            "end": datetime(2026, 4, 15, 11, 0),
+            "room": scenario.group_a,
+            "users": [scenario.user],
+        }
+    )
+    reservation_svc._idx_calculation = MagicMock(side_effect=[2, 0, 1])
+    reservation_svc._query_confirmed_reservations_by_date_and_room = MagicMock(
+        return_value=[elapsed_reservation]
+    )
+    reservation_svc._query_xl_reservations_by_date_for_user = MagicMock(return_value=[])
+
+    # Act
+    with patch("backend.services.coworking.reservation.datetime") as datetime_mock:
+        datetime_mock.now.return_value = fixed_now
+        reservation_details = reservation_svc.get_map_reserved_times_by_date(
+            fixed_now, scenario.user
+        )
+
+    # Assert
+    assert reservation_details.reserved_date_map["SN135"] == [0, 0, 0, 0]
+
+
+def test_get_map_reserved_times_by_date_keeps_subject_reservation_priority(
+    session: Session, time: dict[str, datetime]
+):
+    scenario = arrange_standard_reservation_scenario(session, time)
+    policy_svc = make_policy_mock()
+    reservation_svc = make_reservation_service(session, policy_svc=policy_svc)
+
+    # Arrange
+    test_time = datetime(2026, 4, 17, 0, 0)
+    reservation_svc._get_reservable_rooms = MagicMock(return_value=[scenario.group_a])
+    reservation_svc._operating_hours_svc.schedule = MagicMock(
+        return_value=[
+            scenario.future.model_copy(
+                update={
+                    "start": datetime(2026, 4, 17, 10, 0),
+                    "end": datetime(2026, 4, 17, 12, 30),
+                }
+            )
+        ]
+    )
+    subject_reservation = scenario.reservation_6.model_copy(
+        update={
+            "start": datetime(2026, 4, 17, 10, 30),
+            "end": datetime(2026, 4, 17, 12, 0),
+            "room": scenario.group_a,
+            "users": [scenario.user],
+        }
+    )
+    other_reservation = scenario.reservation_7.model_copy(
+        update={
+            "start": datetime(2026, 4, 17, 10, 30),
+            "end": datetime(2026, 4, 17, 12, 0),
+            "room": scenario.group_a,
+            "users": [scenario.root],
+        }
+    )
+    reservation_svc._query_confirmed_reservations_by_date_and_room = MagicMock(
+        return_value=[subject_reservation, other_reservation]
+    )
+    reservation_svc._query_xl_reservations_by_date_for_user = MagicMock(return_value=[])
+
+    # Act
+    reservation_details = reservation_svc.get_map_reserved_times_by_date(
+        test_time, scenario.user
+    )
+
+    # Assert
+    assert reservation_details.reserved_date_map["SN135"] == [0, 4, 4, 4, 0]
+
+
+def test_get_map_reserved_times_by_date_truncates_same_day_start_to_now(
+    session: Session, time: dict[str, datetime]
+):
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+
+    # Arrange
+    fixed_now = datetime(2026, 4, 15, 12, 15)
+    reservation_svc._get_reservable_rooms = MagicMock(return_value=[scenario.group_a])
+    reservation_svc._operating_hours_svc.schedule = MagicMock(
+        return_value=[
+            scenario.today.model_copy(
+                update={
+                    "start": datetime(2026, 4, 15, 10, 0),
+                    "end": datetime(2026, 4, 15, 14, 0),
+                }
+            )
+        ]
+    )
+    in_progress_reservation = scenario.reservation_6.model_copy(
+        update={
+            "start": datetime(2026, 4, 15, 11, 0),
+            "end": datetime(2026, 4, 15, 13, 0),
+            "room": scenario.group_a,
+            "users": [scenario.root],
+        }
+    )
+    reservation_svc._query_confirmed_reservations_by_date_and_room = MagicMock(
+        return_value=[in_progress_reservation]
+    )
+    reservation_svc._query_xl_reservations_by_date_for_user = MagicMock(return_value=[])
+    reservation_svc._idx_calculation = MagicMock(side_effect=[0, -2, 2])
+
+    # Act
+    with patch("backend.services.coworking.reservation.datetime") as datetime_mock:
+        datetime_mock.now.return_value = fixed_now
+        reservation_details = reservation_svc.get_map_reserved_times_by_date(
+            fixed_now, scenario.user
+        )
+
+    # Assert
+    assert reservation_details.number_of_time_slots == 4
+    assert reservation_details.reserved_date_map["SN135"] == [1, 1, 0, 0]

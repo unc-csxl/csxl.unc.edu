@@ -1,5 +1,6 @@
 """ReservationService#draft_reservation method tests."""
 
+from datetime import datetime, timedelta
 from unittest.mock import create_autospec
 
 import pytest
@@ -9,14 +10,22 @@ from .....models.coworking import ReservationRequest, ReservationState
 from .....models.coworking.seat import SeatIdentity
 from .....models.user import UserIdentity
 from .....services import PermissionService
-from .....services.coworking import ReservationService
 from .....services.coworking.reservation import ReservationException
 from .scenario import (
     arrange_standard_reservation_scenario,
     make_reservation_service,
     make_test_request,
 )
-from ..time import *
+from ..time import (
+    FIVE_MINUTES,
+    IN_THIRTY_MINUTES,
+    NOW,
+    ONE_HOUR,
+    TEN_MINUTES,
+    THIRTY_MINUTES,
+    THIRTY_MINUTES_AGO,
+    assert_equal_times,
+)
 
 __authors__ = ["Kris Jordan, Yuvraj Jain"]
 __copyright__ = "Copyright 2023-24"

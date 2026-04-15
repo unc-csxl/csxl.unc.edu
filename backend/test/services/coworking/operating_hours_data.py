@@ -9,13 +9,15 @@ Three days worth of operating hours are setup:
 Each opens one hour before the module evalues and ends one hour after.
 """
 
+from datetime import datetime
+
 import pytest
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
 from ....entities.coworking import OperatingHoursEntity
 from ....models.coworking import OperatingHours
 from ..reset_table_id_seq import reset_table_id_seq
-from .time import *
+from .time import AN_HOUR_AGO, IN_EIGHT_HOURS, IN_THREE_HOURS, IN_TWO_HOURS, ONE_DAY
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"

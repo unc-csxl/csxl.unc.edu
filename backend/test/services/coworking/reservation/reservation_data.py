@@ -1,13 +1,22 @@
 """Reservation data for tests."""
 
+from datetime import datetime, timedelta
+
 import pytest
-from sqlalchemy import text, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from .....entities.coworking import ReservationEntity
 from .....models.coworking import Reservation, ReservationState, ReservationRequest
 from .....models.user import UserIdentity
 from .....models.coworking.seat import SeatIdentity
-from ..time import *
+from ..time import (
+    IN_TEN_MINUTES,
+    IN_THIRTY_MINUTES,
+    NOW,
+    ONE_HOUR,
+    THIRTY_MINUTES,
+    THIRTY_MINUTES_AGO,
+)
 
 from ...core_data import user_data
 from ...reset_table_id_seq import reset_table_id_seq

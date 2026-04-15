@@ -2,7 +2,6 @@
 
 from datetime import datetime, timedelta
 
-from .fixtures import status_svc
 from ....services.coworking.status import StatusService
 from ....models import User
 from ....models.coworking.availability import SeatAvailability
@@ -31,6 +30,7 @@ def make_operating_hours() -> OperatingHours:
 
 
 def test_status_dispatch(status_svc: StatusService):
+    # Arrange
     subject = make_subject()
     reservation = make_reservation()
     operating_hours = make_operating_hours()
@@ -61,17 +61,16 @@ def test_status_dispatch(status_svc: StatusService):
     ]
     status_svc._reservation_svc.seat_availability.return_value = seat_availability
 
-    # Call the method
+    # Act
     status = status_svc.get_coworking_status(subject)
 
-    # Look for dependent methods to be called
+    # Assert
     status_svc._reservation_svc.get_current_reservations_for_user.assert_called_once_with(
         subject, subject
     )
     status_svc._reservation_svc.seat_availability.assert_called_once()
     status_svc._operating_hours_svc.schedule.assert_called_once()
 
-    # Look for expected RVs
     assert status.my_reservations == [reservation]
     assert status.seat_availability == seat_availability
     assert status.operating_hours == [operating_hours]

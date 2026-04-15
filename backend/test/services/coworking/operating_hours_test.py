@@ -12,8 +12,19 @@ from ....models.coworking import OperatingHours, TimeRange
 from ....services.coworking.exceptions import OperatingHoursCannotOverlapException
 from ....services import PermissionService
 from ....services.exceptions import ResourceNotFoundException
-from .time import *
 from ....models import User
+from .time import (
+    AN_HOUR_AGO,
+    A_WEEK_AGO,
+    IN_EIGHT_HOURS,
+    IN_ONE_HOUR,
+    IN_THREE_HOURS,
+    IN_TWO_HOURS,
+    NOW,
+    ONE_DAY,
+    ONE_HOUR,
+    TOMORROW,
+)
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -77,31 +88,43 @@ def arrange_operating_hours(
 
 def test_schedule_closed(session: Session, time: dict[str, datetime]):
     """When there are no operating hours open in a given time range, returns an empty list."""
+    # Arrange
     operating_hours_svc = make_service(session)
-
     time_range = TimeRange(start=time[A_WEEK_AGO], end=time[A_WEEK_AGO] + ONE_HOUR)
+
+    # Act
     result: list[OperatingHours] = operating_hours_svc.schedule(time_range)
+
+    # Assert
     assert len(result) == 0
 
 
 def test_schedule_one_match(session: Session, time: dict[str, datetime]):
     """When one OperatingHours matches the time range, returns a list with just it."""
+    # Arrange
     arranged = arrange_operating_hours(session, time)
     operating_hours_svc = make_service(session)
-
     time_range = TimeRange(start=time[NOW], end=time[IN_ONE_HOUR])
+
+    # Act
     result: list[OperatingHours] = operating_hours_svc.schedule(time_range)
+
+    # Assert
     assert len(result) == 1
     assert result[0].id == arranged["today"].id
 
 
 def test_schedule_multiple_match(session: Session, time: dict[str, datetime]):
     """When one OperatingHours matches the time range, returns a list with just it."""
+    # Arrange
     arranged = arrange_operating_hours(session, time)
     operating_hours_svc = make_service(session)
-
     time_range = TimeRange(start=time[TOMORROW], end=time[TOMORROW] + ONE_DAY)
+
+    # Act
     result: list[OperatingHours] = operating_hours_svc.schedule(time_range)
+
+    # Assert
     assert len(result) == 2
     assert result[0].id == arranged["tomorrow"].id
     assert result[1].id == arranged["future"].id
@@ -109,21 +132,27 @@ def test_schedule_multiple_match(session: Session, time: dict[str, datetime]):
 
 def test_create(session: Session, time: dict[str, datetime]):
     """Creating an Operating Hours entity expected case."""
+    # Arrange
     operating_hours_svc = make_service(session)
-
     time_range = TimeRange(
         start=time[TOMORROW] + timedelta(days=5),
         end=time[TOMORROW] + timedelta(days=5, hours=2),
     )
+
+    # Act
     result: OperatingHours = operating_hours_svc.create(make_subject(), time_range)
+
+    # Assert
     assert result.id is not None
 
 
 def test_create_overlap(session: Session, time: dict[str, datetime]):
     """Creating an Operating Hours entity that overlaps with another raises OperatingHoursCannotOverlapException"""
+    # Arrange
     arranged = arrange_operating_hours(session, time)
     operating_hours_svc = make_service(session)
 
+    # Act / Assert
     with pytest.raises(OperatingHoursCannotOverlapException):
         operating_hours_svc.create(
             make_subject(),
@@ -136,17 +165,19 @@ def test_create_overlap(session: Session, time: dict[str, datetime]):
 
 def test_create_enforces_permission(session: Session, time: dict[str, datetime]):
     """Ensure we are enforcing coworking.operating_hours.create on coworking/operating_hours"""
+    # Arrange
     permission_svc = create_autospec(PermissionService)
     operating_hours_svc = make_service(session, permission_svc)
-
     time_range = TimeRange(
         start=time[TOMORROW] + timedelta(days=5),
         end=time[TOMORROW] + timedelta(days=5, hours=2),
     )
     subject = make_subject(7)
 
+    # Act
     operating_hours_svc.create(subject, time_range)
 
+    # Assert
     permission_svc.enforce.assert_called_with(
         subject,
         "coworking.operating_hours.create",
@@ -156,27 +187,34 @@ def test_create_enforces_permission(session: Session, time: dict[str, datetime])
 
 def test_delete(session: Session, time: dict[str, datetime]):
     """Delete an Operating Hours entity expected case."""
+    # Arrange
     arranged = arrange_operating_hours(session, time)
     operating_hours_svc = make_service(session)
-
     future = operating_hours_svc.get_by_id(arranged["future"].id)  # type: ignore[arg-type]
     assert future.id is not None
+
+    # Act
     operating_hours_svc.delete(make_subject(), future)
 
+    # Assert
     with pytest.raises(ResourceNotFoundException):
         operating_hours_svc.get_by_id(arranged["future"].id)  # type: ignore[arg-type]
 
 
 def test_delete_permissions(session: Session, time: dict[str, datetime]):
     """Delete an Operating Hours entity expected case."""
+    # Arrange
     arranged = arrange_operating_hours(session, time)
     permission_svc = create_autospec(PermissionService)
     operating_hours_svc = make_service(session, permission_svc)
     subject = make_subject()
 
     assert arranged["future"].id is not None
+
+    # Act
     operating_hours_svc.delete(subject, arranged["future"])
 
+    # Assert
     permission_svc.enforce.assert_called_with(
         subject,
         "coworking.operating_hours.delete",

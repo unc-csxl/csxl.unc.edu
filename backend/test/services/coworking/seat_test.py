@@ -8,7 +8,6 @@ from ....entities.coworking import SeatEntity
 from ....models import RoomDetails
 from ....models.coworking import SeatDetails
 from ....services.coworking import SeatService
-from .fixtures import seat_svc
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -83,9 +82,13 @@ def arrange_seats(session: Session) -> list[SeatDetails]:
 
 
 def test_list(session: Session, seat_svc: SeatService):
+    # Arrange
     expected_seats = arrange_seats(session)
 
+    # Act
     seats = seat_svc.list()
+
+    # Assert
     assert len(seats) == len(expected_seats)
     assert [seat.id for seat in seats] == [seat.id for seat in expected_seats]
     assert all(isinstance(seat, SeatDetails) for seat in seats)

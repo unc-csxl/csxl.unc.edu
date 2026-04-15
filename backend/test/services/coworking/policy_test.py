@@ -34,6 +34,11 @@ __license__ = "MIT"
     ],
 )
 def test_office_hours_by_weekday(date: datetime, expected_hours: dict):
+    # Arrange
     policy_svc = PolicyService()
 
-    assert policy_svc.office_hours(date) == expected_hours
+    # Act
+    office_hours = policy_svc.office_hours(date)
+
+    # Assert
+    assert office_hours == expected_hours
