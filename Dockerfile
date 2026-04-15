@@ -15,7 +15,7 @@ RUN NODE_OPTIONS=--max-old-space-size=1024 pnpm exec ng build --optimization --o
 
 # Back-end Build Steps
 # Back-end Build Steps
-FROM python:3.12 AS production
+FROM python:3.11 AS production
 
 COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /uvx /usr/local/bin/
 
