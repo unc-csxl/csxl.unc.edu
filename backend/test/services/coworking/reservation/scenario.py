@@ -41,6 +41,8 @@ class ReservationScenario:
     xl_room: RoomDetails
     group_a: RoomDetails
     group_b: RoomDetails
+    group_c: RoomDetails
+    pair_a: RoomDetails
     monitor_seat_00: SeatDetails
     monitor_seat_01: SeatDetails
     monitor_seat_10: SeatDetails
@@ -151,6 +153,24 @@ def arrange_standard_reservation_scenario(
         room="137",
         nickname="Group B",
         capacity=4,
+        reservable=True,
+        seats=[],
+    )
+    group_c = RoomDetails(
+        id="SN141",
+        building="Sitterson",
+        room="141",
+        nickname="Group C",
+        capacity=6,
+        reservable=True,
+        seats=[],
+    )
+    pair_a = RoomDetails(
+        id="SN139",
+        building="Sitterson",
+        room="139",
+        nickname="Pair A",
+        capacity=2,
         reservable=True,
         seats=[],
     )
@@ -306,7 +326,7 @@ def arrange_standard_reservation_scenario(
     )
 
     users = [root, ambassador, user, student]
-    rooms = [xl_room, group_a, group_b]
+    rooms = [xl_room, group_a, group_b, pair_a, group_c]
     operating_hours = [today, future, tomorrow, three_days_from_today]
     reservations = [
         reservation_1,
@@ -338,6 +358,8 @@ def arrange_standard_reservation_scenario(
         xl_room=xl_room,
         group_a=group_a,
         group_b=group_b,
+        group_c=group_c,
+        pair_a=pair_a,
         monitor_seat_00=monitor_seat_00,
         monitor_seat_01=monitor_seat_01,
         monitor_seat_10=monitor_seat_10,
