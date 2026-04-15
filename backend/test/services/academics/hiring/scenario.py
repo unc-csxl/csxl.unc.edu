@@ -255,7 +255,11 @@ def arrange_hiring_scenario(session: Session) -> HiringScenario:
     }
 
     session.add(RoleEntity.from_model(auth.root_role))
-    session.add_all(UserEntity.from_model(user) for user in vars(auth).values() if isinstance(user, User))
+    session.add_all(
+        UserEntity.from_model(user)
+        for user in vars(auth).values()
+        if isinstance(user, User)
+    )
     session.flush()
     session.execute(
         user_role_table.insert().values(
@@ -330,15 +334,15 @@ def arrange_hiring_scenario(session: Session) -> HiringScenario:
         ]
     )
     session.flush()
-    session.get(SectionEntity, sections["comp_110_001_current_term"].id).course_site_id = (
-        comp_110_site.id
-    )
-    session.get(SectionEntity, sections["comp_110_002_current_term"].id).course_site_id = (
-        comp_110_site.id
-    )
-    session.get(SectionEntity, sections["comp_301_001_current_term"].id).course_site_id = (
-        comp_301_site.id
-    )
+    session.get(
+        SectionEntity, sections["comp_110_001_current_term"].id
+    ).course_site_id = comp_110_site.id
+    session.get(
+        SectionEntity, sections["comp_110_002_current_term"].id
+    ).course_site_id = comp_110_site.id
+    session.get(
+        SectionEntity, sections["comp_301_001_current_term"].id
+    ).course_site_id = comp_301_site.id
     reset_table_id_seq(session, CourseSiteEntity, CourseSiteEntity.id, 3)
 
     academics = HiringAcademicsScenario(

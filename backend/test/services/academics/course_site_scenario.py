@@ -380,8 +380,12 @@ def arrange_course_site_scenario(session: Session) -> CourseSiteScenario:
         comp_311_002_current_term=sections["comp_311_002_current_term"],
     )
 
-    comp_110_site = CourseSite(id=1, title="COMP 110", term_id=academics.current_term.id)
-    comp_301_site = CourseSite(id=2, title="COMP 301", term_id=academics.current_term.id)
+    comp_110_site = CourseSite(
+        id=1, title="COMP 110", term_id=academics.current_term.id
+    )
+    comp_301_site = CourseSite(
+        id=2, title="COMP 301", term_id=academics.current_term.id
+    )
     session.add_all(
         [
             CourseSiteEntity.from_model(comp_110_site),

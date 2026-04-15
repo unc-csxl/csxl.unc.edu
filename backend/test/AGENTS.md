@@ -5,8 +5,10 @@ Prefer explicit Arrange/Act/Assert tests over shared fixture graphs.
 When reducing slow test setup, refactor scenario dependencies from the leaves inward.
 
 - Start with the scenario used directly by the test file you are editing.
+- Once a suite is actively moving away from scenarios, localize each test's arrange step in the test itself before attempting any reuse.
 - Remove imports of other scenarios when the current scenario only needs a small subset of their seeded entities.
 - Duplicate only the entities and fields that the current test module actually uses, even if that creates some local redundancy.
+- During a suite-by-suite migration, prefer temporary duplication across tests over introducing a new shared helper too early. Deduplicate only after the whole suite has moved to test-local arrange code.
 - Keep each scenario self-sufficient: a reader should be able to understand all seeded state for that test module without opening another scenario file.
 - Preserve act/assert behavior while changing arrange steps; if names must change, keep the test intent identical.
 - After localizing one scenario, run that module's narrowest pytest target before moving to the next dependency edge.
