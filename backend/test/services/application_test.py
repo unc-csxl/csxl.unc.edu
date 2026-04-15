@@ -1,8 +1,7 @@
-"""Tests for the OrganizationService class."""
+"""Tests for the ApplicationService class."""
 
 # PyTest
 import pytest
-from unittest.mock import create_autospec
 
 from backend.services.exceptions import (
     UserPermissionException,
@@ -15,138 +14,175 @@ from ...services import ApplicationService
 
 # Injected Service Fixtures
 from .fixtures import application_svc
-
-# Import the setup_teardown fixture explicitly to load entities in database
-from .core_data import setup_insert_data_fixture as insert_order_0
-from .academics.term_data import fake_data_fixture as insert_order_1
-from .academics.course_data import fake_data_fixture as insert_order_2
-from .academics.section_data import fake_data_fixture as insert_order_3
-from .room_data import fake_data_fixture as insert_order_4
-from .office_hours.office_hours_data import fake_data_fixture as insert_order_5
-from .academics.hiring.hiring_data import fake_data_fixture as insert_order_6
-
-# Data Models for Fake Data Inserted in Setup
-from . import user_data
-from .academics import term_data, section_data
-from .academics.hiring import hiring_data
+from .application_scenario import ApplicationScenario, arrange_application_scenario
 
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
-# Test Functions
+@pytest.fixture()
+def application_scenario(session) -> ApplicationScenario:
+    return arrange_application_scenario(session)
 
 
-def test_get_application(application_svc: ApplicationService):
+def test_get_application(
+    application_svc: ApplicationService, application_scenario: ApplicationScenario
+):
     """Ensure that a user can access their application, if it exists."""
     application = application_svc.get_application(
-        term_data.current_term.id, user_data.student
+        application_scenario.current_term.id, application_scenario.auth.student
     )
     assert application is not None
     assert isinstance(application, Application)
-    assert application.id == hiring_data.application_one.id
+    assert application.id == application_scenario.application_one.id
     assert len(application.preferred_sections) == 3
 
 
-def test_create_application(application_svc: ApplicationService):
+def test_create_application(
+    application_svc: ApplicationService, application_scenario: ApplicationScenario
+):
     """Ensure that a user can create an application."""
     application = application_svc.create(
-        user_data.ambassador, hiring_data.new_application
+        application_scenario.auth.ambassador,
+        application_scenario.new_application.model_copy(deep=True),
     )
     assert application is not None
     assert isinstance(application, Application)
     assert len(application.preferred_sections) == 2
 
 
-def test_create_application_other_user(application_svc: ApplicationService):
+def test_create_application_other_user(
+    application_svc: ApplicationService, application_scenario: ApplicationScenario
+):
     """Ensure that users cannot create applications for other users."""
     with pytest.raises(UserPermissionException):
-        application_svc.create(user_data.instructor, hiring_data.new_application)
+        application_svc.create(
+            application_scenario.auth.instructor,
+            application_scenario.new_application.model_copy(deep=True),
+        )
         pytest.fail()
 
 
-def test_create_application_other_user_root(application_svc: ApplicationService):
+def test_create_application_other_user_root(
+    application_svc: ApplicationService, application_scenario: ApplicationScenario
+):
     """Ensure that root users can create applications for other users."""
-    application = application_svc.create(user_data.root, hiring_data.new_application)
+    application = application_svc.create(
+        application_scenario.auth.root,
+        application_scenario.new_application.model_copy(deep=True),
+    )
     assert application is not None
     assert isinstance(application, Application)
     assert len(application.preferred_sections) == 2
 
 
-def test_update_application(application_svc: ApplicationService):
+def test_update_application(
+    application_svc: ApplicationService, application_scenario: ApplicationScenario
+):
     """Ensure users can update their application."""
-    updated_application = hiring_data.application_one
+    updated_application = application_scenario.application_one.model_copy(deep=True)
     updated_application.academic_hours = 888
     updated_application.preferred_sections = [
         CatalogSectionIdentity(
-            id=section_data.comp_110_001_current_term.id,
+            id=application_scenario.comp_110_001_current_term.id,
             subject_code="COMP",
             course_number="110",
             section_number="001",
             title="Introduction to Computer Science",
         )
     ]
-    application = application_svc.update(user_data.student, updated_application)
+    application = application_svc.update(
+        application_scenario.auth.student, updated_application
+    )
     assert application is not None
     assert isinstance(application, Application)
-    assert application.id == updated_application.id == hiring_data.application_one.id
+    assert (
+        application.id
+        == updated_application.id
+        == application_scenario.application_one.id
+    )
     assert len(application.preferred_sections) == 1
 
 
-def test_update_application_other_user(application_svc: ApplicationService):
+def test_update_application_other_user(
+    application_svc: ApplicationService, application_scenario: ApplicationScenario
+):
     """Ensure that users cannot update applications for other users."""
     with pytest.raises(UserPermissionException):
-        updated_application = hiring_data.application_one
-        application_svc.update(user_data.instructor, updated_application)
+        updated_application = application_scenario.application_one.model_copy(deep=True)
+        application_svc.update(application_scenario.auth.instructor, updated_application)
         pytest.fail()
 
 
-def test_update_application_not_found(application_svc: ApplicationService):
+def test_update_application_not_found(
+    application_svc: ApplicationService, application_scenario: ApplicationScenario
+):
     """Ensure that users cannot update applications that do not exist."""
     with pytest.raises(ResourceNotFoundException):
-        updated_application = hiring_data.new_application
+        updated_application = application_scenario.new_application.model_copy(deep=True)
         updated_application.academic_hours = 888
-        application_svc.update(user_data.ambassador, updated_application)
+        application_svc.update(application_scenario.auth.ambassador, updated_application)
         pytest.fail()
 
 
-def test_update_application_other_user_root(application_svc: ApplicationService):
+def test_update_application_other_user_root(
+    application_svc: ApplicationService, application_scenario: ApplicationScenario
+):
     """Ensure that root users can update applications for other users."""
-    updated_application = hiring_data.application_one
+    updated_application = application_scenario.application_one.model_copy(deep=True)
     updated_application.academic_hours = 888
     updated_application.preferred_sections = [
         CatalogSectionIdentity(
-            id=section_data.comp_110_001_current_term.id,
+            id=application_scenario.comp_110_001_current_term.id,
             subject_code="COMP",
             course_number="110",
             section_number="001",
             title="Introduction to Computer Science",
         )
     ]
-    application = application_svc.update(user_data.root, updated_application)
+    application = application_svc.update(
+        application_scenario.auth.root, updated_application
+    )
     assert application is not None
     assert isinstance(application, Application)
-    assert application.id == updated_application.id == hiring_data.application_one.id
+    assert (
+        application.id
+        == updated_application.id
+        == application_scenario.application_one.id
+    )
     assert len(application.preferred_sections) == 1
 
 
-def test_delete_application(application_svc: ApplicationService):
+def test_delete_application(
+    application_svc: ApplicationService, application_scenario: ApplicationScenario
+):
     """Ensure that the root user can delete an application."""
-    application_svc.delete(hiring_data.application_one.id, user_data.root)
+    application_svc.delete(
+        application_scenario.application_one.id, application_scenario.auth.root
+    )
 
 
-def test_delete_application_not_found(application_svc: ApplicationService):
+def test_delete_application_not_found(
+    application_svc: ApplicationService, application_scenario: ApplicationScenario
+):
     """Ensure that the root user can delete an application."""
     with pytest.raises(ResourceNotFoundException):
-        application_svc.delete(404, user_data.root)
+        application_svc.delete(404, application_scenario.auth.root)
 
 
-def test_delete_application_other_user(application_svc: ApplicationService):
+def test_delete_application_other_user(
+    application_svc: ApplicationService, application_scenario: ApplicationScenario
+):
     """Ensure that other users cannot delete an application."""
     with pytest.raises(UserPermissionException):
-        application_svc.delete(hiring_data.application_one.id, user_data.student)
+        application_svc.delete(
+            application_scenario.application_one.id,
+            application_scenario.auth.student,
+        )
 
 
-def test_eligible_sections(application_svc: ApplicationService):
+def test_eligible_sections(
+    application_svc: ApplicationService, application_scenario: ApplicationScenario
+):
     sections = application_svc.eligible_sections()
     assert len(sections) == 8
