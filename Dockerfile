@@ -23,8 +23,7 @@ RUN groupadd --gid 1001 app && useradd --uid 1001 --gid app --create-home app
 
 WORKDIR /workspace
 
-COPY ./backend ./
-COPY ./alembic.ini ./
+COPY ./backend ./alembic.ini ./
 
 WORKDIR /workspace/backend
 RUN uv sync --all-packages --no-dev --no-editable && rm -rf /root/.cache
