@@ -40,8 +40,6 @@ def test_get_section_member_by_id(
     """Test case to retrieve a section member by ID."""
     section_member = section_member_svc.get_section_member_by_id(id=1)
 
-
-
     assert isinstance(section_member, SectionMember)
     assert section_member.id == academics_scenario.comp110_instructor.id
 

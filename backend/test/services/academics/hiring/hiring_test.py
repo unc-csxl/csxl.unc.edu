@@ -235,7 +235,9 @@ def test_get_hiring_admin_course_overview(
     assert len(overview.assignments) == 1
     assert overview.assignments[0].id == hiring_scenario.hiring_assignment.id
     assert len(overview.instructor_preferences) == 1
-    assert overview.instructor_preferences[0].id == hiring_scenario.application_two.user_id
+    assert (
+        overview.instructor_preferences[0].id == hiring_scenario.application_two.user_id
+    )
 
 
 def test_get_hiring_admin_course_overview_not_found(
@@ -479,9 +481,7 @@ def test_get_phd_applicants_includes_instructor_preferences(
     assert applicants[0].instructor_preferences == ["(0) comp301.001"]
 
 
-def test_get_hiring_summary(
-    hiring_svc: HiringService, hiring_scenario: HiringScenario
-):
+def test_get_hiring_summary(hiring_svc: HiringService, hiring_scenario: HiringScenario):
     summary = hiring_svc.get_hiring_summary_overview(
         hiring_scenario.course_site.academics.auth.root,
         hiring_scenario.course_site.academics.current_term.id,
@@ -565,9 +565,7 @@ def test_get_assignment_summary_for_instructors_csv(
     assert len(rows) == 2
 
 
-def test_conflict_check(
-    hiring_svc: HiringService, hiring_scenario: HiringScenario
-):
+def test_conflict_check(hiring_svc: HiringService, hiring_scenario: HiringScenario):
     status = hiring_svc.get_status(
         hiring_scenario.course_site.academics.auth.instructor,
         hiring_scenario.course_site.comp_110_site.id,
@@ -671,7 +669,11 @@ def test_iter_applicants_for_term_csv_skips_missing_application():
     session.get.return_value = None
     permission = create_autospec(PermissionService)
 
-    rows = list(HiringService(session, permission).iter_applicants_for_term_csv(object(), "Curr"))
+    rows = list(
+        HiringService(session, permission).iter_applicants_for_term_csv(
+            object(), "Curr"
+        )
+    )
 
     assert rows == []
 
@@ -717,7 +719,11 @@ def test_iter_applicants_for_term_csv_skips_assignments_without_sections():
         ),
     ]
 
-    rows = list(HiringService(session, permission).iter_applicants_for_term_csv(object(), "Curr"))
+    rows = list(
+        HiringService(session, permission).iter_applicants_for_term_csv(
+            object(), "Curr"
+        )
+    )
 
     assert len(rows) == 1
     assert rows[0]["assignments"] == ""

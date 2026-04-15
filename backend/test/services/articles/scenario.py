@@ -6,15 +6,28 @@ from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 
 from ....entities.article_entity import ArticleEntity, article_author_table
+from ....entities.permission_entity import PermissionEntity
+from ....entities.role_entity import RoleEntity
+from ....entities.user_entity import UserEntity
+from ....entities.user_role_table import user_role_table
 from ....models.articles import ArticleDraft, ArticleState
+from ....models import Permission, Role
 from ....models.public_user import PublicUser
-from ..auth_scenario import AuthScenario, arrange_auth_scenario
+from ....models.user import User
 from ..reset_table_id_seq import reset_table_id_seq
+
+
+@dataclass(frozen=True)
+class ArticleAuthScenario:
+    root_role: Role
+    root_permission: Permission
+    root: User
+    student: User
 
 
 @dataclass
 class ArticleScenario:
-    auth: AuthScenario
+    auth: ArticleAuthScenario
     announcement: ArticleDraft
     article_one: ArticleDraft
     article_two: ArticleDraft
@@ -41,9 +54,63 @@ def _author(user) -> PublicUser:
     )
 
 
+def build_article_auth_scenario() -> ArticleAuthScenario:
+    return ArticleAuthScenario(
+        root_role=Role(id=1, name="root"),
+        root_permission=Permission(id=1, action="*", resource="*"),
+        root=User(
+            id=1,
+            pid=999999999,
+            onyen="root",
+            email="root@unc.edu",
+            first_name="Rhonda",
+            last_name="Root",
+            pronouns="She / Her / Hers",
+            accepted_community_agreement=True,
+        ),
+        student=User(
+            id=2,
+            pid=555555555,
+            onyen="Stewie",
+            email="stewie@unc.edu",
+            first_name="Stewie",
+            last_name="Student",
+            pronouns="They / Them / Theirs",
+            accepted_community_agreement=True,
+        ),
+    )
+
+
 def arrange_article_scenario(session: Session) -> ArticleScenario:
-    auth = arrange_auth_scenario(session)
+    auth = build_article_auth_scenario()
     now = datetime.now().replace(microsecond=0)
+
+    session.add(RoleEntity.from_model(auth.root_role))
+    session.add_all(
+        [UserEntity.from_model(auth.root), UserEntity.from_model(auth.student)]
+    )
+    session.flush()
+    session.execute(
+        user_role_table.insert().values(
+            {"role_id": auth.root_role.id, "user_id": auth.root.id}
+        )
+    )
+    session.add(
+        PermissionEntity(
+            id=auth.root_permission.id,
+            role_id=auth.root_role.id,
+            action=auth.root_permission.action,
+            resource=auth.root_permission.resource,
+        )
+    )
+    reset_table_id_seq(session, RoleEntity, RoleEntity.id, auth.root_role.id + 1)
+    reset_table_id_seq(session, UserEntity, UserEntity.id, auth.student.id + 1)
+    reset_table_id_seq(
+        session,
+        PermissionEntity,
+        PermissionEntity.id,
+        auth.root_permission.id + 1,
+    )
 
     announcement = ArticleDraft(
         id=0,

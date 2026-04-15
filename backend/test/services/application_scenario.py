@@ -9,19 +9,36 @@ from ...entities.academics.course_entity import CourseEntity
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.academics.term_entity import TermEntity
 from ...entities.application_entity import ApplicationEntity
+from ...entities.permission_entity import PermissionEntity
+from ...entities.role_entity import RoleEntity
 from ...entities.section_application_table import section_application_table
+from ...entities.user_entity import UserEntity
+from ...entities.user_role_table import user_role_table
 from ...models.academics.course import Course
 from ...models.academics.section import CatalogSectionIdentity, Section
 from ...models.academics.term import Term
+from ...models import Permission, Role
 from ...models.application import Application
 from ...models.comp_227 import Comp227
-from .auth_scenario import AuthScenario, arrange_auth_scenario
+from ...models.user import User
 from .reset_table_id_seq import reset_table_id_seq
+
+
+@dataclass(frozen=True)
+class ApplicationAuthScenario:
+    root_role: Role
+    root_permission: Permission
+    root: User
+    ambassador: User
+    user: User
+    instructor: User
+    uta: User
+    student: User
 
 
 @dataclass
 class ApplicationScenario:
-    auth: AuthScenario
+    auth: ApplicationAuthScenario
     current_term: Term
     comp_110_001_current_term: Section
     comp_110_002_current_term: Section
@@ -39,8 +56,106 @@ def _section_identity(section: Section, course: Course) -> CatalogSectionIdentit
     )
 
 
+def build_application_auth_scenario() -> ApplicationAuthScenario:
+    return ApplicationAuthScenario(
+        root_role=Role(id=1, name="root"),
+        root_permission=Permission(id=1, action="*", resource="*"),
+        root=User(
+            id=1,
+            pid=999999999,
+            onyen="root",
+            email="root@unc.edu",
+            first_name="Rhonda",
+            last_name="Root",
+            pronouns="She / Her / Hers",
+            accepted_community_agreement=True,
+        ),
+        ambassador=User(
+            id=2,
+            pid=888888888,
+            onyen="xlstan",
+            email="amam@unc.edu",
+            first_name="Amy",
+            last_name="Ambassador",
+            pronouns="They / Them / Theirs",
+            accepted_community_agreement=True,
+        ),
+        user=User(
+            id=3,
+            pid=111111111,
+            onyen="user",
+            email="user@unc.edu",
+            first_name="Sally",
+            last_name="Student",
+            pronouns="She / They",
+            accepted_community_agreement=True,
+        ),
+        instructor=User(
+            id=4,
+            pid=222222222,
+            onyen="Ina",
+            email="ina@unc.edu",
+            first_name="Ina",
+            last_name="Instructor",
+            pronouns="They / Them / Theirs",
+        ),
+        uta=User(
+            id=5,
+            pid=333333333,
+            onyen="uhlissa",
+            email="uhlissa@unc.edu",
+            first_name="Uhlissa",
+            last_name="UTA",
+            pronouns="They / Them / Theirs",
+        ),
+        student=User(
+            id=6,
+            pid=555555555,
+            onyen="Stewie",
+            email="stewie@unc.edu",
+            first_name="Stewie",
+            last_name="Student",
+            pronouns="They / Them / Theirs",
+        ),
+    )
+
+
 def arrange_application_scenario(session: Session) -> ApplicationScenario:
-    auth = arrange_auth_scenario(session)
+    auth = build_application_auth_scenario()
+
+    session.add(RoleEntity.from_model(auth.root_role))
+    session.add_all(
+        [
+            UserEntity.from_model(auth.root),
+            UserEntity.from_model(auth.ambassador),
+            UserEntity.from_model(auth.user),
+            UserEntity.from_model(auth.instructor),
+            UserEntity.from_model(auth.uta),
+            UserEntity.from_model(auth.student),
+        ]
+    )
+    session.flush()
+    session.execute(
+        user_role_table.insert().values(
+            {"role_id": auth.root_role.id, "user_id": auth.root.id}
+        )
+    )
+    session.add(
+        PermissionEntity(
+            id=auth.root_permission.id,
+            role_id=auth.root_role.id,
+            action=auth.root_permission.action,
+            resource=auth.root_permission.resource,
+        )
+    )
+    reset_table_id_seq(session, RoleEntity, RoleEntity.id, auth.root_role.id + 1)
+    reset_table_id_seq(session, UserEntity, UserEntity.id, auth.student.id + 1)
+    reset_table_id_seq(
+        session,
+        PermissionEntity,
+        PermissionEntity.id,
+        auth.root_permission.id + 1,
+    )
 
     now = datetime.now().replace(microsecond=0)
     term_length = timedelta(weeks=17)

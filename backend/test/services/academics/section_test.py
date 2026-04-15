@@ -135,7 +135,9 @@ def test_create_with_instructors(
     created = section_svc.create(academics_scenario.auth.root, section)
 
     instructors = [
-        member for member in created.members if member.member_role == RosterRole.INSTRUCTOR
+        member
+        for member in created.members
+        if member.member_role == RosterRole.INSTRUCTOR
     ]
     assert len(instructors) == 1
     assert instructors[0].user_id == academics_scenario.auth.instructor.id
@@ -225,7 +227,9 @@ def test_update_replaces_instructors(
     updated = section_svc.update(academics_scenario.auth.root, edited_section)
 
     instructors = [
-        member for member in updated.members if member.member_role == RosterRole.INSTRUCTOR
+        member
+        for member in updated.members
+        if member.member_role == RosterRole.INSTRUCTOR
     ]
     assert [instructor.user_id for instructor in instructors] == [
         academics_scenario.auth.root.id
@@ -255,7 +259,9 @@ def test_update_replaces_existing_current_term_instructor(
     updated = section_svc.update(academics_scenario.auth.root, edited_section)
 
     instructors = [
-        member for member in updated.members if member.member_role == RosterRole.INSTRUCTOR
+        member
+        for member in updated.members
+        if member.member_role == RosterRole.INSTRUCTOR
     ]
     assert [instructor.user_id for instructor in instructors] == [
         academics_scenario.auth.root.id
@@ -393,7 +399,9 @@ def test_update_enrollments_updates_matching_sections(
       <p class='card-available-seats'>10/20 seats</p>
     </div>
     """
-    section_entity = SimpleNamespace(course_id="comp110", number="001", enrolled=0, total_seats=0)
+    section_entity = SimpleNamespace(
+        course_id="comp110", number="001", enrolled=0, total_seats=0
+    )
     session = create_autospec(Session)
     session.scalars.side_effect = [
         SimpleNamespace(all=lambda: [section_entity]),

@@ -31,9 +31,7 @@ def test_link_with_user_updates_github_fields(monkeypatch):
             assert token == "token"
 
         def get_user(self):
-            return SimpleNamespace(
-                login="octocat", id=123, avatar_url="https://avatar"
-            )
+            return SimpleNamespace(login="octocat", id=123, avatar_url="https://avatar")
 
     monkeypatch.setattr(github_module, "Github", FakeGithub)
 

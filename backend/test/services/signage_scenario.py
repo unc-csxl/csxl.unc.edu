@@ -5,20 +5,31 @@ from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
 
+from ...entities import RoomEntity, UserEntity
 from ...entities.academics.course_entity import CourseEntity
 from ...entities.academics.section_entity import SectionEntity
 from ...entities.academics.term_entity import TermEntity
 from ...entities.article_entity import ArticleEntity, article_author_table
-from ...entities.coworking import ReservationEntity
+from ...entities.coworking import (
+    OperatingHoursEntity,
+    ReservationEntity,
+    SeatEntity,
+)
 from ...entities.event_entity import EventEntity
 from ...entities.office_hours.course_site_entity import CourseSiteEntity
 from ...entities.office_hours.office_hours_entity import OfficeHoursEntity
 from ...entities.organization_entity import OrganizationEntity
+from ...models import RoomDetails, User
 from ...models.academics.course import Course
 from ...models.academics.section import Section
 from ...models.academics.term import Term
 from ...models.articles import ArticleDraft, ArticleState
-from ...models.coworking import Reservation, ReservationState
+from ...models.coworking import (
+    OperatingHours as CoworkingOperatingHours,
+    Reservation,
+    ReservationState,
+    SeatDetails,
+)
 from ...models.event import EventDraft
 from ...models.office_hours.course_site import CourseSite
 from ...models.office_hours.event_type import (
@@ -28,17 +39,23 @@ from ...models.office_hours.event_type import (
 from ...models.office_hours.office_hours import OfficeHours
 from ...models.organization import Organization
 from ...models.public_user import PublicUser
-from .coworking.reservation.scenario import (
-    ReservationScenario,
-    arrange_standard_reservation_scenario,
-)
-from .coworking.time import time_data
 from .reset_table_id_seq import reset_table_id_seq
+
+
+@dataclass(frozen=True)
+class SignageReservationScenario:
+    root: User
+    ambassador: User
+    user: User
+    group_a: RoomDetails
+    pair_a: RoomDetails
+    monitor_seat_01: SeatDetails
+    monitor_seat_11: SeatDetails
 
 
 @dataclass
 class SignageScenario:
-    reservation: ReservationScenario
+    reservation: SignageReservationScenario
     comp_110_current_office_hours: OfficeHours
     announcement: ArticleDraft
     article_one: ArticleDraft
@@ -61,9 +78,252 @@ def _author(user) -> PublicUser:
     )
 
 
+def arrange_signage_reservation_scenario(
+    session: Session, now: datetime
+) -> SignageReservationScenario:
+    root = User(
+        id=1,
+        pid=999999999,
+        onyen="root",
+        email="root@unc.edu",
+        first_name="Rhonda",
+        last_name="Root",
+        pronouns="She / Her / Hers",
+        accepted_community_agreement=True,
+    )
+    ambassador = User(
+        id=2,
+        pid=888888888,
+        onyen="xlstan",
+        email="amam@unc.edu",
+        first_name="Amy",
+        last_name="Ambassador",
+        pronouns="They / Them / Theirs",
+        accepted_community_agreement=True,
+    )
+    user = User(
+        id=3,
+        pid=111111111,
+        onyen="user",
+        email="user@unc.edu",
+        first_name="Sally",
+        last_name="Student",
+        pronouns="She / They",
+        accepted_community_agreement=True,
+    )
+
+    xl_room = RoomDetails(
+        id="SN156",
+        building="Sitterson",
+        room="156",
+        nickname="The XL",
+        capacity=40,
+        reservable=False,
+        seats=[],
+    )
+    group_a = RoomDetails(
+        id="SN135",
+        building="Sitterson",
+        room="135",
+        nickname="Group A",
+        capacity=4,
+        reservable=True,
+        seats=[],
+    )
+    group_b = RoomDetails(
+        id="SN137",
+        building="Sitterson",
+        room="137",
+        nickname="Group B",
+        capacity=4,
+        reservable=True,
+        seats=[],
+    )
+    group_c = RoomDetails(
+        id="SN141",
+        building="Sitterson",
+        room="141",
+        nickname="Group C",
+        capacity=6,
+        reservable=True,
+        seats=[],
+    )
+    pair_a = RoomDetails(
+        id="SN139",
+        building="Sitterson",
+        room="139",
+        nickname="Pair A",
+        capacity=2,
+        reservable=True,
+        seats=[],
+    )
+
+    monitor_seat_00 = SeatDetails(
+        id=1,
+        title="Standing Monitor 00",
+        shorthand="M00",
+        reservable=True,
+        has_monitor=True,
+        sit_stand=True,
+        x=0,
+        y=0,
+        room=xl_room.to_room(),
+    )
+    monitor_seat_01 = SeatDetails(
+        id=2,
+        title="Standing Monitor 01",
+        shorthand="M01",
+        reservable=False,
+        has_monitor=True,
+        sit_stand=True,
+        x=0,
+        y=1,
+        room=xl_room.to_room(),
+    )
+    monitor_seat_10 = SeatDetails(
+        id=3,
+        title="Monitor 10",
+        shorthand="M10",
+        reservable=True,
+        has_monitor=True,
+        sit_stand=False,
+        x=1,
+        y=0,
+        room=xl_room.to_room(),
+    )
+    monitor_seat_11 = SeatDetails(
+        id=4,
+        title="Monitor 11",
+        shorthand="M11",
+        reservable=False,
+        has_monitor=True,
+        sit_stand=False,
+        x=1,
+        y=1,
+        room=xl_room.to_room(),
+    )
+
+    session.add_all(UserEntity.from_model(model) for model in [root, ambassador, user])
+    session.add_all(
+        RoomEntity.from_model(model)
+        for model in [xl_room, group_a, group_b, group_c, pair_a]
+    )
+    session.add_all(
+        SeatEntity.from_model(model)
+        for model in [
+            monitor_seat_00,
+            monitor_seat_01,
+            monitor_seat_10,
+            monitor_seat_11,
+        ]
+    )
+    session.add(
+        OperatingHoursEntity.from_model(
+            CoworkingOperatingHours(
+                id=1,
+                start=now - timedelta(hours=1),
+                end=now + timedelta(hours=8),
+            )
+        )
+    )
+    session.flush()
+
+    reservations = [
+        Reservation(
+            id=1,
+            start=now - timedelta(hours=1),
+            end=now + timedelta(hours=2),
+            created_at=now - timedelta(hours=2),
+            updated_at=now - timedelta(hours=1, minutes=30),
+            walkin=False,
+            room=pair_a,
+            state=ReservationState.CHECKED_IN,
+            users=[root],
+            seats=[],
+        ),
+        Reservation(
+            id=2,
+            start=now - timedelta(hours=3),
+            end=now - timedelta(hours=1),
+            created_at=now - timedelta(hours=2),
+            updated_at=now - timedelta(hours=1),
+            walkin=False,
+            room=None,
+            state=ReservationState.CHECKED_OUT,
+            users=[ambassador],
+            seats=[],
+        ),
+        Reservation(
+            id=3,
+            start=now - timedelta(hours=4),
+            end=now - timedelta(hours=3),
+            created_at=now - timedelta(hours=4),
+            updated_at=now - timedelta(hours=3),
+            walkin=False,
+            room=None,
+            state=ReservationState.CHECKED_OUT,
+            users=[ambassador],
+            seats=[],
+        ),
+        Reservation(
+            id=4,
+            start=now - timedelta(hours=2),
+            end=now - timedelta(hours=1),
+            created_at=now - timedelta(hours=2),
+            updated_at=now - timedelta(hours=1),
+            walkin=False,
+            room=None,
+            state=ReservationState.CHECKED_OUT,
+            users=[root],
+            seats=[],
+        ),
+        Reservation(
+            id=5,
+            start=now - timedelta(hours=4),
+            end=now - timedelta(hours=3),
+            created_at=now - timedelta(hours=4),
+            updated_at=now - timedelta(hours=3),
+            walkin=False,
+            room=None,
+            state=ReservationState.CHECKED_OUT,
+            users=[root],
+            seats=[],
+        ),
+        Reservation(
+            id=6,
+            start=now - timedelta(hours=4),
+            end=now - timedelta(hours=3),
+            created_at=now - timedelta(hours=4),
+            updated_at=now - timedelta(hours=3),
+            walkin=False,
+            room=None,
+            state=ReservationState.CHECKED_OUT,
+            users=[user],
+            seats=[],
+        ),
+    ]
+    session.add_all(
+        ReservationEntity.from_model(model, session) for model in reservations
+    )
+    reset_table_id_seq(session, SeatEntity, SeatEntity.id, 5)
+    reset_table_id_seq(session, OperatingHoursEntity, OperatingHoursEntity.id, 2)
+    reset_table_id_seq(session, ReservationEntity, ReservationEntity.id, 7)
+    session.flush()
+
+    return SignageReservationScenario(
+        root=root,
+        ambassador=ambassador,
+        user=user,
+        group_a=group_a,
+        pair_a=pair_a,
+        monitor_seat_01=monitor_seat_01,
+        monitor_seat_11=monitor_seat_11,
+    )
+
+
 def arrange_signage_scenario(session: Session) -> SignageScenario:
-    reservation = arrange_standard_reservation_scenario(session, time_data())
     now = datetime.now().replace(microsecond=0)
+    reservation = arrange_signage_reservation_scenario(session, now)
 
     term = Term(
         id="Curr",

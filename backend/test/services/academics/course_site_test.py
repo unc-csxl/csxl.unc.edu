@@ -423,10 +423,14 @@ def test_update_reassigns_existing_uta_to_gta(
         updated_site,
     )
 
-    membership = session.query(SectionMemberEntity).filter_by(
-        section_id=course_site_scenario.academics.comp_110_001_current_term.id,
-        user_id=course_site_scenario.academics.auth.uta.id,
-    ).one()
+    membership = (
+        session.query(SectionMemberEntity)
+        .filter_by(
+            section_id=course_site_scenario.academics.comp_110_001_current_term.id,
+            user_id=course_site_scenario.academics.auth.uta.id,
+        )
+        .one()
+    )
     assert membership.member_role.name == "GTA"
 
 
@@ -435,10 +439,14 @@ def test_update_reassigns_existing_gta_to_uta(
     course_site_svc: CourseSiteService,
     course_site_scenario: CourseSiteScenario,
 ):
-    membership = session.query(SectionMemberEntity).filter_by(
-        section_id=course_site_scenario.academics.comp_110_001_current_term.id,
-        user_id=course_site_scenario.academics.auth.uta.id,
-    ).one()
+    membership = (
+        session.query(SectionMemberEntity)
+        .filter_by(
+            section_id=course_site_scenario.academics.comp_110_001_current_term.id,
+            user_id=course_site_scenario.academics.auth.uta.id,
+        )
+        .one()
+    )
     membership.member_role = membership.member_role.GTA
     session.commit()
 
@@ -451,10 +459,14 @@ def test_update_reassigns_existing_gta_to_uta(
         updated_site,
     )
 
-    refreshed_membership = session.query(SectionMemberEntity).filter_by(
-        section_id=course_site_scenario.academics.comp_110_001_current_term.id,
-        user_id=course_site_scenario.academics.auth.uta.id,
-    ).one()
+    refreshed_membership = (
+        session.query(SectionMemberEntity)
+        .filter_by(
+            section_id=course_site_scenario.academics.comp_110_001_current_term.id,
+            user_id=course_site_scenario.academics.auth.uta.id,
+        )
+        .one()
+    )
     assert refreshed_membership.member_role.name == "UTA"
 
 
@@ -463,10 +475,14 @@ def test_update_keeps_existing_gta_visible_to_uta_reassignment_path(
     course_site_svc: CourseSiteService,
     course_site_scenario: CourseSiteScenario,
 ):
-    membership = session.query(SectionMemberEntity).filter_by(
-        section_id=course_site_scenario.academics.comp_110_001_current_term.id,
-        user_id=course_site_scenario.academics.auth.uta.id,
-    ).one()
+    membership = (
+        session.query(SectionMemberEntity)
+        .filter_by(
+            section_id=course_site_scenario.academics.comp_110_001_current_term.id,
+            user_id=course_site_scenario.academics.auth.uta.id,
+        )
+        .one()
+    )
     membership.member_role = membership.member_role.GTA
     session.commit()
 
@@ -479,8 +495,12 @@ def test_update_keeps_existing_gta_visible_to_uta_reassignment_path(
         updated_site,
     )
 
-    refreshed_membership = session.query(SectionMemberEntity).filter_by(
-        section_id=course_site_scenario.academics.comp_110_001_current_term.id,
-        user_id=course_site_scenario.academics.auth.uta.id,
-    ).one()
+    refreshed_membership = (
+        session.query(SectionMemberEntity)
+        .filter_by(
+            section_id=course_site_scenario.academics.comp_110_001_current_term.id,
+            user_id=course_site_scenario.academics.auth.uta.id,
+        )
+        .one()
+    )
     assert refreshed_membership.member_role.name == "UTA"

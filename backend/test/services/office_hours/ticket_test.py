@@ -325,9 +325,7 @@ def test_create_ticket_unit_requires_course_entity():
     session.scalars.side_effect = [
         SimpleNamespace(
             unique=lambda: SimpleNamespace(
-                all=lambda: [
-                    SimpleNamespace(user_id=1, member_role=RosterRole.STUDENT)
-                ]
+                all=lambda: [SimpleNamespace(user_id=1, member_role=RosterRole.STUDENT)]
             )
         ),
         SimpleNamespace(all=lambda: []),

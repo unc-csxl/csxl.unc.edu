@@ -779,7 +779,9 @@ def test_get_event_status_falls_back_to_first_upcoming(
         event_scenario.event_two.id,
         event_scenario.event_three.id,
     ]:
-        session.get(EventEntity, event_id).organization_id = event_scenario.organizations.cads.id
+        session.get(EventEntity, event_id).organization_id = (
+            event_scenario.organizations.cads.id
+        )
     session.commit()
 
     status = event_svc_integration.get_event_status(event_scenario.auth.user)
@@ -798,7 +800,9 @@ def test_get_event_status_unauthenticated_falls_back_to_first_upcoming(
         event_scenario.event_two.id,
         event_scenario.event_three.id,
     ]:
-        session.get(EventEntity, event_id).organization_id = event_scenario.organizations.cads.id
+        session.get(EventEntity, event_id).organization_id = (
+            event_scenario.organizations.cads.id
+        )
     session.commit()
 
     status = event_svc_integration.get_event_status_unauthenticated()

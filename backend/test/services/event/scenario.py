@@ -5,12 +5,18 @@ from sqlalchemy.orm import Session
 
 from ....entities.event_entity import EventEntity
 from ....entities.event_registration_entity import EventRegistrationEntity
+from ....entities.organization_entity import OrganizationEntity
+from ....entities.permission_entity import PermissionEntity
+from ....entities.role_entity import RoleEntity
+from ....entities.user_entity import UserEntity
+from ....entities.user_role_table import user_role_table
 from ....models.event import EventDraft
 from ....models.event_registration import NewEventRegistration
+from ....models import Permission, Role
+from ....models.organization import Organization
 from ....models.public_user import PublicUser
 from ....models.registration_type import RegistrationType
-from ..auth_scenario import AuthScenario, arrange_auth_scenario
-from ..organization.scenario import OrganizationScenario, arrange_organization_scenario
+from ....models.user import User
 from ..reset_table_id_seq import reset_table_id_seq
 
 
@@ -36,9 +42,28 @@ def public_user(user) -> PublicUser:
 
 
 @dataclass(frozen=True)
+class EventAuthScenario:
+    root_role: Role
+    root_permission: Permission
+    root: User
+    ambassador: User
+    user: User
+
+
+@dataclass(frozen=True)
+class EventOrganizations:
+    cads: Organization
+    cssg: Organization
+
+    @property
+    def organizations(self) -> list[Organization]:
+        return [self.cads, self.cssg]
+
+
+@dataclass(frozen=True)
 class EventScenario:
-    auth: AuthScenario
-    organizations: OrganizationScenario
+    auth: EventAuthScenario
+    organizations: EventOrganizations
     event_one: EventDraft
     event_two: EventDraft
     event_three: EventDraft
@@ -67,7 +92,7 @@ class EventScenario:
 
 
 def build_event_scenario(
-    auth: AuthScenario, organizations: OrganizationScenario
+    auth: EventAuthScenario, organizations: EventOrganizations
 ) -> EventScenario:
     event_one = EventDraft(
         id=1,
@@ -221,10 +246,125 @@ def build_event_scenario(
     )
 
 
+def build_event_organizations() -> EventOrganizations:
+    return EventOrganizations(
+        cads=Organization(
+            id=1,
+            name="Carolina Analytics & Data Science Club",
+            shorthand="CADS",
+            slug="cads",
+            logo="https://raw.githubusercontent.com/briannata/comp423_a3_starter/main/logos/cads.png",
+            short_description="Provides students interested in Data Science opportunities to grow.",
+            long_description="CADS provides students interested in Data Science opportunities to grow personally, intellectually, professionally, and socially among a support network of students, professors, and career professionals.",
+            website="https://carolinadata.unc.edu/",
+            email="carolinadatascience@gmail.com",
+            instagram="https://www.instagram.com/carolinadatascience/",
+            linked_in="https://www.linkedin.com/company/carolina-data/",
+            youtube="https://www.youtube.com/channel/UCO44Yjhjuo5-TLUCAaP0-cQ",
+            heel_life="https://heellife.unc.edu/organization/carolinadatascience",
+            public=True,
+        ),
+        cssg=Organization(
+            id=2,
+            name="CS+Social Good",
+            shorthand="CSSG",
+            slug="cssg",
+            logo="https://raw.githubusercontent.com/briannata/comp423_a3_starter/main/logos/cssg.png",
+            short_description="We build apps for nonprofits and organizations for social good.",
+            long_description="We partner with organizations for social good and build technology solutions for their needs.",
+            website="https://cssgunc.org/",
+            email="cssgunc@gmail.com",
+            instagram="https://www.instagram.com/unc_cssg/",
+            linked_in="",
+            youtube="",
+            heel_life="https://heellife.unc.edu/organization/cssg",
+            public=False,
+        ),
+    )
+
+
+def build_event_auth_scenario() -> EventAuthScenario:
+    return EventAuthScenario(
+        root_role=Role(id=1, name="root"),
+        root_permission=Permission(id=1, action="*", resource="*"),
+        root=User(
+            id=1,
+            pid=999999999,
+            onyen="root",
+            email="root@unc.edu",
+            first_name="Rhonda",
+            last_name="Root",
+            pronouns="She / Her / Hers",
+            accepted_community_agreement=True,
+        ),
+        ambassador=User(
+            id=2,
+            pid=888888888,
+            onyen="xlstan",
+            email="amam@unc.edu",
+            first_name="Amy",
+            last_name="Ambassador",
+            pronouns="They / Them / Theirs",
+            accepted_community_agreement=True,
+        ),
+        user=User(
+            id=3,
+            pid=111111111,
+            onyen="user",
+            email="user@unc.edu",
+            first_name="Sally",
+            last_name="Student",
+            pronouns="She / They",
+            accepted_community_agreement=True,
+        ),
+    )
+
+
 def arrange_event_scenario(session: Session) -> EventScenario:
-    auth = arrange_auth_scenario(session)
-    organizations = arrange_organization_scenario(session)
+    auth = build_event_auth_scenario()
+    organizations = build_event_organizations()
     scenario = build_event_scenario(auth, organizations)
+    session.add(RoleEntity.from_model(auth.root_role))
+    session.add_all(
+        [
+            UserEntity.from_model(auth.root),
+            UserEntity.from_model(auth.ambassador),
+            UserEntity.from_model(auth.user),
+        ]
+    )
+    session.flush()
+    session.execute(
+        user_role_table.insert().values(
+            {"role_id": auth.root_role.id, "user_id": auth.root.id}
+        )
+    )
+    session.add(
+        PermissionEntity(
+            id=auth.root_permission.id,
+            role_id=auth.root_role.id,
+            action=auth.root_permission.action,
+            resource=auth.root_permission.resource,
+        )
+    )
+    reset_table_id_seq(session, RoleEntity, RoleEntity.id, auth.root_role.id + 1)
+    reset_table_id_seq(session, UserEntity, UserEntity.id, auth.user.id + 1)
+    reset_table_id_seq(
+        session,
+        PermissionEntity,
+        PermissionEntity.id,
+        auth.root_permission.id + 1,
+    )
+    session.add_all(
+        OrganizationEntity.from_model(organization)
+        for organization in organizations.organizations
+    )
+    reset_table_id_seq(
+        session,
+        OrganizationEntity,
+        OrganizationEntity.id,
+        len(organizations.organizations) + 1,
+    )
+    session.flush()
     organizations_by_slug = {
         organization.slug: organization.id
         for organization in organizations.organizations
