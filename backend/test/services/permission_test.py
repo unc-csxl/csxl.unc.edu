@@ -1,85 +1,129 @@
 """Tests for the PermissionService class."""
 
 import pytest
+from sqlalchemy.orm import Session
 
 # Tested Dependencies
 from ...models import Permission, User
 from ...services import PermissionService
 
-# Data Setup and Injected Service Fixtures
-from .core_data import setup_insert_data_fixture
+from .auth_scenario import arrange_auth_scenario
 from .fixtures import permission_svc
-
-# Data Models for Fake Data Inserted in Setup
-from .role_data import ambassador_role
-from .user_data import root, ambassador, user
-from .permission_data import ambassador_permission
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-def test_no_permission(permission_svc: PermissionService):
+def test_no_permission(session: Session, permission_svc: PermissionService):
     """Tests that user initially has no permissions"""
-    assert permission_svc.check(user, "permission.grant", "permission") is False
-    assert permission_svc.check(user, "user.delete", "user/1") is False
+    # Arrange
+    scenario = arrange_auth_scenario(session)
+
+    # Act / Assert
+    assert permission_svc.check(scenario.user, "permission.grant", "permission") is False
+    assert permission_svc.check(scenario.user, "user.delete", "user/1") is False
 
 
-def test_grant_role_permission(permission_svc: PermissionService):
+def test_grant_role_permission(session: Session, permission_svc: PermissionService):
     """Tests that you can grant a permission to a role"""
-    assert permission_svc.check(ambassador, "checkin.delete", "checkin") is False
+    # Arrange
+    scenario = arrange_auth_scenario(session)
+    assert permission_svc.check(scenario.ambassador, "checkin.delete", "checkin") is False
     p = Permission(action="checkin.delete", resource="*")
-    permission_svc.grant(root, ambassador, p)
-    assert permission_svc.check(ambassador, "checkin.delete", "checkin")
+
+    # Act
+    permission_svc.grant(scenario.root, scenario.ambassador, p)
+
+    # Assert
+    assert permission_svc.check(scenario.ambassador, "checkin.delete", "checkin")
 
 
-def test_grant_user_permission(permission_svc: PermissionService):
+def test_grant_user_permission(session: Session, permission_svc: PermissionService):
     """Tests that you can grant a permission to a user"""
-    assert permission_svc.check(ambassador, "checkin.delete", "checkin") is False
+    # Arrange
+    scenario = arrange_auth_scenario(session)
+    assert permission_svc.check(scenario.ambassador, "checkin.delete", "checkin") is False
     p = Permission(action="checkin.delete", resource="*")
-    permission_svc.grant(root, ambassador_role, p)
-    assert permission_svc.check(ambassador, "checkin.delete", "checkin")
+
+    # Act
+    permission_svc.grant(scenario.root, scenario.ambassador_role, p)
+
+    # Assert
+    assert permission_svc.check(scenario.ambassador, "checkin.delete", "checkin")
 
 
-def test_grant_none_exception(permission_svc: PermissionService):
+def test_grant_none_exception(session: Session, permission_svc: PermissionService):
     """Tests that a ValueError is raised if attempting to grant to an improper object"""
+    # Arrange
+    scenario = arrange_auth_scenario(session)
+
+    # Act / Assert
     with pytest.raises(ValueError):
         p = Permission(action="checkin.delete", resource="*")
-        permission_svc.grant(root, None, p)  # type: ignore
+        permission_svc.grant(scenario.root, None, p)  # type: ignore
 
 
-def test_revoke_role_permission(permission_svc: PermissionService):
+def test_revoke_role_permission(session: Session, permission_svc: PermissionService):
     """Tests that you can remove a permission from a user"""
-    assert permission_svc.check(ambassador, "checkin.create", "checkin")
-    permission_svc.revoke(root, ambassador_permission)
-    assert permission_svc.check(ambassador, "checkin.create", "checkin") is False
+    # Arrange
+    scenario = arrange_auth_scenario(session)
+    assert permission_svc.check(scenario.ambassador, "checkin.create", "checkin")
+
+    # Act
+    permission_svc.revoke(scenario.root, scenario.ambassador_permission)
+
+    # Assert
+    assert (
+        permission_svc.check(scenario.ambassador, "checkin.create", "checkin")
+        is False
+    )
 
 
-def test_revoke_permission_without_id(permission_svc: PermissionService):
+def test_revoke_permission_without_id(
+    session: Session, permission_svc: PermissionService
+):
     """Tests that you can remove a permission from a user"""
+    # Arrange
+    scenario = arrange_auth_scenario(session)
+
+    # Act / Assert
     assert (
         permission_svc.revoke(
-            root, Permission(id=None, action="checkin.create", resource="checkin")
+            scenario.root,
+            Permission(id=None, action="checkin.create", resource="checkin"),
         )
         is False
     )
 
 
-def test_revoke_nonexistent_permission(permission_svc: PermissionService):
+def test_revoke_nonexistent_permission(
+    session: Session, permission_svc: PermissionService
+):
     """Tests that you can remove a permission from a user"""
+    # Arrange
+    scenario = arrange_auth_scenario(session)
+
+    # Act / Assert
     assert (
         permission_svc.revoke(
-            root, Permission(id=423, action="checkin.create", resource="checkin")
+            scenario.root,
+            Permission(id=423, action="checkin.create", resource="checkin"),
         )
         is False
     )
 
 
-def test_root_resource_access(permission_svc: PermissionService):
+def test_root_resource_access(session: Session, permission_svc: PermissionService):
     """Tests the permissions for the root user"""
-    assert permission_svc.check(root, "access_control.grant", "access_control")
-    assert permission_svc.check(root, "user.delete", "user/1")
+    # Arrange
+    scenario = arrange_auth_scenario(session)
+
+    # Act / Assert
+    assert permission_svc.check(
+        scenario.root, "access_control.grant", "access_control"
+    )
+    assert permission_svc.check(scenario.root, "user.delete", "user/1")
 
 
 def test_check_catch_all_permission(permission_svc: PermissionService):
