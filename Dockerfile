@@ -24,13 +24,17 @@ COPY ./backend/pyproject.toml /workspace/backend/pyproject.toml
 COPY ./backend/uv.lock /workspace/backend/uv.lock
 
 WORKDIR /workspace/backend
-RUN python -m venv --copies /opt/venv \
-    && VIRTUAL_ENV=/opt/venv PATH="/opt/venv/bin:$PATH" \
-       uv sync --frozen --no-dev --link-mode=copy --active --no-managed-python
+
+ENV UV_PROJECT_ENVIRONMENT=/opt/venv
+ENV UV_LINK_MODE=copy
+ENV UV_NO_MANAGED_PYTHON=1
+
+RUN uv sync --frozen --no-dev --python /usr/local/bin/python3.12 \
+    && chmod -R a+rX /opt/venv
 
 ENV VIRTUAL_ENV="/opt/venv"
 ENV PATH="/opt/venv/bin:$PATH"
-ENV HOME="/tmp"
+
 ENV TZ="America/New_York"
 
 COPY --from=build /workspace/static/browser /workspace/static
