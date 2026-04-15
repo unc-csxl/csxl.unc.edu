@@ -18,32 +18,29 @@ FROM python:3.12 AS production
 
 COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /uvx /usr/local/bin/
 
-# Create a non-root runtime user while keeping group 0 compatibility for OpenShift.
-RUN useradd --uid 1001 --gid 0 --create-home --home-dir /home/app app
-
 WORKDIR /workspace
 
 COPY ./backend/pyproject.toml /workspace/backend/pyproject.toml
 COPY ./backend/uv.lock /workspace/backend/uv.lock
 
 WORKDIR /workspace/backend
-RUN python -m venv /workspace/backend/.venv \
-	&& VIRTUAL_ENV=/workspace/backend/.venv PATH="/workspace/backend/.venv/bin:$PATH" uv sync --frozen --no-dev --link-mode=copy --active --no-managed-python \
-	&& chmod -R a+rX /workspace/backend/.venv
+RUN python -m venv --copies /opt/venv \
+    && VIRTUAL_ENV=/opt/venv PATH="/opt/venv/bin:$PATH" \
+       uv sync --frozen --no-dev --link-mode=copy --active --no-managed-python
 
-ENV HOME="/home/app"
-ENV VIRTUAL_ENV="/workspace/backend/.venv"
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+ENV VIRTUAL_ENV="/opt/venv"
+ENV PATH="/opt/venv/bin:$PATH"
+ENV HOME="/tmp"
+ENV TZ="America/New_York"
 
 COPY --from=build /workspace/static/browser /workspace/static
 COPY ./backend /workspace/backend
 COPY ./alembic.ini /workspace/alembic.ini
 
-RUN chown -R 1001:0 /workspace /home/app \
-	&& chmod -R g=u /workspace /home/app
+RUN chgrp -R 0 /workspace /opt/venv /tmp \
+    && chmod -R g=u /workspace /opt/venv /tmp
 
 WORKDIR /workspace
 USER 1001
-CMD ["/workspace/backend/.venv/bin/python", "-m", "uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "3"]
-ENV TZ="America/New_York"
+CMD ["python", "-m", "uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "3"]
 EXPOSE 8080
