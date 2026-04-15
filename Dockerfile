@@ -14,28 +14,29 @@ COPY ./frontend/*.json /workspace/frontend
 RUN NODE_OPTIONS=--max-old-space-size=1024 pnpm exec ng build --optimization --output-path ../static
 
 # Back-end Build Steps
+# Back-end Build Steps
 FROM python:3.12 AS production
 
 COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /uvx /usr/local/bin/
 
-WORKDIR /workspace
-
-COPY ./backend/pyproject.toml /workspace/backend/pyproject.toml
-COPY ./backend/uv.lock /workspace/backend/uv.lock
-
 WORKDIR /workspace/backend
 
-ENV UV_PROJECT_ENVIRONMENT=/opt/venv
-ENV UV_LINK_MODE=copy
-ENV UV_NO_MANAGED_PYTHON=1
+COPY ./backend/pyproject.toml ./pyproject.toml
+COPY ./backend/uv.lock ./uv.lock
 
-RUN uv sync --frozen --no-dev --python /usr/local/bin/python3.12 \
-    && chmod -R a+rX /opt/venv
+ENV UV_PROJECT_ENVIRONMENT=/opt/venv \
+    UV_LINK_MODE=copy \
+    UV_NO_MANAGED_PYTHON=1 \
+    UV_PYTHON=python3 \
+    VIRTUAL_ENV=/opt/venv \
+    PATH=/opt/venv/bin:$PATH \
+    TZ=America/New_York
 
-ENV VIRTUAL_ENV="/opt/venv"
-ENV PATH="/opt/venv/bin:$PATH"
+RUN command -v python3 \
+    && python3 --version \
+    && uv sync --frozen --no-dev
 
-ENV TZ="America/New_York"
+WORKDIR /workspace
 
 COPY --from=build /workspace/static/browser /workspace/static
 COPY ./backend /workspace/backend
@@ -44,7 +45,6 @@ COPY ./alembic.ini /workspace/alembic.ini
 RUN chgrp -R 0 /workspace /opt/venv /tmp \
     && chmod -R g=u /workspace /opt/venv /tmp
 
-WORKDIR /workspace
 USER 1001
 CMD ["python", "-m", "uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "3"]
 EXPOSE 8080
