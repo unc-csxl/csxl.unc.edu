@@ -2,69 +2,72 @@
 
 from unittest.mock import create_autospec
 
+import pytest
+from sqlalchemy.orm import Session
+
 from backend.services.exceptions import UserPermissionException
 
 from .....services import PermissionService
 from .....services.coworking import ReservationService
-
-# Imported fixtures provide dependencies injected for the tests as parameters.
-# Dependent fixtures (seat_svc) are required to be imported in the testing module.
-from ..fixtures import (
-    reservation_svc,
-    permission_svc,
-    seat_svc,
-    policy_svc,
-    operating_hours_svc,
-)
-from ..time import *
-
-# Import the setup_teardown fixture explicitly to load entities in database.
-# The order in which these fixtures run is dependent on their imported alias.
-# Since there are relationship dependencies between the entities, order matters.
-from ...core_data import setup_insert_data_fixture as insert_order_0
-from ..operating_hours_data import fake_data_fixture as insert_order_1
-from ...room_data import fake_data_fixture as insert_order_2
-from ..seat_data import fake_data_fixture as insert_order_3
-from .reservation_data import fake_data_fixture as insert_order_4
-
-# Import the fake model data in a namespace for test assertions
-from ...core_data import user_data
-from .. import seat_data
-from . import reservation_data
+from .scenario import arrange_standard_reservation_scenario, make_reservation_service
+from ..time import time_data
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
-def test_list_all_active_and_upcoming_for_xl(reservation_svc: ReservationService):
-    all = reservation_svc.list_all_active_and_upcoming_for_xl(user_data.ambassador)
-    assert len(all) == len(reservation_data.active_reservations) + len(
-        reservation_data.confirmed_reservations
+pytestmark = pytest.mark.integration
+
+
+def test_list_all_active_and_upcoming_for_xl(session: Session):
+    scenario = arrange_standard_reservation_scenario(session, time_data())
+    reservation_svc = make_reservation_service(session)
+
+    all_reservations = reservation_svc.list_all_active_and_upcoming_for_xl(
+        scenario.ambassador
+    )
+    assert len(all_reservations) == len(scenario.active_reservations) + len(
+        scenario.confirmed_reservations
     )
 
 
-def test_list_all_active_and_upcoming_permission(reservation_svc: ReservationService):
+def test_list_all_active_and_upcoming_permission(session: Session):
+    scenario = arrange_standard_reservation_scenario(session, time_data())
     permission_svc = create_autospec(PermissionService)
     permission_svc.enforce.return_value = None
-    reservation_svc._permission_svc = permission_svc
-    reservation_svc.list_all_active_and_upcoming_for_xl(user_data.ambassador)
+    reservation_svc = make_reservation_service(session, permission_svc)
+
+    reservation_svc.list_all_active_and_upcoming_for_xl(scenario.ambassador)
+
     permission_svc.enforce.assert_called_once_with(
-        user_data.ambassador,
+        scenario.ambassador,
         "coworking.reservation.read",
         f"user/*",
     )
 
 
 def test_list_all_active_and_upcoming_for_rooms_user(
-    reservation_svc: ReservationService,
+    session: Session,
 ):
+    scenario = arrange_standard_reservation_scenario(session, time_data())
+    permission_svc = create_autospec(PermissionService)
+    permission_svc.enforce.side_effect = UserPermissionException(
+        "coworking.reservation.read", "user/*"
+    )
+    reservation_svc = make_reservation_service(session, permission_svc)
+
     with pytest.raises(UserPermissionException):
-        all = reservation_svc.list_all_active_and_upcoming_for_rooms(user_data.user)
+        reservation_svc.list_all_active_and_upcoming_for_rooms(scenario.user)
 
 
 def test_list_all_active_and_upcoming_for_rooms_ambassador(
-    reservation_svc: ReservationService,
+    session: Session,
 ):
-    all = reservation_svc.list_all_active_and_upcoming_for_rooms(user_data.ambassador)
-    assert len(all) == len(reservation_data.room_reservations)
+    scenario = arrange_standard_reservation_scenario(session, time_data())
+    reservation_svc = make_reservation_service(session)
+
+    all_reservations = reservation_svc.list_all_active_and_upcoming_for_rooms(
+        scenario.ambassador
+    )
+    assert len(all_reservations) == len(scenario.room_reservations)
