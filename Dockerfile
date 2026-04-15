@@ -25,8 +25,9 @@ WORKDIR /workspace
 COPY ./backend/pyproject.toml /workspace/backend/pyproject.toml
 COPY ./backend/uv.lock /workspace/backend/uv.lock
 WORKDIR /workspace/backend
-RUN uv sync --frozen --no-dev --link-mode=copy --no-managed-python --python python3.12 \
-    && chmod -R a+rx /workspace/backend/.venv/bin
+RUN python -m venv /workspace/backend/.venv \
+	&& VIRTUAL_ENV=/workspace/backend/.venv PATH="/workspace/backend/.venv/bin:$PATH" uv sync --frozen --no-dev --link-mode=copy --active --no-managed-python \
+	&& chmod -R a+rX /workspace/backend/.venv
 ENV VIRTUAL_ENV="/workspace/backend/.venv"
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 COPY --from=build /workspace/static/browser /workspace/static
