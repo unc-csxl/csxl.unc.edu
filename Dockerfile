@@ -28,11 +28,12 @@ COPY ./alembic.ini ./
 
 WORKDIR /workspace/backend
 RUN uv sync --all-packages --no-dev --no-editable && rm -rf /root/.cache
-
 COPY --from=build /workspace/static/browser /workspace/static
 
+RUN chown -R app:app /workspace
 WORKDIR /workspace
 USER app
+ENV PATH="/workspace/backend/.venv/bin:$PATH"
 CMD ["/workspace/backend/.venv/bin/uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "3"]
 ENV TZ="America/New_York"
 EXPOSE 8080
