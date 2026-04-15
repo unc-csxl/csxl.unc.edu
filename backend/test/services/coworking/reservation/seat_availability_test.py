@@ -4,144 +4,154 @@ from .....services.coworking import ReservationService, PolicyService
 from .....models.coworking import (
     TimeRange,
 )
+import pytest
+from sqlalchemy.orm import Session
 
-# Imported fixtures provide dependencies injected for the tests as parameters.
-# Dependent fixtures (seat_svc) are required to be imported in the testing module.
-from ..fixtures import (
-    reservation_svc,
-    permission_svc,
-    seat_svc,
-    policy_svc,
-    operating_hours_svc,
-)
+from .scenario import arrange_standard_reservation_scenario, make_reservation_service
 from ..time import *
-
-# Import the setup_teardown fixture explicitly to load entities in database.
-# The order in which these fixtures run is dependent on their imported alias.
-# Since there are relationship dependencies between the entities, order matters.
-from ...core_data import setup_insert_data_fixture as insert_order_0
-from ..operating_hours_data import fake_data_fixture as insert_order_1
-from ...room_data import fake_data_fixture as insert_order_2
-from ..seat_data import fake_data_fixture as insert_order_3
-from .reservation_data import fake_data_fixture as insert_order_4
-
-# Import the fake model data in a namespace for test assertions
-from ...core_data import user_data
-from .. import operating_hours_data
-from .. import seat_data
-from . import reservation_data
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
 
+pytestmark = pytest.mark.integration
+
+
 def test_seat_availability_in_past(
-    reservation_svc: ReservationService, time: dict[str, datetime]
+    session: Session, time: dict[str, datetime]
 ):
     """There is no seat availability in the past."""
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+
     past = TimeRange(start=time[THIRTY_MINUTES_AGO], end=time[NOW])
-    available_seats = reservation_svc.seat_availability(seat_data.seats, past)
+    available_seats = reservation_svc.seat_availability(scenario.seats, past)
     assert len(available_seats) == 0
 
 
 def test_seat_availability_beyond_scheduled_operating_hours(
-    reservation_svc: ReservationService, time: dict[str, datetime]
+    session: Session, time: dict[str, datetime]
 ):
     """When there are no operating hours in a given bounds, there is no availability."""
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+
     out_of_bounds = TimeRange(
         start=time[NOW] + timedelta(days=423), end=time[NOW] + timedelta(days=424)
     )
-    available_seats = reservation_svc.seat_availability(seat_data.seats, out_of_bounds)
+    available_seats = reservation_svc.seat_availability(scenario.seats, out_of_bounds)
     assert len(available_seats) == 0
 
 
-def test_seat_availability_while_closed(reservation_svc: ReservationService):
+def test_seat_availability_while_closed(session: Session):
     """There is no seat availability while the XL is closed."""
+    scenario = arrange_standard_reservation_scenario(session, time_data())
+    reservation_svc = make_reservation_service(session)
+
     closed = TimeRange(
-        start=operating_hours_data.today.end,
-        end=operating_hours_data.today.end + ONE_HOUR,
+        start=scenario.today.end,
+        end=scenario.today.end + ONE_HOUR,
     )
-    available_seats = reservation_svc.seat_availability(seat_data.seats, closed)
+    available_seats = reservation_svc.seat_availability(scenario.seats, closed)
     assert len(available_seats) == 0
 
 
 def test_seat_availability_truncate_start(
-    reservation_svc: ReservationService,
-    policy_svc: PolicyService,
+    session: Session,
     time: dict[str, datetime],
 ):
+    scenario = arrange_standard_reservation_scenario(session, time)
+    policy_svc = PolicyService()
+    reservation_svc = make_reservation_service(session, policy_svc=policy_svc)
+
     recent_past_to_five_minutes = TimeRange(
         start=time[NOW] - policy_svc.minimum_reservation_duration(),
         end=time[NOW] + FIVE_MINUTES,
     )
     available_seats = reservation_svc.seat_availability(
-        seat_data.seats, recent_past_to_five_minutes
+        scenario.seats, recent_past_to_five_minutes
     )
     assert len(available_seats) == 0
 
 
 def test_seat_availability_while_completely_open(
-    reservation_svc: ReservationService,
+    session: Session,
 ):
     """All reservable seats should be available."""
+    scenario = arrange_standard_reservation_scenario(session, time_data())
+    reservation_svc = make_reservation_service(session)
+
     tomorrow = TimeRange(
-        start=operating_hours_data.future.start,
-        end=operating_hours_data.future.start + ONE_HOUR,
+        start=scenario.future.start,
+        end=scenario.future.start + ONE_HOUR,
     )
     available_seats = reservation_svc.seat_availability(
-        seat_data.reservable_seats, tomorrow
+        scenario.reservable_seats, tomorrow
     )
-    assert len(available_seats) == len(seat_data.reservable_seats)
+    assert len(available_seats) == len(scenario.reservable_seats)
 
 
 def test_seat_availability_with_reservation(
-    reservation_svc: ReservationService, time: dict[str, datetime]
+    session: Session, time: dict[str, datetime]
 ):
     """Test data has one of the reservable seats reserved."""
+    scenario = arrange_standard_reservation_scenario(session, time)
+    reservation_svc = make_reservation_service(session)
+
     today = TimeRange(start=time[NOW], end=time[IN_TEN_MINUTES])
     available_seats = reservation_svc.seat_availability(
-        seat_data.reservable_seats, today
+        scenario.reservable_seats, today
     )
-    assert len(available_seats) == len(seat_data.reservable_seats) - 1
-    assert available_seats[0].id == seat_data.monitor_seat_10.id
+    assert len(available_seats) == len(scenario.reservable_seats) - 1
+    assert available_seats[0].id == scenario.monitor_seat_10.id
 
 
-def test_seat_availability_near_requested_start(reservation_svc: ReservationService):
+def test_seat_availability_near_requested_start(session: Session):
     """When the XL is open and some seats are about to become available."""
+    scenario = arrange_standard_reservation_scenario(session, time_data())
+    reservation_svc = make_reservation_service(session)
+
     future = TimeRange(
-        start=operating_hours_data.today.end - THIRTY_MINUTES - FIVE_MINUTES,
-        end=operating_hours_data.today.end + FIVE_MINUTES,
+        start=scenario.today.end - THIRTY_MINUTES - FIVE_MINUTES,
+        end=scenario.today.end + FIVE_MINUTES,
     )
     available_seats = reservation_svc.seat_availability(
-        seat_data.reservable_seats, future
+        scenario.reservable_seats, future
     )
-    assert len(available_seats) == len(seat_data.reservable_seats)
+    assert len(available_seats) == len(scenario.reservable_seats)
     for seat in available_seats:
-        assert seat.availability[0].start == reservation_data.reservation_4.end
-        assert seat.availability[0].end == operating_hours_data.today.end
+        assert seat.availability[0].start == scenario.reservation_4.end
+        assert seat.availability[0].end == scenario.today.end
 
 
-def test_seat_availability_all_reserved(reservation_svc: ReservationService):
+def test_seat_availability_all_reserved(session: Session):
     """Test when all reservable seats are reserved."""
+    scenario = arrange_standard_reservation_scenario(session, time_data())
+    reservation_svc = make_reservation_service(session)
+
     future = TimeRange(
-        start=reservation_data.reservation_4.start,
-        end=reservation_data.reservation_4.end,
+        start=scenario.reservation_4.start,
+        end=scenario.reservation_4.end,
     )
     available_seats = reservation_svc.seat_availability(
-        seat_data.reservable_seats, future
+        scenario.reservable_seats, future
     )
     assert len(available_seats) == 0
 
 
 def test_seat_availability_xl_closing_soon(
-    reservation_svc: ReservationService, policy_svc: PolicyService
+    session: Session,
 ):
     """When the XL is open and upcoming walkins are available, but the closing hour is under default walkin duration."""
+    scenario = arrange_standard_reservation_scenario(session, time_data())
+    policy_svc = PolicyService()
+    reservation_svc = make_reservation_service(session, policy_svc=policy_svc)
+
     near_closing = TimeRange(
-        start=operating_hours_data.tomorrow.end
+        start=scenario.tomorrow.end
         - (policy_svc.minimum_reservation_duration() - 2 * ONE_MINUTE),
-        end=operating_hours_data.tomorrow.end,
+        end=scenario.tomorrow.end,
     )
-    available_seats = reservation_svc.seat_availability(seat_data.seats, near_closing)
+    available_seats = reservation_svc.seat_availability(scenario.seats, near_closing)
     assert len(available_seats) == 0
