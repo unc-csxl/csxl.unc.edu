@@ -1,162 +1,279 @@
 """Tests for the OfficeHoursStatisticsService."""
 
+from datetime import datetime, timedelta
+
 import pytest
 from pytest import approx
+from sqlalchemy.orm import Session
 
-from ....services.exceptions import (
-    CoursePermissionException,
-    RecurringOfficeHourEventException,
-    ResourceNotFoundException,
-)
-
-from ....services.office_hours import OfficeHoursStatisticsService
+from ....entities.academics.section_member_entity import SectionMemberEntity
+from ....entities.office_hours.ticket_entity import OfficeHoursTicketEntity
+from ....entities.user_entity import UserEntity
+from ....models.academics.section_member import SectionMemberDraft
+from ....models.office_hours.ticket_type import TicketType
 from ....models.pagination import TicketPaginationParams
-
-# Imported fixtures provide dependencies injected for the tests as parameters.
-from .fixtures import oh_statistics_svc
-
-# Import the setup_teardown fixture explicitly to load entities in database
-from ..core_data import setup_insert_data_fixture as insert_order_0
-from ..academics.term_data import fake_data_fixture as insert_order_1
-from ..academics.course_data import fake_data_fixture as insert_order_2
-from ..academics.section_data import fake_data_fixture as insert_order_3
-from ..room_data import fake_data_fixture as insert_order_4
-from ..office_hours.office_hours_data import fake_data_fixture as insert_order_5
-from ..event.event_demo_data import date_maker
-
-# Important fake model data in namespace for test assertions
-from .. import user_data
-from ..office_hours import office_hours_data
+from ....models.roster_role import RosterRole
+from ....models.user import User
+from ....services.exceptions import CoursePermissionException
+from ....services.office_hours import OfficeHoursService, OfficeHoursStatisticsService
+from ..reset_table_id_seq import reset_table_id_seq
+from .scenario import arrange_office_hours_scenario
 
 __authors__ = ["Jade Keegan", "Ajay Gandecha", "Mira Mohan", "Lauren Ferlito"]
 __copyright__ = "Copyright 2025"
 __license__ = "MIT"
 
 
-def test_get_paginated_tickets(oh_statistics_svc: OfficeHoursStatisticsService):
-    """Ensures that users with the appropriate site permissions can get paginated tickets."""
-    ticket_params = TicketPaginationParams(
-        range_start="",
-        range_end="",
-        student_ids=[],
-        staff_ids=[],
+pytestmark = pytest.mark.integration
+
+
+def make_statistics_service(session: Session) -> OfficeHoursStatisticsService:
+    return OfficeHoursStatisticsService(session, OfficeHoursService(session))
+
+
+def make_ticket_params(
+    *,
+    range_start: str = "",
+    range_end: str = "",
+    student_ids: list[int] | None = None,
+    staff_ids: list[int] | None = None,
+) -> TicketPaginationParams:
+    return TicketPaginationParams(
+        range_start=range_start,
+        range_end=range_end,
+        student_ids=student_ids or [],
+        staff_ids=staff_ids or [],
     )
 
+
+def arrange_extra_member(
+    session: Session,
+    scenario,
+    *,
+    user_id: int,
+    onyen: str,
+    member_role: RosterRole,
+) -> SectionMemberEntity:
+    user = User(
+        id=user_id,
+        pid=user_id,
+        onyen=onyen,
+        first_name=onyen.title(),
+        last_name="Member",
+        email=f"{onyen}@unc.edu",
+    )
+    session.add(UserEntity.from_model(user))
+    session.flush()
+
+    membership = SectionMemberEntity.from_draft_model(
+        SectionMemberDraft(
+            section_id=scenario.section.id,
+            user_id=user.id,
+            member_role=member_role,
+        )
+    )
+    session.add(membership)
+    session.flush()
+    return membership
+
+
+def arrange_statistics_extension(session: Session, scenario) -> None:
+    now = datetime.now().replace(microsecond=0)
+
+    base_closed_ticket = session.get(OfficeHoursTicketEntity, scenario.closed_ticket.id)
+    assert base_closed_ticket is not None
+    base_closed_ticket.type = TicketType.CONCEPTUAL_HELP
+    base_closed_ticket.created_at = now - timedelta(minutes=3)
+    base_closed_ticket.called_at = now - timedelta(minutes=2)
+    base_closed_ticket.closed_at = now - timedelta(minutes=1)
+
+    arrange_extra_member(
+        session,
+        scenario,
+        user_id=5,
+        onyen="helper",
+        member_role=RosterRole.STUDENT,
+    )
+    arrange_extra_member(
+        session,
+        scenario,
+        user_id=6,
+        onyen="uta",
+        member_role=RosterRole.UTA,
+    )
+
+    additional_tickets = []
+    for ticket_id, created_minutes, called_minutes, closed_minutes in [
+        (5, 6, 5, 4),
+        (6, 9, 8, 7),
+    ]:
+        ticket = scenario.closed_ticket.model_copy(
+            update={
+                "id": ticket_id,
+                "description": f"Closed ticket {ticket_id}",
+                "type": TicketType.CONCEPTUAL_HELP,
+                "created_at": now - timedelta(minutes=created_minutes),
+                "called_at": now - timedelta(minutes=called_minutes),
+                "closed_at": now - timedelta(minutes=closed_minutes),
+                "caller_id": scenario.instructor_membership.id,
+            }
+        )
+        ticket_entity = OfficeHoursTicketEntity.from_model(ticket)
+        ticket_entity.creators = [scenario.student_membership]
+        ticket_entity.caller = scenario.instructor_membership
+        additional_tickets.append(ticket_entity)
+
+    session.add_all(additional_tickets)
+    session.flush()
+    reset_table_id_seq(
+        session,
+        SectionMemberEntity,
+        SectionMemberEntity.id,
+        7,
+    )
+    reset_table_id_seq(
+        session,
+        OfficeHoursTicketEntity,
+        OfficeHoursTicketEntity.id,
+        7,
+    )
+    session.commit()
+
+
+def make_wide_range() -> tuple[str, str]:
+    now = datetime.now().replace(microsecond=0)
+    return (
+        (now - timedelta(days=365)).isoformat(),
+        (now + timedelta(days=365)).isoformat(),
+    )
+
+
+def test_get_paginated_tickets(session: Session):
+    """Ensures that users with the appropriate site permissions can get paginated tickets."""
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+    ticket_params = make_ticket_params()
+
+    # Act
     ticket_history = oh_statistics_svc.get_paginated_tickets(
-        user_data.instructor,
-        office_hours_data.comp_110_site.id,
+        scenario.instructor,
+        scenario.course_site.id,
         ticket_params,
     )
 
+    # Assert
     assert len(ticket_history.items) == 3
 
 
 def test_get_paginated_tickets_not_staff(
-    oh_statistics_svc: OfficeHoursStatisticsService,
+    session: Session,
 ):
     """Ensures that users without the appropriate site permissions cannot get paginated tickets."""
-    with pytest.raises(CoursePermissionException):
-        ticket_params = TicketPaginationParams(
-            range_start="",
-            range_end="",
-            student_ids=[],
-            staff_ids=[],
-        )
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+    ticket_params = make_ticket_params()
 
+    # Act / Assert
+    with pytest.raises(CoursePermissionException):
         oh_statistics_svc.get_paginated_tickets(
-            user_data.student,
-            office_hours_data.comp_110_site.id,
+            scenario.student,
+            scenario.course_site.id,
             ticket_params,
         )
 
 
-def test_get_statistics(oh_statistics_svc: OfficeHoursStatisticsService):
+def test_get_statistics(session: Session):
     """Ensures that users with the appropriate site permissions can get statistics."""
-    ticket_params = TicketPaginationParams(
-        range_start="",
-        range_end="",
-        student_ids=[],
-        staff_ids=[],
-    )
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+    ticket_params = make_ticket_params()
 
+    # Act
     statistics = oh_statistics_svc.get_statistics(
-        user_data.instructor,
-        office_hours_data.comp_110_site.id,
+        scenario.instructor,
+        scenario.course_site.id,
         ticket_params,
     )
 
+    # Assert
     assert statistics.total_tickets == 3
     assert statistics.total_tickets_weekly == 3
-    assert statistics.average_wait_time == approx(1.0)  # 1.0000000166666667
-    assert statistics.average_duration == approx(1.0)  # 1.0000000166666667
+    assert statistics.average_wait_time == approx(1.0)
+    assert statistics.average_duration == approx(1.0)
     assert statistics.total_conceptual == 3
     assert statistics.total_assignment == 0
 
 
 def test_get_paginated_tickets_student_filter(
-    oh_statistics_svc: OfficeHoursStatisticsService,
+    session: Session,
 ):
     """Ensures that filtering by student works correctly."""
-    ticket_params = TicketPaginationParams(
-        range_start="",
-        range_end="",
-        student_ids=[user_data.student.id],
-        staff_ids=[],
-    )
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+    ticket_params = make_ticket_params(student_ids=[scenario.student.id])
 
+    # Act
     ticket_history = oh_statistics_svc.get_paginated_tickets(
-        user_data.instructor,
-        office_hours_data.comp_110_site.id,
+        scenario.instructor,
+        scenario.course_site.id,
         ticket_params,
     )
 
+    # Assert
     assert (
         len(ticket_history.items) == 3
-        and ticket_history.items[0].creators[0].id == user_data.student.id
+        and ticket_history.items[0].creators[0].id == scenario.student.id
     )
 
 
 def test_get_paginated_tickets_staff_filter(
-    oh_statistics_svc: OfficeHoursStatisticsService,
+    session: Session,
 ):
     """Ensures that filtering by staff works correctly."""
-    ticket_params = TicketPaginationParams(
-        range_start="",
-        range_end="",
-        student_ids=[],
-        staff_ids=[user_data.instructor.id],
-    )
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+    ticket_params = make_ticket_params(staff_ids=[scenario.instructor.id])
 
+    # Act
     ticket_history = oh_statistics_svc.get_paginated_tickets(
-        user_data.instructor,
-        office_hours_data.comp_110_site.id,
+        scenario.instructor,
+        scenario.course_site.id,
         ticket_params,
     )
 
+    # Assert
     assert (
         len(ticket_history.items) == 3
-        and ticket_history.items[0].caller.id == user_data.instructor.id
+        and ticket_history.items[0].caller.id == scenario.instructor.id
     )
 
 
-def test_get_statistics_staff_filter(oh_statistics_svc: OfficeHoursStatisticsService):
+def test_get_statistics_staff_filter(session: Session):
     """Ensures that filtering by student returns corrcet statistcs."""
-    ticket_params = TicketPaginationParams(
-        range_start="",
-        range_end="",
-        student_ids=[],
-        staff_ids=[
-            user_data.instructor.id
-        ],  # filter by Ina, only person with a CLOSED ticket right now
-        # staff_ids=[0], # filter by NOT Ina, so should expect no ticket stats - THIS WORKS
-    )
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+    ticket_params = make_ticket_params(staff_ids=[scenario.instructor.id])
 
+    # Act
     statistics = oh_statistics_svc.get_statistics(
-        user_data.instructor,
-        office_hours_data.comp_110_site.id,
+        scenario.instructor,
+        scenario.course_site.id,
         ticket_params,
     )
 
+    # Assert
     assert statistics.total_tickets == 3
     assert statistics.total_tickets_weekly == 3
     assert statistics.average_wait_time == approx(1.0)
@@ -166,45 +283,46 @@ def test_get_statistics_staff_filter(oh_statistics_svc: OfficeHoursStatisticsSer
 
 
 def test_get_paginated_tickets_date_filter(
-    oh_statistics_svc: OfficeHoursStatisticsService,
+    session: Session,
 ):
     """Ensures that filtering by date works correctly."""
-    ticket_params = TicketPaginationParams(
-        range_start=date_maker(-2, 0, 0).isoformat(),
-        range_end=date_maker(1, 0, 0).isoformat(),
-        student_ids=[],
-        staff_ids=[],
-    )
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+    range_start, range_end = make_wide_range()
+    ticket_params = make_ticket_params(range_start=range_start, range_end=range_end)
 
+    # Act
     ticket_history = oh_statistics_svc.get_paginated_tickets(
-        user_data.instructor,
-        office_hours_data.comp_110_site.id,
+        scenario.instructor,
+        scenario.course_site.id,
         ticket_params,
     )
 
+    # Assert
     assert len(ticket_history.items) == 3
 
 
 def test_get_statistics_date_filter(
-    oh_statistics_svc: OfficeHoursStatisticsService,
+    session: Session,
 ):
     """Ensures that filtering by date returns correct statistics."""
-    ticket_params = TicketPaginationParams(
-        range_start=date_maker(-2, 0, 0).isoformat(),  # two years ago
-        range_end=date_maker(
-            1, 0, 0
-        ).isoformat(),  # one year from now - THIS SHOULD WORK
-        # range_end=date_maker(-1, 0, 0).isoformat(), # one ago - THIS SHOULD FAIL
-        student_ids=[],
-        staff_ids=[],
-    )
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+    range_start, range_end = make_wide_range()
+    ticket_params = make_ticket_params(range_start=range_start, range_end=range_end)
 
+    # Act
     statistics = oh_statistics_svc.get_statistics(
-        user_data.instructor,
-        office_hours_data.comp_110_site.id,
+        scenario.instructor,
+        scenario.course_site.id,
         ticket_params,
     )
 
+    # Assert
     assert statistics.total_tickets == 3
     assert statistics.total_tickets_weekly == 3
     assert statistics.average_wait_time == approx(1.0)
@@ -214,105 +332,100 @@ def test_get_statistics_date_filter(
 
 
 def test_get_paginated_tickets_unauthenticated(
-    oh_statistics_svc: OfficeHoursStatisticsService,
+    session: Session,
 ):
     """Ensures that filtering by date works correctly."""
-    ticket_params = TicketPaginationParams(
-        range_start="",
-        range_end="",
-        student_ids=[],
-        staff_ids=[],
-    )
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+    ticket_params = make_ticket_params()
 
+    # Act / Assert
     with pytest.raises(CoursePermissionException):
         oh_statistics_svc.get_paginated_tickets(
-            user_data.student,
-            office_hours_data.comp_110_site.id,
+            scenario.student,
+            scenario.course_site.id,
             ticket_params,
         )
 
 
 def test_get_statistics_unauthenticated(
-    oh_statistics_svc: OfficeHoursStatisticsService,
+    session: Session,
 ):
     """Ensures that students cannot view statistics."""
-    ticket_params = TicketPaginationParams(
-        range_start="",
-        range_end="",
-        student_ids=[],
-        staff_ids=[],
-    )
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+    ticket_params = make_ticket_params()
 
+    # Act / Assert
     with pytest.raises(CoursePermissionException):
         oh_statistics_svc.get_statistics(
-            user_data.student,
-            office_hours_data.comp_110_site.id,
+            scenario.student,
+            scenario.course_site.id,
             ticket_params,
         )
 
 
-def test_get_paginated_tickets_multiple_filters(
-    oh_statistics_svc: OfficeHoursStatisticsService,
-):
-    """Ensures that multiple filters can be applied at the same time."""
-    ticket_params = TicketPaginationParams(
-        range_start=date_maker(-2, 0, 0).isoformat(),
-        range_end=date_maker(1, 0, 0).isoformat(),
-        student_ids=[user_data.student.id],
-        staff_ids=[user_data.instructor.id],
-    )
-
-    ticket_history = oh_statistics_svc.get_paginated_tickets(
-        user_data.instructor,
-        office_hours_data.comp_110_site.id,
-        ticket_params,
-    )
-
-    assert len(ticket_history.items) == 1
-
-
-def test_get_statistics_filter_options(
-    oh_statistics_svc: OfficeHoursStatisticsService,
-):
+def test_get_statistics_filter_options(session: Session):
     """Ensures that instructors can get the filter options for the statistics page."""
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+
+    # Act
     filter_data = oh_statistics_svc.get_filter_data(
-        user_data.instructor,
-        office_hours_data.comp_110_site.id,
+        scenario.instructor,
+        scenario.course_site.id,
     )
 
+    # Assert
     assert len(filter_data.students) == 2
     assert len(filter_data.staff) == 2
 
 
 def test_get_statistics_filter_options_no_permissions(
-    oh_statistics_svc: OfficeHoursStatisticsService,
+    session: Session,
 ):
     """Ensures that students are not able to get the filter options for the statistics page."""
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+
+    # Act / Assert
     with pytest.raises(CoursePermissionException):
         oh_statistics_svc.get_filter_data(
-            user_data.student,
-            office_hours_data.comp_110_site.id,
+            scenario.student,
+            scenario.course_site.id,
         )
 
 
-def test_get_paginated_tickets_multiple_filters(
-    oh_statistics_svc: OfficeHoursStatisticsService,
-):
+def test_get_statistics_multiple_filters(session: Session):
     """Ensures that multiple filters can be applied at the same time."""
-    ticket_params = TicketPaginationParams(
-        range_start=date_maker(-2, 0, 0).isoformat(),
-        range_end=date_maker(1, 0, 0).isoformat(),
-        student_ids=[user_data.student.id],
-        # student_ids=[0], # filter by NOT Stewie, so should expect no ticket stats - THIS WORKS
-        staff_ids=[user_data.instructor.id],
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+    range_start, range_end = make_wide_range()
+    ticket_params = make_ticket_params(
+        range_start=range_start,
+        range_end=range_end,
+        student_ids=[scenario.student.id],
+        staff_ids=[scenario.instructor.id],
     )
 
+    # Act
     statistics = oh_statistics_svc.get_statistics(
-        user_data.instructor,
-        office_hours_data.comp_110_site.id,
+        scenario.instructor,
+        scenario.course_site.id,
         ticket_params,
     )
 
+    # Assert
     assert statistics.total_tickets == 3
     assert statistics.total_tickets_weekly == 3
     assert statistics.average_wait_time == approx(1.0)
@@ -322,59 +435,64 @@ def test_get_paginated_tickets_multiple_filters(
 
 
 def test_get_ticket_csv(
-    oh_statistics_svc: OfficeHoursStatisticsService,
+    session: Session,
 ):
     """Ensures that the CSV file is generated correctly."""
-    ticket_params = TicketPaginationParams(
-        range_start="",
-        range_end="",
-        student_ids=[],
-        staff_ids=[],
-    )
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+    ticket_params = make_ticket_params()
 
+    # Act
     ticket_csv = oh_statistics_svc.get_ticket_csv(
-        user_data.instructor,
-        office_hours_data.comp_110_site.id,
+        scenario.instructor,
+        scenario.course_site.id,
         ticket_params,
     )
 
+    # Assert
     assert len(ticket_csv) == 3
 
 
 def test_get_ticket_csv_unauthenticated(
-    oh_statistics_svc: OfficeHoursStatisticsService,
+    session: Session,
 ):
     """Ensures that students cannot view the CSV file."""
-    ticket_params = TicketPaginationParams(
-        range_start="",
-        range_end="",
-        student_ids=[],
-        staff_ids=[],
-    )
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+    ticket_params = make_ticket_params()
 
+    # Act / Assert
     with pytest.raises(CoursePermissionException):
         oh_statistics_svc.get_ticket_csv(
-            user_data.student,
-            office_hours_data.comp_110_site.id,
+            scenario.student,
+            scenario.course_site.id,
             ticket_params,
         )
 
 
 def test_get_ticket_csv_with_filters(
-    oh_statistics_svc: OfficeHoursStatisticsService,
+    session: Session,
 ):
     """Ensures that the CSV file is generated correctly with filters."""
-    ticket_params = TicketPaginationParams(
-        range_start="",
-        range_end="",
-        student_ids=[user_data.student.id],
-        staff_ids=[user_data.instructor.id],
+    # Arrange
+    scenario = arrange_office_hours_scenario(session)
+    arrange_statistics_extension(session, scenario)
+    oh_statistics_svc = make_statistics_service(session)
+    ticket_params = make_ticket_params(
+        student_ids=[scenario.student.id],
+        staff_ids=[scenario.instructor.id],
     )
 
+    # Act
     ticket_csv = oh_statistics_svc.get_ticket_csv(
-        user_data.instructor,
-        office_hours_data.comp_110_site.id,
+        scenario.instructor,
+        scenario.course_site.id,
         ticket_params,
     )
 
+    # Assert
     assert len(ticket_csv) == 3
