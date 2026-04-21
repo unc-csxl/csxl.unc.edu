@@ -21,13 +21,30 @@ import { OfficeHoursGetHelpComponent } from './course/office-hours/office-hours-
 import { SettingsComponent } from './course/settings/settings.component';
 import { OfficeHoursEditorComponent } from './course/office-hours/office-hours-editor/office-hours-editor.component';
 import { StatisticsComponent } from './course/statistics/statistics.component';
+import {
+  currentTermResolver,
+  termsResolver
+} from '../academics/academics.resolver';
 
 const routes: Routes = [
   MyCoursesPageComponent.Route,
   {
     path: 'catalog',
     component: CatalogComponent,
-    children: [AllCoursesComponent.Route, SectionOfferingsComponent.Route]
+    children: [
+      AllCoursesComponent.Route,
+      {
+        path: 'offerings',
+        title: 'Catalog',
+        component: SectionOfferingsComponent,
+        canActivate: [],
+        resolve: {
+          terms: termsResolver,
+          currentTerm: currentTermResolver
+        }
+      },
+      SectionOfferingsComponent.Route
+    ]
   },
   {
     path: 'course/:course_site_id',

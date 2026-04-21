@@ -9,19 +9,11 @@
 
 import { Component, OnInit, WritableSignal, signal } from '@angular/core';
 import {
-  coursesResolver,
   currentTermResolver,
   termsResolver
 } from '../../../academics/academics.resolver';
-import {
-  CatalogSection,
-  Course,
-  RosterRole,
-  Section,
-  SectionMember,
-  Term
-} from '../../../academics/academics.models';
-import { ActivatedRoute } from '@angular/router';
+import { CatalogSection, Section, Term } from '../../../academics/academics.models';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AcademicsService } from '../../../academics/academics.service';
 import {
   animate,
@@ -30,7 +22,6 @@ import {
   transition,
   trigger
 } from '@angular/animations';
-import { FormControl } from '@angular/forms';
 import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 @Component({
@@ -51,7 +42,7 @@ import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-
 export class SectionOfferingsComponent implements OnInit {
   /** Route information to be used in Course Routing Module */
   public static Route = {
-    path: 'offerings',
+    path: 'offerings/:term_id',
     title: 'Catalog',
     component: SectionOfferingsComponent,
     canActivate: [],
@@ -66,6 +57,7 @@ export class SectionOfferingsComponent implements OnInit {
 
   /** Store list of Terms  */
   public terms: Term[];
+  public currentTermId: string | null;
 
   /** Store the currently selected term from the form */
   // NOTE: Separating these fields into an ID and a selected term was required
@@ -90,6 +82,7 @@ export class SectionOfferingsComponent implements OnInit {
   /** Constructor for the course catalog page. */
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     public academicsService: AcademicsService,
     private gearService: NagivationAdminGearService
   ) {
@@ -99,12 +92,12 @@ export class SectionOfferingsComponent implements OnInit {
       currentTerm: Term;
     };
     this.terms = data.terms;
+    this.currentTermId = data.currentTerm.id ?? null;
 
-    // Set initial display term
-    this.displayTermId = data.currentTerm.id ?? null;
+    // Set initial display term from URL term when valid, else fallback to current term.
+    const initialTermId = this.route.snapshot.paramMap.get('term_id');
+    this.displayTermId = this.resolveDisplayTermId(initialTermId);
     this.displayTerm = signal(this.selectedTerm());
-    // Initialize the sections list
-    this.resetSections();
   }
 
   ngOnInit() {
@@ -114,6 +107,17 @@ export class SectionOfferingsComponent implements OnInit {
       '',
       'academics/admin/section'
     );
+
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      const termIdFromRoute = params.get('term_id');
+      const resolvedTermId = this.resolveDisplayTermId(termIdFromRoute);
+
+      if (resolvedTermId !== this.displayTermId) {
+        this.displayTermId = resolvedTermId;
+      }
+
+      this.resetSections();
+    });
   }
 
   /** Helper function that generates an instructor's name for a given section.
@@ -136,13 +140,28 @@ export class SectionOfferingsComponent implements OnInit {
     return this.terms.find((term) => term.id == this.displayTermId);
   }
 
+  private resolveDisplayTermId(termIdFromRoute: string | null): string | null {
+    if (
+      termIdFromRoute &&
+      this.terms.some((term) => term.id === termIdFromRoute)
+    ) {
+      return termIdFromRoute;
+    }
+    return this.currentTermId;
+  }
+
+  onTermChange() {
+    if (!this.displayTermId) return;
+    this.router.navigate(['/catalog/offerings', this.displayTermId]);
+  }
+
   /** Resets the section data based on the selected term. */
   resetSections() {
     this.displayTerm.set(this.selectedTerm());
     if (this.displayTerm()) {
       this.academicsService
         .getSectionsByTerm(this.displayTerm()!)
-        .subscribe((sections) => {
+        .subscribe((sections: CatalogSection[]) => {
           this.sections.set(sections);
         });
     }
