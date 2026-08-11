@@ -1,8 +1,10 @@
 """Tests for Courses Section Service."""
 
-from unittest.mock import create_autospec
+from unittest.mock import Mock, create_autospec
 import pytest
 from backend.models.roster_role import RosterRole
+import backend.services.academics.section as section_service_module
+from backend.services.academics.section import _parse_enrollment_data
 from backend.services.exceptions import (
     ResourceNotFoundException,
     UserPermissionException,
@@ -28,6 +30,28 @@ from .. import user_data
 __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
+
+
+UNC_TILED_RESULTS = b"""
+<div class="card text-center">
+    <div class="card-header">
+        <h2 tabindex="0">COMP  110 001</h2>
+        <p class="card-available-seats mb-0 text-a11y-green">
+            12/250 available seats
+        </p>
+    </div>
+    <div class="card-body p-2"><p>2026 Fall</p></div>
+</div>
+<div class="card text-center">
+    <div class="card-header">
+        <h2 tabindex="0">COMP   89 144</h2>
+        <p class="card-available-seats mb-0 text-required-red">
+            0/24 available seats
+        </p>
+    </div>
+    <div class="card-body p-2"><p>2026 Fall</p></div>
+</div>
+"""
 
 
 def test_get_by_term(section_svc: SectionService):
@@ -221,5 +245,29 @@ def test_user_add_section_member(section_member_svc: SectionMemberService):
         pytest.fail()
 
 
-def test_update_enrollments(section_svc: SectionService):
+def test_parse_current_unc_enrollment_format():
+    updates = _parse_enrollment_data(UNC_TILED_RESULTS, "2026 Fall")
+
+    assert updates[("comp110", "001")].enrolled == 238
+    assert updates[("comp110", "001")].total_seats == 250
+    assert updates[("comp89", "144")].enrolled == 24
+
+
+def test_update_enrollments(
+    section_svc: SectionService, monkeypatch: pytest.MonkeyPatch
+):
+    response = Mock(content=UNC_TILED_RESULTS)
+    get = Mock(return_value=response)
+    monkeypatch.setattr(section_service_module.requests, "get", get)
+    monkeypatch.setattr(
+        section_service_module,
+        "AVAILABLE_TERMS",
+        {"2026 Fall": term_data.current_term.id},
+    )
+
     section_svc.update_enrollment_totals(user_data.root)
+
+    section = section_svc.get_by_id(section_data.comp_110_001_current_term.id)
+    assert section.enrolled == 238
+    assert section.total_seats == 250
+    response.raise_for_status.assert_called_once_with()

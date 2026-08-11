@@ -34,6 +34,61 @@ __authors__ = ["Ajay Gandecha"]
 __copyright__ = "Copyright 2023"
 __license__ = "MIT"
 
+UNC_CLASS_SEARCH_URL = "https://reports.unc.edu/class-search/tiled/"
+AVAILABLE_TERMS = {"2026 Fall": "26F", "2027 Spring": "27S"}
+
+
+class SectionEnrollmentData(BaseModel):
+    enrolled: int
+    total_seats: int
+
+
+def _parse_enrollment_data(
+    html: bytes, expected_term: str
+) -> dict[tuple[str, str], SectionEnrollmentData]:
+    """Parse enrollment totals from UNC's tiled class-search results."""
+    soup = BeautifulSoup(html, "html.parser")
+    cards = soup.select("div.card.text-center")
+
+    if not cards:
+        raise ValueError("UNC class search returned no course cards")
+
+    updates: dict[tuple[str, str], SectionEnrollmentData] = {}
+    for card in cards:
+        title = card.find("h2")
+        seat_label = card.find("p", class_="card-available-seats")
+        term_label = card.select_one(".card-body > p")
+        if title is None or seat_label is None or term_label is None:
+            raise ValueError("UNC class search returned an incomplete course card")
+
+        # UNC's current headings have no separator and use variable whitespace,
+        # such as "COMP  110 001" and "COMP   89 144".
+        title_components = title.get_text(" ", strip=True).split()
+        if len(title_components) != 3:
+            raise ValueError(f"Unexpected UNC course heading: {title.text.strip()}")
+        subject_code, course_number, section_number = title_components
+
+        returned_term = term_label.get_text(" ", strip=True)
+        if returned_term != expected_term:
+            raise ValueError(
+                f"UNC class search returned {returned_term} for {expected_term}"
+            )
+
+        seat_components = (
+            seat_label.get_text(" ", strip=True).split(maxsplit=1)[0].split("/", 1)
+        )
+        if len(seat_components) != 2:
+            raise ValueError(f"Unexpected UNC seat status: {seat_label.text.strip()}")
+        available_seats, total_seats = map(int, seat_components)
+
+        course_id = subject_code.lower() + course_number
+        updates[(course_id, section_number)] = SectionEnrollmentData(
+            enrolled=total_seats - available_seats,
+            total_seats=total_seats,
+        )
+
+    return updates
+
 
 class SectionService:
     """Service that performs all of the actions on the `Section` table"""
@@ -280,62 +335,22 @@ class SectionService:
         """
         Updates the enrollment totals for COMP course sections in the database.
         """
-        # Currently active terms.
-        # This is hard-coded based on the availability and representation
-        # of course enrollment data from UNC's course database.
-        AVAILABLE_TERMS = {"2025+Fall": "25F", "2026+Spring": "26S"}
-
-        # Store updates to make.
-        updates: dict[tuple[str, str], SectionEnrollmentData] = {}
-
-        # Update enrolllment totals for every available term.
-        for term in list(AVAILABLE_TERMS.keys()):
+        # Update enrollment totals for every term currently offered by UNC.
+        for term, term_id in AVAILABLE_TERMS.items():
             try:
-                # Retrieve the data from the UNC Reports site
-                html = requests.get(
-                    f"https://reports.unc.edu/class-search/tiled/?subject=COMP&term={term}"
-                ).content
-
-                # Create HTML parser
-                soup = BeautifulSoup(html, "html.parser")
-
-                # Find cards
-                cards = soup.find_all("div", class_="card")
-
-                # Iterate over all course cards
-                for card in cards:
-                    # Find the course code and section number from title <h2>
-                    title_components = card.find("h2").text.split(" ")
-                    subject_code = title_components[0]
-                    course_number = title_components[2]
-                    section_number = title_components[3]
-
-                    # Find the available seats
-                    seat_status = (
-                        card.find("p", class_="card-available-seats")
-                        .text.strip()
-                        .split(" ")[0]
-                        .split("/")
-                    )
-                    remaining_seats = seat_status[0]
-                    total_seats = seat_status[1]
-
-                    # Find section to update
-                    course_id = subject_code.lower() + course_number
-
-                    # Add items to list to update
-                    updates[(course_id, section_number)] = SectionEnrollmentData(
-                        enrolled=int(total_seats) - int(remaining_seats),
-                        total_seats=int(total_seats),
-                    )
+                response = requests.get(
+                    UNC_CLASS_SEARCH_URL,
+                    params={"subject": "COMP", "term": term},
+                    timeout=30,
+                )
+                response.raise_for_status()
+                updates = _parse_enrollment_data(response.content, term)
 
                 # Make updates for the term
-                course_ids = list(set([update[0] for update in list(updates.keys())]))
-                section_numbers = list(
-                    set([update[1] for update in list(updates.keys())])
-                )
+                course_ids = list({update[0] for update in updates})
+                section_numbers = list({update[1] for update in updates})
                 sections_query = select(SectionEntity).where(
-                    SectionEntity.term_id == AVAILABLE_TERMS[term],
+                    SectionEntity.term_id == term_id,
                     SectionEntity.course_id.in_(course_ids),
                     SectionEntity.number.in_(section_numbers),
                 )
@@ -353,12 +368,8 @@ class SectionService:
 
                 # Save changes
                 self._session.commit()
-            except:
+            except Exception as error:
+                self._session.rollback()
                 raise CourseDataScrapingException(
                     f"Error reading COMP data from UNC's database for term: {term}"
-                )
-
-
-class SectionEnrollmentData(BaseModel):
-    enrolled: int
-    total_seats: int
+                ) from error
