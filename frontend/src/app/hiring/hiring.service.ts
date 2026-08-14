@@ -171,6 +171,16 @@ export class HiringService {
       });
   }
 
+  downloadComp227MatchesCsv(termId: string) {
+    return this.http
+      .get(`/api/hiring/admin/${termId}/comp-227-matches/csv`, {
+        responseType: 'blob'
+      })
+      .subscribe((response) => {
+        saveAs(response, `comp-227-matches-${termId}.csv`);
+      });
+  }
+
   conflictCheck(applicationId: number) {
     const params = new HttpParams();
     return this.http.get<ConflictCheck>(

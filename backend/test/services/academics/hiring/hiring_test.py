@@ -3,6 +3,8 @@
 # PyTest
 import pytest
 from unittest.mock import create_autospec
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from backend.services.exceptions import (
     UserPermissionException,
@@ -15,6 +17,14 @@ from .....models.academics.hiring.application_review import (
     HiringStatus,
     ApplicationReviewOverview,
     ApplicationReviewStatus,
+)
+from .....models.comp_227 import Comp227
+from .....models.roster_role import RosterRole
+from .....entities.application_entity import ApplicationEntity
+from .....entities.section_application_table import section_application_table
+from .....entities.academics.section_member_entity import SectionMemberEntity
+from .....entities.academics.hiring.application_review_entity import (
+    ApplicationReviewEntity,
 )
 from .....services.academics import HiringService
 from .....services.application import ApplicationService
@@ -303,3 +313,198 @@ def test_get_phd_applicants(hiring_svc: HiringService):
     assert len(applicants) > 0
     for applicant in applicants:
         assert applicant.program_pursued in {"PhD", "PhD (ABD)"}
+
+
+def test_iter_comp_227_matches_for_term_csv(hiring_svc: HiringService):
+    """Exports only the seeded eligible match with the agreed six columns."""
+    rows = list(
+        hiring_svc.iter_comp_227_matches_for_term_csv(
+            user_data.root, term_data.current_term.id
+        )
+    )
+
+    assert rows == [
+        {
+            "student_name": "Sally Student",
+            "pid": "111111111",
+            "email": "user@unc.edu",
+            "matching_course": "COMP 110",
+            "matching_instructor": "Ina Instructor",
+            "comp_227_preference": Comp227.EITHER.value,
+        }
+    ]
+
+
+def test_iter_comp_227_matches_uses_student_preference_and_deduplicates(
+    hiring_svc: HiringService, session: Session
+):
+    """Student rank wins conflicts and duplicate site data remains one CSV row."""
+    application = session.get(ApplicationEntity, hiring_data.application_one.id)
+    assert application is not None
+    application.comp_227 = Comp227.CREDIT
+
+    comp_110_review = session.scalar(
+        select(ApplicationReviewEntity).where(
+            ApplicationReviewEntity.application_id == application.id,
+            ApplicationReviewEntity.course_site_id
+            == office_hours_data.comp_110_site.id,
+        )
+    )
+    assert comp_110_review is not None
+    comp_110_review.status = ApplicationReviewStatus.PREFERRED
+    comp_110_review.preference = 50
+
+    session.add_all(
+        [
+            ApplicationReviewEntity(
+                application_id=application.id,
+                course_site_id=office_hours_data.comp_301_site.id,
+                status=ApplicationReviewStatus.PREFERRED,
+                preference=0,
+                notes="",
+            ),
+            ApplicationReviewEntity(
+                application_id=application.id,
+                course_site_id=office_hours_data.comp_110_site.id,
+                status=ApplicationReviewStatus.PREFERRED,
+                preference=51,
+                notes="",
+            ),
+            SectionMemberEntity(
+                section_id=section_data.comp_110_001_current_term.id,
+                user_id=user_data.root.id,
+                member_role=RosterRole.INSTRUCTOR,
+            ),
+        ]
+    )
+
+    session.execute(
+        section_application_table.update()
+        .where(
+            section_application_table.c.application_id == application.id,
+            section_application_table.c.section_id
+            == section_data.comp_301_001_current_term.id,
+        )
+        .values(preference=1)
+    )
+    session.execute(
+        section_application_table.update()
+        .where(
+            section_application_table.c.application_id == application.id,
+            section_application_table.c.section_id
+            == section_data.comp_110_001_current_term.id,
+        )
+        .values(preference=2)
+    )
+    session.execute(
+        section_application_table.update()
+        .where(
+            section_application_table.c.application_id == application.id,
+            section_application_table.c.section_id
+            == section_data.comp_110_002_current_term.id,
+        )
+        .values(preference=0)
+    )
+    session.commit()
+
+    rows = list(
+        hiring_svc.iter_comp_227_matches_for_term_csv(
+            user_data.root, term_data.current_term.id
+        )
+    )
+
+    assert len(rows) == 2
+    assert rows[0] == {
+        "student_name": "Stewie Student",
+        "pid": "555555555",
+        "email": "stewie@unc.edu",
+        "matching_course": "COMP 110",
+        "matching_instructor": "Ina Instructor, Rhonda Root",
+        "comp_227_preference": Comp227.CREDIT.value,
+    }
+    assert rows[1]["comp_227_preference"] == Comp227.EITHER.value
+
+
+def test_iter_comp_227_matches_filters_ineligible_applications(
+    hiring_svc: HiringService, session: Session
+):
+    """Compensation-only, GTA, wrong-term, and unpreferred rows are excluded."""
+    compensation_application = session.get(
+        ApplicationEntity, hiring_data.application_three.id
+    )
+    wrong_term_application = session.get(
+        ApplicationEntity, hiring_data.application_four.id
+    )
+    assert compensation_application is not None
+    assert wrong_term_application is not None
+    compensation_application.comp_227 = Comp227.COMPENSATION
+    wrong_term_application.term_id = term_data.previous_term.id
+
+    compensation_review = session.scalar(
+        select(ApplicationReviewEntity).where(
+            ApplicationReviewEntity.application_id == compensation_application.id
+        )
+    )
+    assert compensation_review is not None
+    compensation_review.status = ApplicationReviewStatus.PREFERRED
+
+    session.add_all(
+        [
+            ApplicationReviewEntity(
+                application_id=wrong_term_application.id,
+                course_site_id=office_hours_data.comp_110_site.id,
+                status=ApplicationReviewStatus.PREFERRED,
+                preference=0,
+                notes="",
+            ),
+            ApplicationReviewEntity(
+                application_id=hiring_data.application_five.id,
+                course_site_id=office_hours_data.comp_301_site.id,
+                status=ApplicationReviewStatus.PREFERRED,
+                preference=0,
+                notes="",
+            ),
+        ]
+    )
+    session.commit()
+
+    rows = list(
+        hiring_svc.iter_comp_227_matches_for_term_csv(
+            user_data.root, term_data.current_term.id
+        )
+    )
+
+    assert [row["student_name"] for row in rows] == ["Sally Student"]
+
+
+def test_iter_comp_227_matches_for_term_csv_empty(
+    hiring_svc: HiringService, session: Session
+):
+    """A term without a preferred eligible application yields no service rows."""
+    preferred_review = session.scalar(
+        select(ApplicationReviewEntity).where(
+            ApplicationReviewEntity.application_id == hiring_data.application_two.id
+        )
+    )
+    assert preferred_review is not None
+    preferred_review.status = ApplicationReviewStatus.NOT_PREFERRED
+    session.commit()
+
+    assert (
+        list(
+            hiring_svc.iter_comp_227_matches_for_term_csv(
+                user_data.root, term_data.current_term.id
+            )
+        )
+        == []
+    )
+
+
+def test_iter_comp_227_matches_for_term_csv_checks_permission(
+    hiring_svc: HiringService,
+):
+    """Only hiring administrators may export COMP 227 matches."""
+    with pytest.raises(UserPermissionException):
+        hiring_svc.iter_comp_227_matches_for_term_csv(
+            user_data.ambassador, term_data.current_term.id
+        )

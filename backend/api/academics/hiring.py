@@ -31,6 +31,12 @@ openapi_tags = {
 }
 
 
+def _escape_spreadsheet_formula(value: str) -> str:
+    """Keep user-controlled CSV cells from being evaluated as formulas."""
+    formula_prefixes = ("=", "+", "-", "@", "\t", "\r", "\n")
+    return f"'{value}" if value.startswith(formula_prefixes) else value
+
+
 @api.get("/admin/{term_id}", tags=["Hiring"])
 def get_hiring_admin_overview(
     term_id: str,
@@ -405,5 +411,47 @@ def get_applicants_for_term_csv(
     response = StreamingResponse(row_iter(), media_type="text/csv")
     response.headers["Content-Disposition"] = (
         f"attachment; filename=applicants_{term_id}.csv"
+    )
+    return response
+
+
+@api.get("/admin/{term_id}/comp-227-matches/csv", tags=["Hiring"])
+def get_comp_227_matches_for_term_csv(
+    term_id: str,
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> StreamingResponse:
+    """Stream a CSV of matching COMP 227 applicants for a term."""
+    fieldnames = [
+        "student_name",
+        "pid",
+        "email",
+        "matching_course",
+        "matching_instructor",
+        "comp_227_preference",
+    ]
+
+    rows = hiring_service.iter_comp_227_matches_for_term_csv(subject, term_id)
+
+    def row_iter():
+        header_buf = io.StringIO()
+        header_writer = csv.DictWriter(header_buf, fieldnames=fieldnames)
+        header_writer.writeheader()
+        yield header_buf.getvalue()
+
+        for row in rows:
+            buf = io.StringIO()
+            writer = csv.DictWriter(buf, fieldnames=fieldnames)
+            writer.writerow(
+                {
+                    fieldname: _escape_spreadsheet_formula(row[fieldname])
+                    for fieldname in fieldnames
+                }
+            )
+            yield buf.getvalue()
+
+    response = StreamingResponse(row_iter(), media_type="text/csv")
+    response.headers["Content-Disposition"] = (
+        f"attachment; filename=comp-227-matches-{term_id}.csv"
     )
     return response

@@ -218,4 +218,11 @@ export class HiringAdminComponent {
       this.hiringService.downloadApplicantsCsv(this.selectedTermId()!);
     }
   }
+
+  /** Download COMP 227 matches CSV for selected term */
+  downloadComp227MatchesCsv() {
+    if (this.selectedTermId()) {
+      this.hiringService.downloadComp227MatchesCsv(this.selectedTermId()!);
+    }
+  }
 }

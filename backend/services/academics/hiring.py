@@ -2,6 +2,7 @@
 Service for hiring.
 """
 
+from collections.abc import Iterator
 from itertools import groupby
 from operator import attrgetter
 from fastapi import Depends
@@ -13,6 +14,7 @@ from backend.models.pagination import Paginated, PaginationParams
 from ...database import db_session
 from ..permission import PermissionService
 from ...models.user import User
+from ...models.comp_227 import Comp227
 from ...models.academics.section_member import RosterRole
 from ...entities import UserEntity
 from ...models.application import ApplicationUnderReview, ApplicationOverview
@@ -1082,6 +1084,138 @@ class HiringService:
             ],
             priorities=priorities,
         )
+
+    def iter_comp_227_matches_for_term_csv(
+        self, subject: User, term_id: str
+    ) -> Iterator[dict[str, str]]:
+        """Return an iterator of COMP 227-eligible undergraduate matches."""
+        self._permission.enforce(subject, "hiring.admin", "*")
+
+        student_priority = func.min(section_application_table.c.preference).label(
+            "student_priority"
+        )
+        candidate_query = (
+            select(
+                ApplicationEntity.id,
+                ApplicationReviewEntity.course_site_id,
+                student_priority,
+            )
+            .join(
+                ApplicationReviewEntity,
+                ApplicationReviewEntity.application_id == ApplicationEntity.id,
+            )
+            .join(
+                CourseSiteEntity,
+                CourseSiteEntity.id == ApplicationReviewEntity.course_site_id,
+            )
+            .join(
+                SectionEntity,
+                SectionEntity.course_site_id == CourseSiteEntity.id,
+            )
+            .join(
+                section_application_table,
+                (section_application_table.c.application_id == ApplicationEntity.id)
+                & (section_application_table.c.section_id == SectionEntity.id),
+            )
+            .where(
+                ApplicationEntity.term_id == term_id,
+                CourseSiteEntity.term_id == term_id,
+                ApplicationEntity.type == "new_uta",
+                ApplicationEntity.comp_227.in_((Comp227.CREDIT, Comp227.EITHER)),
+                ApplicationReviewEntity.status == ApplicationReviewStatus.PREFERRED,
+                section_application_table.c.preference.isnot(None),
+            )
+            .group_by(
+                ApplicationEntity.id,
+                ApplicationReviewEntity.course_site_id,
+            )
+            .order_by(
+                ApplicationEntity.id,
+                student_priority,
+                ApplicationReviewEntity.course_site_id,
+            )
+        )
+
+        winning_site_by_application: dict[int, int] = {}
+        for application_id, course_site_id, _ in self._session.execute(candidate_query):
+            winning_site_by_application.setdefault(application_id, course_site_id)
+
+        if not winning_site_by_application:
+            return iter(())
+
+        application_query = (
+            select(ApplicationEntity)
+            .where(ApplicationEntity.id.in_(winning_site_by_application.keys()))
+            .options(joinedload(ApplicationEntity.user))
+        )
+        applications = {
+            application.id: application
+            for application in self._session.scalars(application_query).all()
+        }
+
+        course_site_query = (
+            select(CourseSiteEntity)
+            .where(CourseSiteEntity.id.in_(winning_site_by_application.values()))
+            .options(
+                joinedload(CourseSiteEntity.sections).joinedload(SectionEntity.course),
+                joinedload(CourseSiteEntity.sections)
+                .joinedload(SectionEntity.staff)
+                .joinedload(SectionMemberEntity.user),
+            )
+        )
+        course_sites = {
+            course_site.id: course_site
+            for course_site in self._session.scalars(course_site_query).unique().all()
+        }
+
+        sortable_rows: list[tuple[tuple[int, str, str, int], dict[str, str]]] = []
+        for application_id, course_site_id in winning_site_by_application.items():
+            application = applications[application_id]
+            course_site = course_sites[course_site_id]
+            user = application.user
+
+            course_codes = sorted(
+                {
+                    f"{section.course.subject_code} {section.course.number}"
+                    for section in course_site.sections
+                }
+            )
+            instructors = {
+                member.user_id: member.user
+                for section in course_site.sections
+                for member in section.staff
+                if member.member_role == RosterRole.INSTRUCTOR
+            }
+            instructor_names = [
+                instructor.full_name()
+                for instructor in sorted(
+                    instructors.values(),
+                    key=lambda instructor: (
+                        instructor.last_name,
+                        instructor.first_name,
+                        instructor.id,
+                    ),
+                )
+            ]
+
+            assert application.comp_227 is not None
+            row = {
+                "student_name": user.full_name(),
+                "pid": str(user.pid) if user.pid is not None else "",
+                "email": user.email or "",
+                "matching_course": ", ".join(course_codes),
+                "matching_instructor": ", ".join(instructor_names),
+                "comp_227_preference": application.comp_227.value,
+            }
+            sort_key = (
+                0 if application.comp_227 == Comp227.CREDIT else 1,
+                user.last_name,
+                user.first_name,
+                application.id,
+            )
+            sortable_rows.append((sort_key, row))
+
+        return (row for _, row in sorted(sortable_rows, key=lambda item: item[0]))
 
     # New: Generate applicant CSV rows for a term with minimal memory use
     def iter_applicants_for_term_csv(self, subject: User, term_id: str):
