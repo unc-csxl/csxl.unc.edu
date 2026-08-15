@@ -19,6 +19,10 @@ class HiringAssignmentStatus(Enum):
     FINAL = "Final"
 
 
+class HiringAssignmentBulkUpdateResult(BaseModel):
+    updated_count: int
+
+
 class HiringAssignmentDraft(BaseModel):
     id: int | None = None
     user_id: int

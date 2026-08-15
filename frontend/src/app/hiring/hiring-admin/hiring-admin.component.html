@@ -20,6 +20,10 @@
             <mat-icon>update</mat-icon>
             <span>Update Enrollments</span>
           </button>
+          <button mat-menu-item (click)="moveAllCommitsToFinal()">
+            <mat-icon>done_all</mat-icon>
+            <span>Move all commits to final</span>
+          </button>
           <button mat-menu-item [routerLink]="'/hiring/levels'">
             <mat-icon>tune</mat-icon>
             <span>Edit Hiring Levels</span>

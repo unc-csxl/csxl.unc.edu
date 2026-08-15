@@ -39,7 +39,7 @@ export class HiringAssignmentsComponent {
   > = signal(undefined);
   private previousParams: PaginationParams = DEFAULT_PAGINATION_PARAMS;
 
-  public displayedColumns: string[] = ['name', 'onyen', 'email', 'level'];
+  public displayedColumns: string[] = ['name', 'onyen', 'email', 'level', 'i9'];
 
   /** Current search bar query */
   public searchBarQuery: WritableSignal<string> = signal('');

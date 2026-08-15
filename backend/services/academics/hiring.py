@@ -721,6 +721,28 @@ class HiringService:
 
         return assignment_entity.to_overview_model()
 
+    def finalize_committed_assignments_for_term(
+        self, subject: User, term_id: str
+    ) -> HiringAssignmentBulkUpdateResult:
+        """Moves all Commit hiring assignments for a term to Final."""
+        self._permission.enforce(subject, "hiring.admin", "*")
+
+        result = self._session.execute(
+            update(HiringAssignmentEntity)
+            .where(
+                HiringAssignmentEntity.term_id == term_id,
+                HiringAssignmentEntity.status == HiringAssignmentStatus.COMMIT,
+            )
+            .values(
+                status=HiringAssignmentStatus.FINAL,
+                modified=datetime.now(),
+            )
+        )
+        updated_count = result.rowcount
+        self._session.commit()
+
+        return HiringAssignmentBulkUpdateResult(updated_count=updated_count)
+
     def update_hiring_assignment(
         self, subject: User, assignment: HiringAssignmentDraft
     ) -> HiringAssignmentOverview:
@@ -927,7 +949,7 @@ class HiringService:
     def get_hiring_assignments_for_course_site(
         self, subject: User, course_site_id: int, pagination_params: PaginationParams
     ) -> Paginated[HiringAssignmentOverview]:
-        """Gets the committed hiring assignments for one course site."""
+        """Gets the Final hiring assignments for one course site."""
         # Step 1: Check permissions
         course_site = self._load_course_site(course_site_id)
         if not self._is_instructor(subject, course_site):

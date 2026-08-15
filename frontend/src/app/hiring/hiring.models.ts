@@ -76,6 +76,10 @@ export enum HiringAssignmentStatus {
   FINAL = 'Final'
 }
 
+export interface HiringAssignmentBulkUpdateResult {
+  updated_count: number;
+}
+
 export interface HiringAssignmentDraft {
   id: number | null;
   user_id: number;

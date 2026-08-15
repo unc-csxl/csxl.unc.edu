@@ -49,6 +49,16 @@ def get_hiring_admin_overview(
     return hiring_service.get_hiring_admin_overview(subject, term_id)
 
 
+@api.put("/admin/{term_id}/finalize_commits", tags=["Hiring"])
+def finalize_commits_for_term(
+    term_id: str,
+    subject: User = Depends(registered_user),
+    hiring_service: HiringService = Depends(),
+) -> HiringAssignmentBulkUpdateResult:
+    """Moves all Commit hiring assignments for a term to Final."""
+    return hiring_service.finalize_committed_assignments_for_term(subject, term_id)
+
+
 @api.get("/admin/course/{course_site_id}", tags=["Hiring"])
 def get_hiring_admin_course_overview(
     course_site_id: int,
@@ -309,7 +319,7 @@ def get_hiring_assignments_for_course_site(
     subject: User = Depends(registered_user),
     hiring_service: HiringService = Depends(),
 ) -> Paginated[HiringAssignmentOverview]:
-    """Retrieves the committed and final hiring assignments for a course site."""
+    """Retrieves the Final hiring assignments for a course site."""
     pagination_params = PaginationParams(
         page=page, page_size=page_size, order_by=order_by, filter=filter
     )

@@ -36,6 +36,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Term } from 'src/app/academics/academics.models';
 import { FormControl } from '@angular/forms';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 enum HiringAdminTableSortMethod {
   COURSE = 'Course',
@@ -172,7 +173,8 @@ export class HiringAdminComponent {
   constructor(
     private route: ActivatedRoute,
     protected hiringService: HiringService,
-    protected academicsService: AcademicsService
+    protected academicsService: AcademicsService,
+    private snackBar: MatSnackBar
   ) {
     // Initialize data from resolvers
     const data = this.route.snapshot.data as {
@@ -209,6 +211,41 @@ export class HiringAdminComponent {
   updateEnrollmentTotals() {
     this.hiringService.updateEnrollmentTotals().subscribe((_) => {
       this.reloadData();
+    });
+  }
+
+  /** Move all committed assignments in the selected term to final. */
+  moveAllCommitsToFinal(): void {
+    const term = this.selectedTerm();
+    const confirmed = window.confirm(
+      `Are you sure you want to move all Commit assignments for ${term.name} to Final?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.hiringService.moveAllCommitsToFinal(term.id).subscribe({
+      next: (result) => {
+        if (this.selectedTermId() === term.id) {
+          this.reloadData();
+        }
+
+        const assignmentLabel =
+          result.updated_count === 1 ? 'assignment' : 'assignments';
+        this.snackBar.open(
+          `Moved ${result.updated_count} ${assignmentLabel} from Commit to Final.`,
+          '',
+          { duration: 4000 }
+        );
+      },
+      error: () => {
+        this.snackBar.open(
+          `Unable to move Commit assignments to Final for ${term.name}.`,
+          'Close',
+          { duration: 5000 }
+        );
+      }
     });
   }
 

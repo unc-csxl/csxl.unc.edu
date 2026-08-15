@@ -14,6 +14,7 @@ import {
   ConflictCheck,
   HiringAdminCourseOverview,
   HiringAdminOverview,
+  HiringAssignmentBulkUpdateResult,
   HiringAssignmentDraft,
   HiringAssignmentOverview,
   HiringLevel,
@@ -59,6 +60,16 @@ export class HiringService {
    */
   getHiringAdminOverview(termId: string): Observable<HiringAdminOverview> {
     return this.http.get<HiringAdminOverview>(`/api/hiring/admin/${termId}`);
+  }
+
+  /** Moves every committed assignment in a term to the final stage. */
+  moveAllCommitsToFinal(
+    termId: string
+  ): Observable<HiringAssignmentBulkUpdateResult> {
+    return this.http.put<HiringAssignmentBulkUpdateResult>(
+      `/api/hiring/admin/${termId}/finalize_commits`,
+      null
+    );
   }
 
   /**

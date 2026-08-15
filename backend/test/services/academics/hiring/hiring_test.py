@@ -1,6 +1,7 @@
 """Tests for the HiringService class."""
 
 # PyTest
+from datetime import datetime
 import pytest
 from unittest.mock import create_autospec
 from sqlalchemy import select
@@ -13,16 +14,25 @@ from backend.services.exceptions import (
 )
 
 # Tested Dependencies
+from .....models import PaginationParams
 from .....models.academics.hiring.application_review import (
     HiringStatus,
     ApplicationReviewOverview,
     ApplicationReviewStatus,
+)
+from .....models.academics.hiring.hiring_assignment import (
+    HiringAssignmentBulkUpdateResult,
+    HiringAssignmentStatus,
 )
 from .....models.comp_227 import Comp227
 from .....models.roster_role import RosterRole
 from .....entities.application_entity import ApplicationEntity
 from .....entities.section_application_table import section_application_table
 from .....entities.academics.section_member_entity import SectionMemberEntity
+from .....entities.office_hours.course_site_entity import CourseSiteEntity
+from .....entities.academics.hiring.hiring_assignment_entity import (
+    HiringAssignmentEntity,
+)
 from .....entities.academics.hiring.application_review_entity import (
     ApplicationReviewEntity,
 )
@@ -189,6 +199,143 @@ def test_create_hiring_assignment_checks_permission(hiring_svc: HiringService):
             user_data.ambassador, hiring_data.new_hiring_assignment
         )
         pytest.fail()
+
+
+def test_finalize_committed_assignments_for_term_is_scoped_and_idempotent(
+    hiring_svc: HiringService, session: Session
+):
+    """Only Commit assignments in the selected term are finalized."""
+    original_modified = datetime(2020, 1, 1)
+    seeded_commit = session.get(
+        HiringAssignmentEntity, hiring_data.hiring_assignment.id
+    )
+    assert seeded_commit is not None
+    seeded_commit.modified = original_modified
+
+    previous_term_site = CourseSiteEntity(
+        id=3,
+        title="Previous Term COMP 110",
+        term_id=term_data.previous_term.id,
+    )
+    current_draft = HiringAssignmentEntity.from_draft_model(
+        hiring_data.new_hiring_assignment.model_copy(
+            update={
+                "id": 2,
+                "status": HiringAssignmentStatus.DRAFT,
+                "modified": original_modified,
+            }
+        )
+    )
+    current_final = HiringAssignmentEntity.from_draft_model(
+        hiring_data.new_hiring_assignment.model_copy(
+            update={
+                "id": 3,
+                "status": HiringAssignmentStatus.FINAL,
+                "modified": original_modified,
+            }
+        )
+    )
+    previous_term_commit = HiringAssignmentEntity.from_draft_model(
+        hiring_data.new_hiring_assignment.model_copy(
+            update={
+                "id": 4,
+                "term_id": term_data.previous_term.id,
+                "course_site_id": previous_term_site.id,
+                "status": HiringAssignmentStatus.COMMIT,
+                "modified": original_modified,
+            }
+        )
+    )
+    session.add_all(
+        [
+            previous_term_site,
+            current_draft,
+            current_final,
+            previous_term_commit,
+        ]
+    )
+    session.commit()
+
+    result = hiring_svc.finalize_committed_assignments_for_term(
+        user_data.root, term_data.current_term.id
+    )
+
+    assert result == HiringAssignmentBulkUpdateResult(updated_count=1)
+    session.expire_all()
+    assignments = {
+        assignment.id: assignment
+        for assignment in session.scalars(select(HiringAssignmentEntity)).all()
+    }
+    assert assignments[1].status == HiringAssignmentStatus.FINAL
+    assert assignments[1].modified > original_modified
+    assert assignments[2].status == HiringAssignmentStatus.DRAFT
+    assert assignments[2].modified == original_modified
+    assert assignments[3].status == HiringAssignmentStatus.FINAL
+    assert assignments[3].modified == original_modified
+    assert assignments[4].status == HiringAssignmentStatus.COMMIT
+    assert assignments[4].term_id == term_data.previous_term.id
+    assert assignments[4].course_site_id == previous_term_site.id
+    assert assignments[4].modified == original_modified
+
+    first_finalized_modified = assignments[1].modified
+    second_result = hiring_svc.finalize_committed_assignments_for_term(
+        user_data.root, term_data.current_term.id
+    )
+
+    assert second_result == HiringAssignmentBulkUpdateResult(updated_count=0)
+    session.expire_all()
+    finalized_assignment = session.get(HiringAssignmentEntity, 1)
+    assert finalized_assignment is not None
+    assert finalized_assignment.modified == first_finalized_modified
+
+
+def test_finalize_committed_assignments_for_term_checks_permission(
+    hiring_svc: HiringService, session: Session
+):
+    """Only hiring administrators may finalize a term's Commit assignments."""
+    assignment = session.get(HiringAssignmentEntity, hiring_data.hiring_assignment.id)
+    assert assignment is not None
+    original_modified = assignment.modified
+
+    with pytest.raises(UserPermissionException):
+        hiring_svc.finalize_committed_assignments_for_term(
+            user_data.ambassador, term_data.current_term.id
+        )
+
+    session.expire_all()
+    assignment = session.get(HiringAssignmentEntity, hiring_data.hiring_assignment.id)
+    assert assignment is not None
+    assert assignment.status == HiringAssignmentStatus.COMMIT
+    assert assignment.modified == original_modified
+
+
+def test_get_hiring_assignments_for_course_site_only_includes_final(
+    hiring_svc: HiringService, session: Session
+):
+    """Only Final assignments are visible to instructors."""
+    final_assignment = HiringAssignmentEntity.from_draft_model(
+        hiring_data.new_hiring_assignment
+    )
+    draft_assignment = HiringAssignmentEntity.from_draft_model(
+        hiring_data.new_hiring_assignment.model_copy(
+            update={"id": 3, "status": HiringAssignmentStatus.DRAFT}
+        )
+    )
+    session.add_all([final_assignment, draft_assignment])
+    session.commit()
+
+    assignment_page = hiring_svc.get_hiring_assignments_for_course_site(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        PaginationParams(),
+    )
+
+    assert assignment_page.length == 1
+    assert {
+        (assignment.id, assignment.status) for assignment in assignment_page.items
+    } == {
+        (hiring_data.new_hiring_assignment.id, HiringAssignmentStatus.FINAL),
+    }
 
 
 def test_update_hiring_assignment(hiring_svc: HiringService):
