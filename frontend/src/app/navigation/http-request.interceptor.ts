@@ -42,6 +42,12 @@ export class HttpRequestInterceptor implements HttpInterceptor {
           if (e.status === 401) {
             this.authService.signOut();
           } else {
+            if (
+              e.status === 403 &&
+              ['POST', 'PUT', 'PATCH'].includes(request.method)
+            ) {
+              this.navigationService.forbiddenSaveError();
+            }
             throw e;
           }
         }

@@ -43,6 +43,15 @@ export class NavigationService {
     );
   }
 
+  /** Shows guidance for body-bearing requests rejected by UNC's firewall. */
+  forbiddenSaveError() {
+    this._deferToNextChangeDetectionCycle(() =>
+      this._error.next(
+        "Request payload blocked by UNC's firewall. Be sure you are connected to Eduroam or via VPN, reload the page, and try again."
+      )
+    );
+  }
+
   /**
    * For reasons that seem related to HttpRequestInterceptor's lifecycle of asynchronous operations
    * being outside the general lifecycle of change detection in angular components, the following
