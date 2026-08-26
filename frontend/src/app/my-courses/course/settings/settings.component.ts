@@ -1,4 +1,5 @@
 import { Component, signal, WritableSignal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MyCoursesService } from '../../my-courses.service';
 import {
   CourseSite,
@@ -147,12 +148,31 @@ export class SettingsComponent {
           });
         },
         error: (err) => {
-          this.snackBar.open('Could not save the course site.', '', {
-            duration: 2000
-          });
+          this.saveErrorSnackBar(err);
         }
       });
     }
+  }
+
+  /** Displays actionable details when the course site cannot be saved. */
+  private saveErrorSnackBar(error: Error): void {
+    let message = 'Could not save the course site: ';
+    if (error instanceof HttpErrorResponse) {
+      if (error.status === 403) {
+        message +=
+          "Request payload blocked by UNC's firewall. Be sure you are connected to Eduroam or the UNC VPN, reload the page, and try again.";
+      } else {
+        message += `${error.status} ${error.statusText}`;
+      }
+    } else {
+      message += `Unknown error (${error})`;
+    }
+
+    this.snackBar.open(message, 'OK', {
+      duration: 0,
+      horizontalPosition: 'center',
+      verticalPosition: 'top'
+    });
   }
 
   /** Retrieve a section for a given ID */

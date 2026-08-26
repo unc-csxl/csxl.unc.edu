@@ -603,13 +603,8 @@ class CourseSiteService:
         # Get the site entity
         course_site_query = (
             select(CourseSiteEntity)
-            .join(SectionEntity)
-            .join(SectionMemberEntity)
             .where(CourseSiteEntity.id == updated_site.id)
-            .options(
-                joinedload(CourseSiteEntity.sections),
-                joinedload(CourseSiteEntity.sections).joinedload(SectionEntity.members),
-            )
+            .options(joinedload(CourseSiteEntity.sections))
         )
         course_site_entity = (
             self._session.scalars(course_site_query).unique().one_or_none()
@@ -621,19 +616,23 @@ class CourseSiteService:
                 f"Course site with ID: {updated_site.id} not found."
             )
 
-        # Compelete error handling for existing sections
-        old_section_entities = [section for section in course_site_entity.sections]
-        for section in old_section_entities:
-            members = [
-                member
-                for member in section.members
-                if member.user_id == user.id
-                and member.member_role == RosterRole.INSTRUCTOR
-            ]
-            if len(members) == 0:
-                raise CoursePermissionException(
-                    "Cannot modify a course page containing a section you are not an instructor for."
+        # Complete error handling for existing sections. Query only the caller's
+        # instructor memberships instead of loading every member in every section.
+        old_section_entities = list(course_site_entity.sections)
+        old_section_ids = [section.id for section in old_section_entities]
+        instructor_section_ids = set(
+            self._session.scalars(
+                select(SectionMemberEntity.section_id).where(
+                    SectionMemberEntity.section_id.in_(old_section_ids),
+                    SectionMemberEntity.user_id == user.id,
+                    SectionMemberEntity.member_role == RosterRole.INSTRUCTOR,
                 )
+            ).all()
+        )
+        if instructor_section_ids != set(old_section_ids):
+            raise CoursePermissionException(
+                "Cannot modify a course page containing a section you are not an instructor for."
+            )
 
         # Find all the user's section memberships for the term and sections inputted
         membership_query = (
@@ -689,81 +688,50 @@ class CourseSiteService:
 
             section.course_site_id = updated_site.id
 
-        # Edit the staff - GTAs
-        # 1. Remove all GTAs, then add new ones.
-        gta_query = (
-            select(SectionMemberEntity)
-            .where(
-                SectionMemberEntity.section_id.in_(
-                    [section.id for section in course_site_entity.sections]
-                ),
-                SectionMemberEntity.user_id.not_in(
-                    [gta.id for gta in updated_site.gtas]
-                ),
-            )
-            .where(SectionMemberEntity.member_role == RosterRole.GTA)
+        # Reconcile GTA and UTA memberships in one set-based query. This keeps the
+        # number of database round trips constant as the course team grows.
+        desired_staff_roles = {
+            staff.id: RosterRole.GTA
+            for staff in updated_site.gtas
+            if staff.id is not None
+        }
+        desired_staff_roles.update(
+            {
+                staff.id: RosterRole.UTA
+                for staff in updated_site.utas
+                if staff.id is not None
+            }
         )
-        gta_entities = self._session.scalars(gta_query).all()
-        for gta_entity in gta_entities:
-            self._session.delete(gta_entity)
-
-        # 2. Add new ones
-        for gta in updated_site.gtas:
-            for section in course_site_entity.sections:
-                existing_query = select(SectionMemberEntity).where(
-                    SectionMemberEntity.section_id == section.id,
-                    SectionMemberEntity.user_id == gta.id,
-                )
-                existing_entity = self._session.scalars(existing_query).one_or_none()
-                if existing_entity is None:
-                    draft = SectionMemberDraft(
-                        user_id=gta.id,
-                        section_id=section.id,
-                        member_role=RosterRole.GTA,
-                    )
-                    section_member_entity = SectionMemberEntity.from_draft_model(draft)
-                    self._session.add(section_member_entity)
-                else:
-                    if existing_entity.member_role != RosterRole.INSTRUCTOR:
-                        existing_entity.member_role == RosterRole.GTA
-
-        # Edit the staff - UTAs
-        # 1. Remove all UTAs, then add new ones.
-        uta_query = (
-            select(SectionMemberEntity)
-            .where(
-                SectionMemberEntity.section_id.in_(
-                    [section.id for section in course_site_entity.sections]
-                ),
-                SectionMemberEntity.user_id.not_in(
-                    [uta.id for uta in updated_site.utas]
-                ),
-            )
-            .where(SectionMemberEntity.member_role == RosterRole.UTA)
+        new_section_ids = [section.id for section in new_section_entities]
+        existing_staff_query = select(SectionMemberEntity).where(
+            SectionMemberEntity.section_id.in_(new_section_ids),
+            or_(
+                SectionMemberEntity.member_role.in_([RosterRole.GTA, RosterRole.UTA]),
+                SectionMemberEntity.user_id.in_(desired_staff_roles),
+            ),
         )
-        uta_entities = self._session.scalars(uta_query).all()
-        for uta_entity in uta_entities:
-            self._session.delete(uta_entity)
+        existing_staff_entities = self._session.scalars(existing_staff_query).all()
+        existing_staff_by_section_and_user = {
+            (staff.section_id, staff.user_id): staff
+            for staff in existing_staff_entities
+        }
 
-        # 2. Add new ones
-        for uta in updated_site.utas:
-            for section in course_site_entity.sections:
-                existing_query = select(SectionMemberEntity).where(
-                    SectionMemberEntity.section_id == section.id,
-                    SectionMemberEntity.user_id == uta.id,
-                )
-                existing_entity = self._session.scalars(existing_query).one_or_none()
-                if existing_entity is None:
+        for staff in existing_staff_entities:
+            desired_role = desired_staff_roles.get(staff.user_id)
+            if desired_role is None:
+                self._session.delete(staff)
+            elif staff.member_role != RosterRole.INSTRUCTOR:
+                staff.member_role = desired_role
+
+        for section_id in new_section_ids:
+            for user_id, member_role in desired_staff_roles.items():
+                if (section_id, user_id) not in existing_staff_by_section_and_user:
                     draft = SectionMemberDraft(
-                        user_id=uta.id,
-                        section_id=section.id,
-                        member_role=RosterRole.UTA,
+                        user_id=user_id,
+                        section_id=section_id,
+                        member_role=member_role,
                     )
-                    section_member_entity = SectionMemberEntity.from_draft_model(draft)
-                    self._session.add(section_member_entity)
-                else:
-                    if existing_entity.member_role != RosterRole.INSTRUCTOR:
-                        existing_entity.member_role == RosterRole.UTA
+                    self._session.add(SectionMemberEntity.from_draft_model(draft))
 
         # Save all changes in one commit
         self._session.commit()

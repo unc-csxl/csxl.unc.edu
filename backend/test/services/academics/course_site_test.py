@@ -2,6 +2,8 @@
 
 import pytest
 
+from sqlalchemy import event, select
+
 from ....models.pagination import PaginationParams, Paginated
 from ....models.academics.my_courses import (
     TermOverview,
@@ -10,6 +12,10 @@ from ....models.academics.my_courses import (
     CourseSiteOverview,
 )
 from ....models.office_hours.course_site import CourseSite, UpdatedCourseSite
+from ....entities.academics.section_member_entity import SectionMemberEntity
+from ....entities.user_entity import UserEntity
+from ....models.roster_role import RosterRole
+from ....models.user import User
 from ....services.academics.course_site import CourseSiteService
 from ....services.exceptions import CoursePermissionException, ResourceNotFoundException
 
@@ -211,6 +217,79 @@ def test_update(course_site_svc: CourseSiteService):
     assert course_site is not None
     assert isinstance(course_site, CourseSite)
     assert course_site.term_id == office_hours_data.updated_comp_110_site.term_id
+
+
+def test_update_large_team_uses_bounded_queries(
+    course_site_svc: CourseSiteService, session
+):
+    """The number of SELECTs must not grow with staff-section combinations."""
+    staff_models = [
+        User(
+            id=100 + index,
+            pid=444_000_000 + index,
+            onyen=f"course_staff_{index}",
+            email=f"course_staff_{index}@unc.edu",
+            first_name="Course",
+            last_name=f"Staff {index}",
+            pronouns="They / Them / Theirs",
+        )
+        for index in range(24)
+    ]
+    staff_entities = [UserEntity.from_model(staff) for staff in staff_models]
+    session.add_all(staff_entities)
+    session.commit()
+    staff_profiles = [staff.to_public_model() for staff in staff_entities]
+
+    section_ids = [
+        section_data.comp_110_001_current_term.id,
+        section_data.comp_110_002_current_term.id,
+    ]
+    updated_site = UpdatedCourseSite(
+        id=office_hours_data.comp_110_site.id,
+        title="Large Team Course Site",
+        term_id=term_data.current_term.id,
+        section_ids=section_ids,
+        gtas=staff_profiles[:12],
+        utas=staff_profiles[12:],
+    )
+
+    select_count = 0
+
+    def count_selects(*args):
+        nonlocal select_count
+        statement = args[2]
+        if statement.lstrip().upper().startswith("SELECT"):
+            select_count += 1
+
+    event.listen(session.bind, "before_cursor_execute", count_selects)
+    try:
+        course_site_svc.update(user_data.instructor, updated_site)
+    finally:
+        event.remove(session.bind, "before_cursor_execute", count_selects)
+
+    # Loading and updating the course, regardless of team size, requires only a
+    # fixed set of SELECTs. The prior implementation added one per staff-section
+    # pair on top of eagerly loading a quadratic roster join.
+    assert select_count <= 8
+
+    memberships = session.scalars(
+        select(SectionMemberEntity).where(
+            SectionMemberEntity.section_id.in_(section_ids),
+            SectionMemberEntity.user_id.in_([staff.id for staff in staff_models]),
+        )
+    ).all()
+    expected_memberships = {
+        (section_id, staff.id, expected_role)
+        for section_id in section_ids
+        for staff, expected_role in [
+            *[(staff, RosterRole.GTA) for staff in staff_models[:12]],
+            *[(staff, RosterRole.UTA) for staff in staff_models[12:]],
+        ]
+    }
+    assert {
+        (membership.section_id, membership.user_id, membership.member_role)
+        for membership in memberships
+    } == expected_memberships
 
 
 def test_update_term_mismatch(course_site_svc: CourseSiteService):
