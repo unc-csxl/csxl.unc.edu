@@ -19,6 +19,12 @@ from .availability_list import AvailabilityList
 from .availability import RoomState, SeatAvailability, RoomAvailability
 
 from .status import Status
+from .room_reservation_block import (
+    NewRoomReservationBlock,
+    RoomReservationBlock,
+    RoomReservationBlockOccurrence,
+    RoomReservationBlockWeekday,
+)
 
 __all__ = [
     "Seat",
@@ -35,4 +41,8 @@ __all__ = [
     "SeatAvailability",
     "Status",
     "ReservationOverview",
+    "NewRoomReservationBlock",
+    "RoomReservationBlock",
+    "RoomReservationBlockOccurrence",
+    "RoomReservationBlockWeekday",
 ]
