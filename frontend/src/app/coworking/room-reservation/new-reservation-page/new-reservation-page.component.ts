@@ -4,7 +4,7 @@
  * @license MIT
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Reservation } from 'src/app/coworking/coworking.models';
 import { isAuthenticated } from 'src/app/gate/gate.guard';
@@ -12,13 +12,14 @@ import { profileResolver } from 'src/app/profile/profile.resolver';
 import { catchError, Observable, of } from 'rxjs';
 import { RoomReservationService } from '../room-reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NagivationAdminGearService } from 'src/app/navigation/navigation-admin-gear.service';
 
 @Component({
   selector: 'app-new-reservation-page',
   templateUrl: './new-reservation-page.component.html',
   standalone: false
 })
-export class NewReservationPageComponent implements OnInit {
+export class NewReservationPageComponent implements OnInit, OnDestroy {
   public static Route = {
     path: 'new-reservation',
     title: 'New Reservation',
@@ -32,7 +33,8 @@ export class NewReservationPageComponent implements OnInit {
   constructor(
     private router: Router,
     private roomReservationService: RoomReservationService,
-    protected snackBar: MatSnackBar
+    protected snackBar: MatSnackBar,
+    private gearService: NagivationAdminGearService
   ) {}
 
   /**
@@ -46,6 +48,16 @@ export class NewReservationPageComponent implements OnInit {
 
   ngOnInit() {
     this.getNumHoursStudyRoomReservations();
+    this.gearService.showAdminGearByPermissionCheck(
+      'coworking.room_reservation_blocks.read',
+      'room/*',
+      'Manage standing room reservations',
+      '/coworking/admin/room-reservation-blocks'
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.gearService.resetAdminSettingsNavigation();
   }
 
   navigateToNewReservation() {

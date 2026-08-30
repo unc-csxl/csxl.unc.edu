@@ -1,0 +1,145 @@
+<div class="grid max-w-6xl gap-6 lg:grid-cols-[minmax(20rem,2fr)_3fr]">
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>
+          {{ editingId() === null ? 'Add' : 'Edit' }} Standing Reservation
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="flex flex-col gap-3 pt-6!">
+        <mat-form-field appearance="outline">
+          <mat-label>Room</mat-label>
+          <mat-select formControlName="room_id" required>
+            @for (room of rooms(); track room.id) {
+              <mat-option [value]="room.id">
+                {{ room.id }} — {{ room.nickname }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Label</mat-label>
+          <input
+            matInput
+            formControlName="label"
+            maxlength="120"
+            placeholder="COMP211 Check-off"
+            required />
+          <mat-hint>Shown to users viewing room availability.</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Weekday</mat-label>
+          <mat-select formControlName="weekday" required>
+            @for (weekday of weekdays; track $index) {
+              <mat-option [value]="$index">{{ weekday }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <div class="grid grid-cols-2 gap-3">
+          <mat-form-field appearance="outline">
+            <mat-label>Start time</mat-label>
+            <input
+              matInput
+              type="time"
+              step="1800"
+              formControlName="start_time"
+              required />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>End time</mat-label>
+            <input
+              matInput
+              type="time"
+              step="1800"
+              formControlName="end_time"
+              required />
+          </mat-form-field>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <mat-form-field appearance="outline">
+            <mat-label>Starts on</mat-label>
+            <input matInput type="date" formControlName="starts_on" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Ends on</mat-label>
+            <input matInput type="date" formControlName="ends_on" />
+            <mat-hint>Leave blank for no end date.</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <mat-checkbox formControlName="enabled">Enabled</mat-checkbox>
+      </mat-card-content>
+      <mat-card-actions class="justify-end gap-3 pb-4!">
+        @if (editingId() !== null) {
+          <button mat-stroked-button type="button" (click)="cancelEdit()">
+            Cancel
+          </button>
+        }
+        <button mat-flat-button type="submit" [disabled]="form.invalid">
+          {{ editingId() === null ? 'Add Block' : 'Save Changes' }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Standing Reservations</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="pt-6!">
+      @if (blocks().length === 0) {
+        <p>No standing reservations have been configured.</p>
+      } @else {
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse text-left">
+            <thead>
+              <tr>
+                <th class="p-3">Room</th>
+                <th class="p-3">Label</th>
+                <th class="p-3">Schedule</th>
+                <th class="p-3">Effective dates</th>
+                <th class="p-3"><span class="sr-only">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (block of blocks(); track block.id) {
+                <tr
+                  class="cursor-pointer border-t border-black/10 dark:border-white/10"
+                  (click)="edit(block)">
+                  <td class="p-3">{{ block.room_id }}</td>
+                  <td class="p-3">
+                    {{ block.label }}
+                    @if (!block.enabled) {
+                      <span class="text-sm opacity-70">(disabled)</span>
+                    }
+                  </td>
+                  <td class="p-3">
+                    {{ weekdays[block.weekday] }},
+                    {{ block.start_time.slice(0, 5) }}–{{
+                      block.end_time.slice(0, 5)
+                    }}
+                  </td>
+                  <td class="p-3">
+                    {{ block.starts_on }}–{{ block.ends_on ?? 'ongoing' }}
+                  </td>
+                  <td class="p-3 text-right">
+                    <button
+                      mat-stroked-button
+                      type="button"
+                      (click)="delete(block, $event)">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>
