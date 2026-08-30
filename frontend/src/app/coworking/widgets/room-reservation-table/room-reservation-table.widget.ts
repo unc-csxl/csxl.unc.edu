@@ -29,6 +29,9 @@ export class RoomReservationWidgetComponent {
   //- Room Type Map
   roomTypeMap: Record<string, string> = {};
 
+  //- Labels for standing reservations, keyed by room and time-slot index.
+  blockLabelMap: Record<string, string[]> = {};
+
   //- Select Button enabled
   selectButton: boolean = false;
 
@@ -72,6 +75,30 @@ export class RoomReservationWidgetComponent {
         this.operationStart = new Date(result.operating_hours_start);
         let slots = result.number_of_time_slots;
 
+        this.blockLabelMap = Object.fromEntries(
+          Object.keys(this.reservationsMap).map((roomId) => [
+            roomId,
+            Array(slots).fill('')
+          ])
+        );
+        for (const block of result.room_reservation_blocks ?? []) {
+          const labels = this.blockLabelMap[block.room_id];
+          if (!labels) {
+            continue;
+          }
+          const blockStart = new Date(block.start);
+          const blockEnd = new Date(block.end);
+          for (let index = 0; index < slots; index++) {
+            const slotStart = new Date(
+              this.operationStart.getTime() + index * 30 * 60 * 1000
+            );
+            const slotEnd = new Date(slotStart.getTime() + 30 * 60 * 1000);
+            if (blockStart < slotEnd && blockEnd > slotStart) {
+              labels[index] = block.label;
+            }
+          }
+        }
+
         this.timeSlots = this.reservationTableService.generateTimeSlots(
           this.operationStart,
           end,
@@ -88,6 +115,20 @@ export class RoomReservationWidgetComponent {
         console.error('Error fetching reservations:', error);
       }
     );
+  }
+
+  blockLabel(roomId: string, index: number): string {
+    return this.blockLabelMap[roomId]?.[index] ?? '';
+  }
+
+  cellAriaLabel(roomId: string, index: number): string {
+    const time = (this.timeSlots[index] ?? '')
+      .replace(/<br>/g, ' ')
+      .replace(/\s+/g, ' ');
+    const label = this.blockLabel(roomId, index);
+    return label
+      ? `${roomId}, ${time}, unavailable: ${label}`
+      : `${roomId}, ${time}`;
   }
 
   //- Array to store information about selected cells, where each element is an object

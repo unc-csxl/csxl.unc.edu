@@ -20,6 +20,8 @@
             <td
               class="h-[40px] w-[30px]"
               [style.background]="cellPropertyMap[timeSlot].backgroundColor"
+              [matTooltip]="blockLabel(record.key, j)"
+              [attr.aria-label]="cellAriaLabel(record.key, j)"
               (click)="
                 !cellPropertyMap[timeSlot].isDisabled &&
                   toggleCellColor(record.key, j)

@@ -33,6 +33,9 @@ import { AmbassadorRoomComponent } from './ambassador-home/ambassador-room/ambas
 import { ReservationFactsWidget } from './widgets/reservation-facts/reservation-facts.widget';
 import { DialogModule } from '@angular/cdk/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { RoomReservationBlockAdminComponent } from './room-reservation-block-admin/room-reservation-block-admin.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +52,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     NewReservationPageComponent,
     DateSelector,
     OperatingHoursDialog,
-    ReservationFactsWidget
+    ReservationFactsWidget,
+    RoomReservationBlockAdminComponent
   ],
   imports: [
     CommonModule,
@@ -77,7 +81,10 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatFormFieldModule,
     MatTooltipModule,
     MatTabsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    ReactiveFormsModule
   ]
 })
 export class CoworkingModule {}

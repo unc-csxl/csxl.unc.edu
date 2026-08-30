@@ -176,7 +176,44 @@ export interface ReservationMapDetails {
   reserved_date_map: Record<string, number[]>;
   capacity_map: Record<string, number>;
   room_type_map: Record<string, string>;
+  room_reservation_blocks: RoomReservationBlockOccurrence[];
   operating_hours_start: string;
   operating_hours_end: string;
   number_of_time_slots: number;
+}
+
+/** A weekly rule that makes a room unavailable for reservations. */
+export interface RoomReservationBlock {
+  id: number;
+  room_id: string;
+  label: string;
+  weekday: number;
+  start_time: string;
+  end_time: string;
+  starts_on: string;
+  ends_on: string | null;
+  enabled: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+/** The editable fields sent when creating or updating a block. */
+export interface NewRoomReservationBlock {
+  room_id: string;
+  label: string;
+  weekday: number;
+  start_time: string;
+  end_time: string;
+  starts_on: string;
+  ends_on: string | null;
+  enabled: boolean;
+}
+
+/** A weekly block expanded onto the date shown in the reservation table. */
+export interface RoomReservationBlockOccurrence {
+  id: number;
+  room_id: string;
+  label: string;
+  start: string;
+  end: string;
 }
