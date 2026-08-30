@@ -47,6 +47,9 @@
               step="1800"
               formControlName="start_time"
               required />
+            @if (form.controls.start_time.hasError('pattern')) {
+              <mat-error>Use an hour or half-hour time.</mat-error>
+            }
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>End time</mat-label>
@@ -56,6 +59,9 @@
               step="1800"
               formControlName="end_time"
               required />
+            @if (form.controls.end_time.hasError('pattern')) {
+              <mat-error>Use an hour or half-hour time.</mat-error>
+            }
           </mat-form-field>
         </div>
 
@@ -72,6 +78,16 @@
         </div>
 
         <mat-checkbox formControlName="enabled">Enabled</mat-checkbox>
+        @if (form.hasError('invalidTimeRange')) {
+          <p class="text-sm text-red-700 dark:text-red-300">
+            End time must be after start time.
+          </p>
+        }
+        @if (form.hasError('invalidDateRange')) {
+          <p class="text-sm text-red-700 dark:text-red-300">
+            End date must not be before start date.
+          </p>
+        }
       </mat-card-content>
       <mat-card-actions class="justify-end gap-3 pb-4!">
         @if (editingId() !== null) {

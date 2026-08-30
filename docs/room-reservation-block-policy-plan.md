@@ -1,16 +1,16 @@
 # Persisted Room Reservation Block Policy Plan
 
-Status: Proposed
+Status: Implemented in a five-PR stack; pending review
 
 ## Objective
 
-Replace the hard-coded room blocks in `backend/services/coworking/policy.py` with an editable, database-backed policy. Authorized staff should be able to create standing weekly blocks for a room, give each block a label such as `COMP211 Check-off`, set the dates during which it applies, edit it, and remove or disable it without a code deployment.
+Replace the former hard-coded room blocks in `backend/services/coworking/policy.py` with an editable, database-backed policy. Authorized staff can create standing weekly blocks for a room, give each block a label such as `COMP211 Check-off`, set the dates during which it applies, edit it, and remove or disable it without a code deployment.
 
 The blocked-time policy should be authoritative: it must affect the availability table and reject a room-reservation request sent directly to the API, not only disable cells in the browser.
 
-## Current State
+## Baseline State
 
-The present implementation has four important characteristics:
+The implementation replaced a baseline with four important characteristics:
 
 1. `OH_HOURS` in `backend/services/coworking/policy.py` is a nested dictionary keyed by Python weekday number and room ID. Each value is an unlabeled `(start_time, end_time)` tuple.
 2. `PolicyService.office_hours(date)` selects one weekday from that dictionary. `ReservationService._transform_date_map_for_officehours(...)` converts its tuples into gray `UNAVAILABLE` cells in the room-reservation matrix.
@@ -20,6 +20,18 @@ The present implementation has four important characteristics:
 The database-backed `OperatingHoursService` is a useful CRUD and permission precedent. The academic office-hours recurrence implementation is less suitable: it materializes every occurrence as an event. Room blocks are simple weekly policy rules and can be expanded for a requested date at query time, avoiding an indefinitely growing occurrence table.
 
 The codebase currently stores and compares naive local datetimes after converting API timestamps to `America/New_York`. A persisted weekly rule should therefore store local wall-clock times and use the same timezone convention at its API boundary.
+
+## Implementation Progress
+
+| Stack layer | Delivered |
+| ----------- | --------- |
+| 1. Models and migration | Pydantic models, SQLAlchemy-compatible schema migration, constraints, frozen legacy-data backfill, and model/migration tests |
+| 2. Entity | ORM entity registration, model conversion, and PostgreSQL persistence round-trip tests |
+| 3. Services and API | Permission-scoped CRUD, conflict validation, room locking, direct-draft enforcement, labeled availability metadata, and service/API tests |
+| 4. Frontend | Typed CRUD service, guarded Material admin editor, admin-gear entry point, labeled tooltips/ARIA descriptions, strict build, and lint |
+| 5. Final cutover | Removal of `OH_HOURS`, representative reset data, client range validation, documentation reconciliation, and full regression verification |
+
+The first version deliberately omits audit-user foreign keys, advanced list filters, partial-update payloads, and a dedicated frontend unit-test runner. Those additions do not affect the core editing or enforcement path and can be introduced when the repository adopts them consistently. The frontend is verified with the repository's configured production build and lint targets.
 
 ## Goals
 
@@ -59,8 +71,6 @@ Create a `coworking__room_reservation_block` table and a corresponding `RoomRese
 | `enabled`       | boolean           | Defaults to `true`; disabled rules do not block reservations               |
 | `created_at`    | timestamp         | Audit timestamp                                                            |
 | `updated_at`    | timestamp         | Updated automatically                                                      |
-| `created_by_id` | integer, nullable | Foreign key to `user.id`, `SET NULL` on user deletion                      |
-| `updated_by_id` | integer, nullable | Foreign key to `user.id`, `SET NULL` on user deletion                      |
 
 Add database checks for:
 
@@ -200,15 +210,14 @@ The existing authenticated availability endpoint may return occurrence labels be
 
 Add a permission-guarded page at `/coworking/admin/room-reservation-blocks`. Keeping it in the coworking module makes the feature's ownership clearer than placing it in the academic room editor.
 
-The page should contain:
+The first-version page contains:
 
 - a table sorted by room, weekday, and start time;
-- filters for room and active/upcoming/all rules;
 - columns for label, room, weekday, time, effective dates, and enabled state;
 - create, edit, enable/disable, and delete actions; and
 - a reactive form using the existing room list endpoint for room selection.
 
-Client-side validators should mirror the backend's required label, half-hour alignment, end-after-start, and valid date range checks. Backend validation remains authoritative. On HTTP `409`, show the conflicting rule or reservation in the form rather than a generic failure snackbar.
+Client-side validators mirror the backend's required label, half-hour alignment, end-after-start, and valid date range checks. Backend validation remains authoritative. On HTTP `409`, the editor shows the backend's specific conflict message in a snackbar.
 
 Expose the page through the admin gear on the room-reservation page when the user has `coworking.room_reservation_blocks.read` on `room/*`. This follows the existing permission guard and admin navigation patterns without adding the feature to the broad site-admin account console.
 
@@ -255,14 +264,13 @@ No dual-write period is necessary because the old policy is not mutable. Avoid r
 - Blocked-cell tooltip and accessible label.
 - Regression coverage for selection behavior and all existing cell states.
 
-## Suggested Delivery Sequence
+## Five-PR Delivery Sequence
 
-1. **Characterization PR:** add tests proving current matrix behavior and a failing direct-API blocked-time test.
-2. **Schema/domain PR:** add the migration, entity, Pydantic models, fixtures, and service schedule/conflict tests.
-3. **API/enforcement PR:** add CRUD routes, permissions, room-row locking, draft enforcement, and availability occurrence metadata.
-4. **Admin UI PR:** add the management page, editor, routing, and permission-aware navigation.
-5. **Reservation UI PR:** display labels in tooltips/ARIA text and update the legend.
-6. **Cutover PR:** backfill production rules, remove `OH_HOURS`, rename old office-hours helpers, and update documentation.
+1. **Models and migration:** add validated models, the schema migration, frozen backfill inventory, and basic tests.
+2. **Entity:** add ORM persistence, registration, conversion, and round-trip tests.
+3. **Services and API:** add CRUD, permissions, conflicts, locking, draft enforcement, availability metadata, and backend tests.
+4. **Frontend:** add the admin editor and labeled student availability experience, verified by production build and lint.
+5. **Final tweaks and cutover:** remove the legacy constant, add reset data and migration coverage, reconcile documentation, and run full regressions.
 
 ## Acceptance Criteria
 
@@ -275,6 +283,6 @@ No dual-write period is necessary because the old policy is not mutable. Avoid r
 - Unrelated rooms can still be booked concurrently.
 - Existing non-temporary policy blocks survive the cutover with equivalent behavior.
 
-## Decisions to Confirm Before Implementation
+## Initial Policy Decisions
 
-The recommended defaults are to show labels to authenticated reservation users, allow indefinite rules, and grant management only to root administrators initially. Before implementation, confirm whether ambassadors should also manage blocks and whether all standing blocks should be forced to end with an academic term. Neither decision changes the proposed schema.
+Labels are shown to authenticated reservation users, indefinite rules are allowed, and management is initially limited to users with the explicit room-block permissions (root administrators in the supplied data). Ambassadors are not granted management by default, and blocks are not forced to end with an academic term.

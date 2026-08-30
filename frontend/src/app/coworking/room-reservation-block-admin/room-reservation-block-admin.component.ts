@@ -1,6 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, signal } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Route } from '@angular/router';
 import { Room } from 'src/app/academics/academics.models';
@@ -11,6 +16,23 @@ import {
   RoomReservationBlock
 } from '../coworking.models';
 import { RoomReservationBlockService } from '../room-reservation-block.service';
+
+const HALF_HOUR_TIME = /^(?:[01]\d|2[0-3]):(?:00|30)$/;
+
+function validBlockRange(control: AbstractControl): ValidationErrors | null {
+  const startTime = control.get('start_time')?.value as string;
+  const endTime = control.get('end_time')?.value as string;
+  const startsOn = control.get('starts_on')?.value as string;
+  const endsOn = control.get('ends_on')?.value as string;
+
+  if (startTime && endTime && startTime >= endTime) {
+    return { invalidTimeRange: true };
+  }
+  if (startsOn && endsOn && startsOn > endsOn) {
+    return { invalidDateRange: true };
+  }
+  return null;
+}
 
 @Component({
   selector: 'app-room-reservation-block-admin',
@@ -40,16 +62,25 @@ export class RoomReservationBlockAdminComponent implements OnInit {
   readonly rooms = signal<Room[]>([]);
   readonly editingId = signal<number | null>(null);
 
-  readonly form = this.formBuilder.nonNullable.group({
-    room_id: ['', Validators.required],
-    label: ['', [Validators.required, Validators.maxLength(120)]],
-    weekday: [0, [Validators.required, Validators.min(0), Validators.max(6)]],
-    start_time: ['09:00', Validators.required],
-    end_time: ['10:00', Validators.required],
-    starts_on: [this.today(), Validators.required],
-    ends_on: [''],
-    enabled: [true]
-  });
+  readonly form = this.formBuilder.nonNullable.group(
+    {
+      room_id: ['', Validators.required],
+      label: ['', [Validators.required, Validators.maxLength(120)]],
+      weekday: [0, [Validators.required, Validators.min(0), Validators.max(6)]],
+      start_time: [
+        '09:00',
+        [Validators.required, Validators.pattern(HALF_HOUR_TIME)]
+      ],
+      end_time: [
+        '10:00',
+        [Validators.required, Validators.pattern(HALF_HOUR_TIME)]
+      ],
+      starts_on: [this.today(), Validators.required],
+      ends_on: [''],
+      enabled: [true]
+    },
+    { validators: validBlockRange }
+  );
 
   constructor(
     private formBuilder: FormBuilder,

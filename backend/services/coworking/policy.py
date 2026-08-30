@@ -1,96 +1,18 @@
 """Service that manages policies around the reservation system."""
 
-from fastapi import Depends
-from sqlalchemy.orm import Session
-from datetime import timedelta, datetime, time
-from ...database import db_session
+from datetime import timedelta
+
 from ...models import User
 
 __authors__ = ["Kris Jordan, Yuvraj Jain"]
 __copyright__ = "Copyright 2023-24"
 __license__ = "MIT"
 
-MONDAY = 0
-TUESDAY = 1
-WEDNESDAY = 2
-THURSDAY = 3
-FRIDAY = 4
-SATURDAY = 5
-SUNDAY = 6
-
-OH_HOURS = {
-    MONDAY: {
-        "SN135": [],
-        "SN137": [],
-        "SN139": [],
-        "SN141": [
-            (time(hour=10), time(hour=12)),
-            (time(hour=16), time(hour=17)),
-        ],
-        "SN144": [],
-        "SN146": [],
-        "SN147": [(time(hour=13), time(hour=14))],
-    },
-    TUESDAY: {
-        "SN135": [(time(hour=12), time(hour=16))],
-        "SN137": [],
-        "SN139": [],
-        "SN141": [],
-        "SN144": [],
-        "SN146": [],
-        "SN147": [
-            (time(hour=11, minute=30), time(hour=17)),  # comp211 checkoff
-        ],
-    },
-    WEDNESDAY: {
-        "SN135": [],
-        "SN137": [],
-        "SN139": [],
-        "SN141": [
-            (time(hour=10), time(hour=12)),
-            (time(hour=13, minute=30), time(hour=15, minute=30)),  # comp211 checkoff
-            (time(hour=16), time(hour=18)),
-        ],
-        "SN144": [],
-        "SN146": [],
-        "SN147": [
-            (time(hour=11, minute=30), time(hour=14)),  # comp211 checkoff
-            (time(hour=14), time(hour=15)),
-            (time(hour=15), time(hour=17)),  # comp211 checkoff
-        ],
-    },
-    THURSDAY: {
-        "SN135": [(time(hour=12), time(hour=17))],
-        "SN137": [],
-        "SN139": [],
-        "SN141": [],
-        "SN144": [],
-        "SN146": [],
-        "SN147": [
-            (time(hour=11, minute=30), time(hour=17)),  # comp211 checkoff
-        ],
-    },
-    FRIDAY: {
-        "SN135": [],
-        "SN137": [],
-        "SN139": [],
-        "SN141": [(time(hour=13), time(hour=18))],
-        "SN144": [],
-        "SN146": [],
-        "SN147": [
-            (time(hour=11, minute=30), time(hour=15, minute=30)),  # comp211 checkoff
-        ],
-    },
-    SATURDAY: {},
-    SUNDAY: {},
-}
-
 
 class PolicyService:
-    """RoleService is the access layer to the role data model, its members, and permissions.
+    """Centralize duration and reservation-window policies.
 
-    We are carving out a simple service for looking up policies in anticipation of having different policies
-    for different groups of users (e.g. majors, ambassadors, LAs, etc).
+    These methods may later vary policies for different groups of users.
     """
 
     def __init__(self): ...
@@ -132,20 +54,3 @@ class PolicyService:
     def room_reservation_weekly_limit(self) -> timedelta:
         """The maximum amount of hours a student can reserve the study rooms outside of the csxl."""
         return timedelta(hours=6)
-
-    def office_hours(self, date: datetime):
-        day = date.weekday()
-        if day == MONDAY:
-            return OH_HOURS[MONDAY]
-        elif day == TUESDAY:
-            return OH_HOURS[TUESDAY]
-        elif day == WEDNESDAY:
-            return OH_HOURS[WEDNESDAY]
-        elif day == THURSDAY:
-            return OH_HOURS[THURSDAY]
-        elif day == FRIDAY:
-            return OH_HOURS[FRIDAY]
-        elif day == SATURDAY:
-            return OH_HOURS[SATURDAY]
-        else:
-            return OH_HOURS[SUNDAY]

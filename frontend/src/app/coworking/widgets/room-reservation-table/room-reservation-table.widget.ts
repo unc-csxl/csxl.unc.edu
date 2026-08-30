@@ -81,6 +81,10 @@ export class RoomReservationWidgetComponent {
             Array(slots).fill('')
           ])
         );
+        const timeOptions: Intl.DateTimeFormatOptions = {
+          hour: 'numeric',
+          minute: '2-digit'
+        };
         for (const block of result.room_reservation_blocks ?? []) {
           const labels = this.blockLabelMap[block.room_id];
           if (!labels) {
@@ -94,7 +98,8 @@ export class RoomReservationWidgetComponent {
             );
             const slotEnd = new Date(slotStart.getTime() + 30 * 60 * 1000);
             if (blockStart < slotEnd && blockEnd > slotStart) {
-              labels[index] = block.label;
+              labels[index] =
+                `${block.label} (${blockStart.toLocaleTimeString([], timeOptions)}–${blockEnd.toLocaleTimeString([], timeOptions)})`;
             }
           }
         }
