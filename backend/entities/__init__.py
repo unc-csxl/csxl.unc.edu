@@ -20,6 +20,7 @@ from .permission_entity import PermissionEntity
 from .user_role_table import user_role_table
 
 from .room_entity import RoomEntity
+from .coworking.room_reservation_block_entity import RoomReservationBlockEntity
 
 from .organization_entity import OrganizationEntity
 from .event_entity import EventEntity
