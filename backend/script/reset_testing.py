@@ -12,7 +12,6 @@ Usage: python3 -m script.reset_testing
 
 import sys
 import subprocess
-from sqlalchemy import text
 from sqlalchemy.orm import Session
 from ..database import engine
 from ..env import getenv
@@ -21,7 +20,12 @@ from .. import entities
 from ..test.services import role_data, user_data, permission_data, room_data
 from ..test.services.organization import organization_test_data
 from ..test.services.event import event_test_data
-from ..test.services.coworking import seat_data, operating_hours_data, time
+from ..test.services.coworking import (
+    seat_data,
+    operating_hours_data,
+    room_reservation_block_data,
+    time,
+)
 from ..test.services.coworking.reservation import reservation_data
 
 __authors__ = ["Kris Jordan", "Ajay Gandecha"]
@@ -53,6 +57,7 @@ with Session(engine) as session:
     event_test_data.insert_fake_data(session)
     operating_hours_data.insert_fake_data(session, time)
     room_data.insert_fake_data(session)
+    room_reservation_block_data.insert_fake_data(session)
     seat_data.insert_fake_data(session)
     reservation_data.insert_fake_data(session, time)
 

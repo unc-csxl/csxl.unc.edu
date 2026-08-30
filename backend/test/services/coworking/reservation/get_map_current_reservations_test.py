@@ -3,17 +3,16 @@
 from backend.models.coworking.availability import RoomState
 from backend.models.coworking.reservation import ReservationState
 from backend.models.coworking import RoomReservationBlockOccurrence
-from datetime import date, time as Time
 
-from .....services.coworking import ReservationService, PolicyService
+from .....services.coworking import ReservationService
 
 # Imported fixtures provide dependencies injected for the tests as parameters.
 # Dependent fixtures (seat_svc) are required to be imported in the testing module.
 from ..fixtures import (
     reservation_svc,
     permission_svc,
-    seat_svc,
     policy_svc,
+    seat_svc,
     operating_hours_svc,
 )
 
@@ -33,8 +32,6 @@ from .reservation_data import fake_data_fixture as insert_order_4
 from ...core_data import user_data
 from .. import seat_data
 from . import reservation_data
-
-from unittest.mock import MagicMock
 
 __authors__ = [
     "Nick Wherthey",
@@ -132,42 +129,6 @@ def test_transform_date_map_for_room_reservation_blocks(
     ]
 
 
-def test_transform_date_map_for_office_hours(
-    reservation_svc: ReservationService, policy_svc: PolicyService
-):
-    """Tests to make sure that office hours events in rooms
-    are marked unavailable (3)"""
-    policy_svc.office_hours = MagicMock(
-        return_value={
-            "SN135": [],
-            "SN137": [(Time(hour=15), Time(hour=16))],
-            "SN139": [],
-            "SN141": [(Time(hour=10), Time(hour=16))],
-            "SN144": [],
-            "SN146": [],
-            "SN147": [],
-        }
-    )
-    date = datetime(year=2024, month=5, day=1)
-    start = datetime(year=2024, month=5, day=1, hour=10, minute=0)
-    reserved_date_map = {
-        "SN135": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "SN137": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "SN141": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    }
-
-    expected_transformed_date_map = {
-        "SN135": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        "SN137": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0],
-        "SN141": [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0],
-    }
-
-    reservation_svc._transform_date_map_for_officehours(
-        date, reserved_date_map, start, 16
-    )
-    assert reserved_date_map == expected_transformed_date_map
-
-
 def test_idx_calculation(reservation_svc: ReservationService):
     time_1 = datetime.now().replace(hour=10, minute=12)
     oh_start = datetime.now().replace(hour=10, minute=0)
@@ -238,7 +199,6 @@ def test_query_xl_reservations_by_date_for_user(
 def test_get_map_reserved_times_by_date(
     reservation_svc: ReservationService,
     time: dict[str, datetime],
-    policy_svc: PolicyService,
 ):
     """Test for getting a dictionary where keys are room ids and time slots array are values.
 
@@ -247,36 +207,12 @@ def test_get_map_reserved_times_by_date(
     multiple edge cases that arise out of it. I recommend setting a breakpoint and looking at
     the reserved_date_map in the debugger.
     """
-    policy_svc.office_hours = MagicMock(
-        return_value={
-            "SN135": [],
-            "SN137": [],
-            "SN139": [],
-            "SN141": [],
-            "SN144": [],
-            "SN146": [],
-            "SN147": [],
-        }
-    )
     test_time = time[NOW] + timedelta(days=2)
     reservation_details = reservation_svc.get_map_reserved_times_by_date(
         test_time, user_data.user
     )
-
-    # This may change based on what time the test is ran due to office hours.
-    expected_date_map = {
-        "SN135": [0, 3, 3, 3, 0],
-        "SN137": [0, 4, 4, 4, 0],
-        "SN139": [0, 3, 3, 3, 0],
-        "SN141": [0, 3, 3, 3, 0],
-    }
-
     assert reservation_details.reserved_date_map["SN135"] == [0, 4, 4, 4, 0]
     assert reservation_details.reserved_date_map["SN139"] == [0, 3, 3, 3, 0]
-
-    reserved_date_map_root = reservation_svc.get_map_reserved_times_by_date(
-        test_time, user_data.root
-    )
 
 
 def test_get_map_reserved_times_by_date_outside_operating_hours(
