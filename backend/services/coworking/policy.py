@@ -38,7 +38,9 @@ OH_HOURS = {
         "SN141": [],
         "SN144": [],
         "SN146": [],
-        "SN147": [],
+        "SN147": [
+            (time(hour=11, minute=30), time(hour=17)),  # comp211 checkoff
+        ],
     },
     WEDNESDAY: {
         "SN135": [],
@@ -46,11 +48,16 @@ OH_HOURS = {
         "SN139": [],
         "SN141": [
             (time(hour=10), time(hour=12)),
+            (time(hour=13, minute=30), time(hour=15, minute=30)),  # comp211 checkoff
             (time(hour=16), time(hour=18)),
         ],
         "SN144": [],
         "SN146": [],
-        "SN147": [(time(hour=14), time(hour=15))],
+        "SN147": [
+            (time(hour=11, minute=30), time(hour=14)),  # comp211 checkoff
+            (time(hour=14), time(hour=15)),
+            (time(hour=15), time(hour=17)),  # comp211 checkoff
+        ],
     },
     THURSDAY: {
         "SN135": [(time(hour=12), time(hour=17))],
@@ -59,7 +66,9 @@ OH_HOURS = {
         "SN141": [],
         "SN144": [],
         "SN146": [],
-        "SN147": [],
+        "SN147": [
+            (time(hour=11, minute=30), time(hour=17)),  # comp211 checkoff
+        ],
     },
     FRIDAY: {
         "SN135": [],
@@ -68,7 +77,9 @@ OH_HOURS = {
         "SN141": [(time(hour=13), time(hour=18))],
         "SN144": [],
         "SN146": [],
-        "SN147": [],
+        "SN147": [
+            (time(hour=11, minute=30), time(hour=15, minute=30)),  # comp211 checkoff
+        ],
     },
     SATURDAY: {},
     SUNDAY: {},
