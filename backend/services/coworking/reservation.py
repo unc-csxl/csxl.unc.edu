@@ -24,12 +24,15 @@ from ...models.coworking import (
     RoomState,
     AvailabilityList,
     OperatingHours,
+    RoomReservationBlockOccurrence,
 )
 from ...entities import UserEntity
 from ...entities.coworking import ReservationEntity, SeatEntity
 from .seat import SeatService
 from .policy import PolicyService
 from .operating_hours import OperatingHoursService
+from .room_reservation_block import RoomReservationBlockService
+from .exceptions import RoomReservationBlockConflictException
 from ..permission import PermissionService
 
 __authors__ = ["Kris Jordan", "Matt Vu", "Yuvraj Jain"]
@@ -52,6 +55,7 @@ class ReservationService:
         policy_svc: PolicyService = Depends(),
         operating_hours_svc: OperatingHoursService = Depends(),
         seats_svc: SeatService = Depends(),
+        room_reservation_block_svc: RoomReservationBlockService = Depends(),
     ):
         """Initializes a new ReservationService.
 
@@ -63,6 +67,7 @@ class ReservationService:
         self._policy_svc = policy_svc
         self._operating_hours_svc = operating_hours_svc
         self._seat_svc = seats_svc
+        self._room_reservation_block_svc = room_reservation_block_svc
 
     def get_reservation(self, subject: User, id: int) -> Reservation:
         """Lookup a reservation by ID.
@@ -273,6 +278,7 @@ class ReservationService:
 
         # Query DB to get reservable rooms.
         rooms = self._get_reservable_rooms()
+        room_reservation_blocks = self._room_reservation_block_svc.schedule(date)
 
         # Generate a 1 day time range to get operating hours on date.
         date_midnight = date.replace(hour=0, minute=0, second=0)
@@ -301,6 +307,7 @@ class ReservationService:
                 reserved_date_map=reserved_date_map,
                 capacity_map=capacity_map,
                 room_type_map=room_type_map,
+                room_reservation_blocks=room_reservation_blocks,
                 operating_hours_start=datetime.now().replace(hour=10, minute=0),
                 operating_hours_end=datetime.now().replace(hour=18, minute=0),
                 number_of_time_slots=16,
@@ -380,11 +387,18 @@ class ReservationService:
         self._transform_date_map_for_officehours(
             date, reserved_date_map, operating_hours_start, operating_hours_duration
         )
+        self._transform_date_map_for_room_reservation_blocks(
+            room_reservation_blocks,
+            reserved_date_map,
+            operating_hours_start,
+            operating_hours_duration,
+        )
 
         return ReservationMapDetails(
             reserved_date_map=reserved_date_map,
             capacity_map=capacity_map,
             room_type_map=room_type_map,
+            room_reservation_blocks=room_reservation_blocks,
             operating_hours_start=operating_hours_start,
             operating_hours_end=operating_hours_end,
             number_of_time_slots=operating_hours_duration,
@@ -494,6 +508,28 @@ class ReservationService:
                 if start_idx < end_idx:
                     for idx in range(start_idx, end_idx):
                         reserved_date_map[room_id][idx] = RoomState.UNAVAILABLE.value
+
+    def _transform_date_map_for_room_reservation_blocks(
+        self,
+        blocks: list[RoomReservationBlockOccurrence],
+        reserved_date_map: dict[str, list[int]],
+        operating_hours_start: datetime,
+        operating_hours_duration: int,
+    ) -> None:
+        """Mark database-backed policy blocks unavailable in place."""
+        for block in blocks:
+            if block.room_id not in reserved_date_map:
+                continue
+            start_idx = max(
+                self._idx_calculation(block.start, operating_hours_start), 0
+            )
+            end_idx = min(
+                self._idx_calculation(block.end, operating_hours_start),
+                operating_hours_duration,
+            )
+            if start_idx < end_idx:
+                for idx in range(start_idx, end_idx):
+                    reserved_date_map[block.room_id][idx] = RoomState.UNAVAILABLE.value
 
     def _query_confirmed_reservations_by_date_and_room(
         self, date: datetime, room_id: str
@@ -881,8 +917,18 @@ class ReservationService:
             seat_entities = [self._session.get(SeatEntity, seat_availability[0].id)]
             bounds = seat_availability[0].availability[0]
         else:
+            room_id = request.room.id
+            self._room_reservation_block_svc.lock_reservable_room(room_id)
+            block_conflicts = self._room_reservation_block_svc.find_overlaps(
+                room_id, bounds
+            )
+            if block_conflicts:
+                block = block_conflicts[0]
+                raise RoomReservationBlockConflictException(
+                    f'{room_id} is blocked for "{block.label}".'
+                )
             # Prevent double booking a room
-            conflicts = self._fetch_conflicting_room_reservations(request)
+            conflicts = self._fetch_conflicting_room_reservations(room_id, bounds)
             if len(conflicts) > 0:
                 raise ReservationException("The requested room is no longer available.")
 
@@ -1171,15 +1217,15 @@ class ReservationService:
         return available_seats
 
     def _fetch_conflicting_room_reservations(
-        self, request: ReservationRequest
+        self, room_id: str, bounds: TimeRange
     ) -> list[ReservationEntity]:
-        """Given a ReservationRequest, return a list of conflicting reservation entities, if any."""
+        """Return active room reservations overlapping the final bounded request."""
         return (
             self._session.query(ReservationEntity)
             .filter(
                 and_(
-                    ReservationEntity.start < request.end,
-                    ReservationEntity.end > request.start,
+                    ReservationEntity.start < bounds.end,
+                    ReservationEntity.end > bounds.start,
                 ),
                 ReservationEntity.state.in_(
                     (
@@ -1188,7 +1234,7 @@ class ReservationService:
                         ReservationState.CHECKED_IN,
                     )
                 ),
-                ReservationEntity.room_id == request.room.id,
+                ReservationEntity.room_id == room_id,
             )
             .all()
         )

@@ -6,6 +6,9 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.gzip import GZipMiddleware
 
 from backend.services.coworking.reservation import ReservationException
+from backend.services.coworking.exceptions import (
+    RoomReservationBlockConflictException,
+)
 
 from .api.events import events
 
@@ -22,7 +25,13 @@ from .api import (
     signage,
     websocket,
 )
-from .api.coworking import status, reservation, ambassador, operating_hours
+from .api.coworking import (
+    status,
+    reservation,
+    ambassador,
+    operating_hours,
+    room_reservation_block,
+)
 from .api.academics import section_member, term, course, section, my_courses, hiring
 from .api.office_hours import (
     office_hours as office_hours_event,
@@ -82,6 +91,7 @@ feature_apis = [
     status,
     reservation,
     operating_hours,
+    room_reservation_block,
     events,
     user,
     organizations,
@@ -138,6 +148,13 @@ def resource_not_found_exception_handler(
 @app.exception_handler(ReservationException)
 def reservation_exception_handler(request: Request, e: ReservationException):
     return JSONResponse(status_code=403, content={"message": str(e)})
+
+
+@app.exception_handler(RoomReservationBlockConflictException)
+def room_reservation_block_conflict_handler(
+    request: Request, e: RoomReservationBlockConflictException
+):
+    return JSONResponse(status_code=409, content={"message": str(e)})
 
 
 @app.exception_handler(CourseDataScrapingException)

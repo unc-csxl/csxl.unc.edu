@@ -1,10 +1,11 @@
 from enum import Enum
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 from ...models.user import User, UserIdentity
 from ..room import Room, RoomPartial
 from .seat import Seat, SeatIdentity
 from .time_range import TimeRange
+from .room_reservation_block import RoomReservationBlockOccurrence
 
 __authors__ = ["Kris Jordan, Yuvraj Jain"]
 __copyright__ = "Copyright 2024"
@@ -48,6 +49,9 @@ class ReservationMapDetails(BaseModel):
     reserved_date_map: dict[str, list[int]] = {}
     capacity_map: dict[str, int] = {}
     room_type_map: dict[str, str] = {}
+    room_reservation_blocks: list[RoomReservationBlockOccurrence] = Field(
+        default_factory=list
+    )
     operating_hours_start: datetime | None = None
     operating_hours_end: datetime | None = None
     number_of_time_slots: int | None = None

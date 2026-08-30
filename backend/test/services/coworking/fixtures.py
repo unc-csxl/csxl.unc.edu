@@ -13,6 +13,7 @@ from ....services.coworking import (
     ReservationService,
     PolicyService,
     StatusService,
+    RoomReservationBlockService,
 )
 
 __authors__ = [
@@ -57,6 +58,11 @@ def policy_svc():
 
 
 @pytest.fixture()
+def room_reservation_block_svc(session: Session, permission_svc: PermissionService):
+    return RoomReservationBlockService(session, permission_svc)
+
+
+@pytest.fixture()
 def reservation_svc(
     session: Session,
     policy_svc: PolicyService,
@@ -66,7 +72,12 @@ def reservation_svc(
 ):
     """ReservationService fixture."""
     return ReservationService(
-        session, permission_svc, policy_svc, operating_hours_svc, seat_svc
+        session,
+        permission_svc,
+        policy_svc,
+        operating_hours_svc,
+        seat_svc,
+        RoomReservationBlockService(session, permission_svc),
     )
 
 
