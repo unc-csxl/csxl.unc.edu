@@ -2,7 +2,10 @@
   <mat-pane>
     <mat-card-header class="w-full! flex-col!">
       <div class="flex flex-row items-center gap-3">
-        <img mat-card-avatar class="mb-0!" src="{{ organization.logo }}" />
+        <img
+          mat-card-avatar
+          class="mb-0!"
+          [src]="normalizedLogoUrl(organization.logo)" />
         <mat-card-title>{{ organization.name }}</mat-card-title>
       </div>
       <div class="mt-1 mr-8 mb-3 ml-12 flex flex-row flex-wrap gap-3">

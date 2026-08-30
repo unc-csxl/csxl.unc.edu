@@ -23,4 +23,17 @@ export class OrganizationCard {
   @Input() profile?: Profile;
 
   constructor() {}
+
+  normalizedLogoUrl(logo: string): string {
+    if (!logo) return logo;
+    if (logo.includes('github.com') && logo.includes('/blob/')) {
+      return logo
+        .replace('https://github.com/', 'https://raw.githubusercontent.com/')
+        .replace('/blob/', '/');
+    }
+    if (logo.startsWith('http://')) {
+      return logo.replace('http://', 'https://');
+    }
+    return logo;
+  }
 }

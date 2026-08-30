@@ -5,7 +5,7 @@
     <div class="flex flex-row items-center">
       <img
         mat-card-image
-        src="{{ organization.logo }}"
+        [src]="normalizedLogoUrl(organization.logo)"
         class="mr-4 size-10 rounded-full!" />
       <mat-card-title
         class="m-0 line-clamp-1 overflow-hidden text-lg! font-medium!"
