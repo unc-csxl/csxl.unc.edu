@@ -9,8 +9,24 @@
 html,
 body {
   height: 100%;
+  min-height: 100%;
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+html {
+  min-height: -webkit-fill-available;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
+}
+
+app-root {
+  display: block;
+  min-height: 100%;
 }
 
 p {
