@@ -2,6 +2,7 @@
 
 from backend.models.coworking.availability import RoomState
 from backend.models.coworking.reservation import ReservationState
+from backend.models.coworking import RoomReservationBlockOccurrence
 from datetime import date, time as Time
 
 from .....services.coworking import ReservationService, PolicyService
@@ -88,6 +89,47 @@ def test_transform_date_map_for_unavailable_complex(
 
     reservation_svc._transform_date_map_for_unavailable(sample_date_map_2)
     assert expected_transformed_date_map_2 == sample_date_map_2
+
+
+def test_transform_date_map_for_room_reservation_blocks(
+    reservation_svc: ReservationService,
+):
+    reserved_date_map = {"SN141": [0] * 16}
+    blocks = [
+        RoomReservationBlockOccurrence(
+            id=1,
+            room_id="SN141",
+            label="COMP211 Check-off",
+            start=datetime(2026, 9, 2, 13, 30),
+            end=datetime(2026, 9, 2, 15, 30),
+        )
+    ]
+
+    reservation_svc._transform_date_map_for_room_reservation_blocks(
+        blocks,
+        reserved_date_map,
+        datetime(2026, 9, 2, 10),
+        16,
+    )
+
+    assert reserved_date_map["SN141"] == [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        3,
+        3,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+    ]
 
 
 def test_transform_date_map_for_office_hours(

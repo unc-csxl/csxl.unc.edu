@@ -43,11 +43,15 @@ _\*Note that we use "\*" as a wild card character to encompass all of the action
 
 ## Coworking
 
-| Action                           | Resource                                       | Permission                                                        |
-| -------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------- |
-| coworking.operating_hours.create | coworking/operating_hours                      | Add new operating hours to the XL                                 |
-| coworking.operating_hours.delete | coworking/operating_hours/{operating_hours.id} | Delete operating hours from the XL                                |
-| coworking.reservation.read       | user/{user.id}                                 | Read the reservations of a specific user                          |
-| coworking.reservation.manage     | user/{user.id}                                 | Manage (create/update/delete) the reservations of a specific user |
+| Action                                   | Resource                                       | Permission                                                        |
+| ---------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------------- |
+| coworking.operating_hours.create         | coworking/operating_hours                      | Add new operating hours to the XL                                 |
+| coworking.operating_hours.delete         | coworking/operating_hours/{operating_hours.id} | Delete operating hours from the XL                                |
+| coworking.reservation.read               | user/{user.id}                                 | Read the reservations of a specific user                          |
+| coworking.reservation.manage             | user/{user.id}                                 | Manage (create/update/delete) the reservations of a specific user |
+| coworking.room_reservation_blocks.read   | room/{room.id}                                 | View standing room reservation blocks                             |
+| coworking.room_reservation_blocks.create | room/{room.id}                                 | Create standing room reservation blocks                           |
+| coworking.room_reservation_blocks.update | room/{room.id}                                 | Update standing room reservation blocks                           |
+| coworking.room_reservation_blocks.delete | room/{room.id}                                 | Delete standing room reservation blocks                           |
 
 The administrative permissions of coworking are under development as this feature is being worked on by many groups in COMP590 this Fall. As these features land, more permissions will likely need to be added to this list.

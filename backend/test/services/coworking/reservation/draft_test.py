@@ -4,9 +4,16 @@ import pytest
 from unittest.mock import create_autospec
 
 from .....services import PermissionService
-from .....services.coworking import ReservationService
+from .....services.coworking import ReservationService, RoomReservationBlockService
+from .....services.coworking.exceptions import (
+    RoomReservationBlockConflictException,
+)
 from .....services.coworking.reservation import ReservationException
-from .....models.coworking import ReservationState, ReservationRequest
+from .....models.coworking import (
+    NewRoomReservationBlock,
+    ReservationState,
+    ReservationRequest,
+)
 
 from .....models.user import UserIdentity
 from .....models.coworking.seat import SeatIdentity
@@ -19,6 +26,7 @@ from ..fixtures import (
     seat_svc,
     policy_svc,
     operating_hours_svc,
+    room_reservation_block_svc,
 )
 from ..time import *
 
@@ -414,6 +422,39 @@ def test_draft_reservation_different_room_time_conflict(
         user_data.ambassador, conflict_draft
     )
     assert reservation.id is not None
+
+
+def test_draft_reservation_respects_standing_room_block(
+    reservation_svc: ReservationService,
+    room_reservation_block_svc: RoomReservationBlockService,
+):
+    """A direct draft request cannot bypass a database-backed policy block."""
+    start = reservation_data.reservation_6.start.replace(
+        minute=0, second=0, microsecond=0
+    )
+    end = start + timedelta(hours=1)
+    room_reservation_block_svc.create(
+        user_data.root,
+        NewRoomReservationBlock(
+            room_id=room_data.group_b.id,
+            label="COMP211 Check-off",
+            weekday=start.weekday(),
+            start_time=start.time(),
+            end_time=end.time(),
+            starts_on=start.date(),
+            ends_on=start.date(),
+        ),
+    )
+    blocked_draft = ReservationRequest(
+        seats=[],
+        room=room_data.group_b,
+        start=start,
+        end=end,
+        users=[user_data.ambassador],
+    )
+
+    with pytest.raises(RoomReservationBlockConflictException, match="COMP211"):
+        reservation_svc.draft_reservation(user_data.ambassador, blocked_draft)
 
 
 def test_draft_reservation_crosses_weekly_limit(
