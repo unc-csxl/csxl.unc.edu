@@ -38,7 +38,9 @@
 }
 
 .sidenav-container {
-  height: 100%;
+  min-height: 100%;
+  min-height: 100dvh;
+  min-height: -webkit-fill-available;
 }
 
 .sidenav {
