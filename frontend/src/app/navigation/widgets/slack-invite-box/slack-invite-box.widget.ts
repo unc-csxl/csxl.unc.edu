@@ -1,7 +1,7 @@
 /**
  * The Slack Invite Box widget allows CSXL members to join the
  * CSXL Slack as a dialog box. It requires that students fulfill
- * four requirements represented as checkboxes.
+ * the profile and community standards requirements.
  *
  * @author Rohan Kashyap, Kris Jordan, Ajay Gandecha
  * @copyright 2024
@@ -9,7 +9,8 @@
  */
 
 import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { CommunityAgreement } from 'src/app/shared/community-agreement/community-agreement.widget';
 
 @Component({
   selector: 'slack-invite-box',
@@ -25,7 +26,18 @@ export class SlackInviteBox {
     return this.realName && this.communityStandards;
   }
 
-  constructor(protected dialogRef: MatDialogRef<SlackInviteBox>) {}
+  constructor(
+    protected dialogRef: MatDialogRef<SlackInviteBox>,
+    protected dialog: MatDialog
+  ) {}
+
+  public openAgreementDialog(): void {
+    this.dialog.open(CommunityAgreement, {
+      width: '1000px',
+      maxHeight: '90vh',
+      autoFocus: 'dialog'
+    });
+  }
 
   public openSlackInvite() {
     window.open(

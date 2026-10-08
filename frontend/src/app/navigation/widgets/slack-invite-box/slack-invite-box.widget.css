@@ -6,3 +6,13 @@
 .mat-mdc-dialog-content {
   overflow-y: auto;
 }
+
+.agreement-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
