@@ -35,11 +35,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.15"
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v6
         with:
+          version: "0.13.1"
           enable-cache: true
 
       - name: Sync backend dependencies
@@ -125,11 +126,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.15"
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v6
         with:
+          version: "0.13.1"
           enable-cache: true
 
       - name: Sync backend dependencies
@@ -178,4 +180,7 @@ jobs:
       - name: Check runtime dependencies
         run: >-
           docker run --rm --entrypoint python csxl:ci
-          -c 'import anyio, cryptography, github, jwt, multipart, starlette; print("Runtime imports passed")'
+          -c 'import sys; assert sys.version_info[:2] == (3, 15);
+          import anyio, cryptography, github, greenlet, httptools, jwt, multipart,
+          psycopg2, pydantic_core, starlette, uvloop, watchfiles;
+          print("Python 3.15 runtime imports passed")'

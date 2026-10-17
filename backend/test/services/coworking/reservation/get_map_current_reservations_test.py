@@ -3,6 +3,10 @@
 from backend.models.coworking.availability import RoomState
 from backend.models.coworking.reservation import ReservationState
 from datetime import date, time as Time
+from sqlalchemy import delete
+from sqlalchemy.orm import Session
+
+from backend.entities.coworking import OperatingHoursEntity, ReservationEntity
 
 from .....services.coworking import ReservationService, PolicyService
 
@@ -197,14 +201,9 @@ def test_get_map_reserved_times_by_date(
     reservation_svc: ReservationService,
     time: dict[str, datetime],
     policy_svc: PolicyService,
+    session: Session,
 ):
-    """Test for getting a dictionary where keys are room ids and time slots array are values.
-
-    If this test fails, consider running the reset_demo script before running this test again.
-    This is hard function to test, and this test does not ensure 100% coverage due to the
-    multiple edge cases that arise out of it. I recommend setting a breakpoint and looking at
-    the reserved_date_map in the debugger.
-    """
+    """Map a user's reservation and prevent overlapping bookings in other rooms."""
     policy_svc.office_hours = MagicMock(
         return_value={
             "SN135": [],
@@ -217,24 +216,36 @@ def test_get_map_reserved_times_by_date(
         }
     )
     test_time = time[NOW] + timedelta(days=2)
+    # Keep this scenario within one day even when the test runs near midnight.
+    # The shared fixtures otherwise derive opening and reservation times from NOW.
+    day = test_time.replace(hour=0, minute=0, second=0, microsecond=0)
+    session.execute(delete(OperatingHoursEntity).where(OperatingHoursEntity.id != 2))
+    hours = session.get(OperatingHoursEntity, 2)
+    hours.start = day.replace(hour=9, minute=15)
+    hours.end = day.replace(hour=12, minute=15)
+    reservation = session.get(ReservationEntity, 6)
+    reservation.start = day.replace(hour=10)
+    reservation.end = day.replace(hour=11, minute=30)
+    session.flush()
+
     reservation_details = reservation_svc.get_map_reserved_times_by_date(
         test_time, user_data.user
     )
 
-    # This may change based on what time the test is ran due to office hours.
     expected_date_map = {
-        "SN135": [0, 3, 3, 3, 0],
-        "SN137": [0, 4, 4, 4, 0],
+        "SN135": [0, 4, 4, 4, 0],
+        "SN137": [0, 3, 3, 3, 0],
         "SN139": [0, 3, 3, 3, 0],
         "SN141": [0, 3, 3, 3, 0],
     }
 
-    assert reservation_details.reserved_date_map["SN135"] == [0, 4, 4, 4, 0]
-    assert reservation_details.reserved_date_map["SN139"] == [0, 3, 3, 3, 0]
+    assert reservation_details.reserved_date_map == expected_date_map
 
     reserved_date_map_root = reservation_svc.get_map_reserved_times_by_date(
         test_time, user_data.root
     )
+    assert reserved_date_map_root.reserved_date_map["SN135"] == [0, 1, 1, 1, 0]
+    assert reserved_date_map_root.reserved_date_map["SN139"] == [0, 0, 0, 0, 0]
 
 
 def test_get_map_reserved_times_by_date_outside_operating_hours(

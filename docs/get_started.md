@@ -50,7 +50,9 @@ Once the Dev Container begins, open a terminal and complete the following:
 
 ## Development Data
 
-The backend uses Python 3.11 and `backend/uv.lock` as its dependency source of truth.
+The backend uses Python 3.15, uv 0.13.1 or newer, and `backend/uv.lock` as its dependency source of truth.
+Rebuild an existing devcontainer after switching to this runtime. Outside the
+devcontainer, update uv and run `uv python install 3.15` before syncing dependencies.
 Run `uv sync --project backend --locked --group dev` to reproduce the development
 environment. The legacy `backend/requirements.txt` has been removed; if another
 tool requires that format, generate it with

@@ -46,22 +46,21 @@ RUN corepack enable \
     && corepack prepare pnpm@10.17.1 --activate
 
 # Install uv
-COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /uvx /usr/local/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.1 /uv /uvx /usr/local/bin/
 
 # Install Angular CLI Globally
 RUN npm install -g @angular/cli@21.2.27
 
-# Install Python 3.11
-RUN add-apt-repository ppa:deadsnakes/ppa \
-    && apt update \
-    && apt install --yes \
-        python3.11 \
-        libpq-dev \
-        python3.11-venv \
-        python3.11-dev \
-    && rm -rf /var/lib/apt/lists* \
-    && unlink /usr/bin/python3 \
-    && ln -s /usr/bin/python3.11 /usr/bin/python3
+# Install the project interpreter independently of Ubuntu's system Python.
+# A shared location lets both root and vscode use the same managed runtime.
+ENV UV_PYTHON_INSTALL_DIR=/opt/python \
+    UV_PYTHON_BIN_DIR=/usr/local/bin \
+    UV_PYTHON=3.15
+RUN apt-get update \
+    && apt-get install --yes libpq-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && uv python install 3.15 --default \
+    && python3 --version
 
 # Use a non-root user per https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user
 ARG USERNAME=vscode

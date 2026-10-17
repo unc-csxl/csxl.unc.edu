@@ -14,10 +14,9 @@ COPY ./frontend/*.json /workspace/frontend
 RUN NODE_OPTIONS=--max-old-space-size=1024 pnpm exec ng build --optimization --output-path ../static
 
 # Back-end Build Steps
-# Back-end Build Steps
-FROM python:3.11 AS production
+FROM python:3.15 AS production
 
-COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /uvx /usr/local/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.1 /uv /uvx /usr/local/bin/
 
 WORKDIR /workspace/backend
 
