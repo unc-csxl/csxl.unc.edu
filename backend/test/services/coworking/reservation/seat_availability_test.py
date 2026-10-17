@@ -1,35 +1,38 @@
 """ReservationService#seat_availability tests"""
 
-from .....services.coworking import ReservationService, PolicyService
 from .....models.coworking import (
     TimeRange,
 )
-
-# Imported fixtures provide dependencies injected for the tests as parameters.
-# Dependent fixtures (seat_svc) are required to be imported in the testing module.
-from ..fixtures import (
-    reservation_svc,
-    permission_svc,
-    seat_svc,
-    policy_svc,
-    operating_hours_svc,
+from .....services.coworking import (
+    OperatingHoursService,
+    PolicyService,
+    ReservationService,
 )
-from ..time import *
 
 # Import the setup_teardown fixture explicitly to load entities in database.
 # The order in which these fixtures run is dependent on their imported alias.
 # Since there are relationship dependencies between the entities, order matters.
 from ...core_data import setup_insert_data_fixture as insert_order_0
-from ..operating_hours_data import fake_data_fixture as insert_order_1
-from ...room_data import fake_data_fixture as insert_order_2
-from ..seat_data import fake_data_fixture as insert_order_3
-from .reservation_data import fake_data_fixture as insert_order_4
 
 # Import the fake model data in a namespace for test assertions
 from ...core_data import user_data
-from .. import operating_hours_data
-from .. import seat_data
+from ...room_data import fake_data_fixture as insert_order_2
+from .. import operating_hours_data, seat_data
+
+# Imported fixtures provide dependencies injected for the tests as parameters.
+# Dependent fixtures (seat_svc) are required to be imported in the testing module.
+from ..fixtures import (
+    operating_hours_svc,
+    permission_svc,
+    policy_svc,
+    reservation_svc,
+    seat_svc,
+)
+from ..operating_hours_data import fake_data_fixture as insert_order_1
+from ..seat_data import fake_data_fixture as insert_order_3
+from ..time import *
 from . import reservation_data
+from .reservation_data import fake_data_fixture as insert_order_4
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -64,6 +67,39 @@ def test_seat_availability_while_closed(reservation_svc: ReservationService):
     )
     available_seats = reservation_svc.seat_availability(seat_data.seats, closed)
     assert len(available_seats) == 0
+
+
+def test_shortened_hours_change_availability_without_changing_reservations(
+    reservation_svc: ReservationService, operating_hours_svc: OperatingHoursService
+):
+    """Editing the schedule does not silently cancel or resize an existing booking."""
+    original = reservation_svc.get_reservation(
+        user_data.ambassador, reservation_data.reservation_4.id
+    )
+    after_reservation = TimeRange(
+        start=original.end, end=operating_hours_data.today.end
+    )
+    assert reservation_svc.seat_availability(
+        seat_data.reservable_seats, after_reservation
+    )
+
+    assert operating_hours_data.today.id is not None
+    operating_hours_svc.update(
+        user_data.ambassador,
+        operating_hours_data.today.id,
+        TimeRange(
+            start=operating_hours_data.today.start,
+            end=original.start + FIVE_MINUTES,
+        ),
+    )
+
+    assert (
+        reservation_svc.seat_availability(seat_data.reservable_seats, after_reservation)
+        == []
+    )
+    assert (
+        reservation_svc.get_reservation(user_data.ambassador, original.id) == original
+    )
 
 
 def test_seat_availability_truncate_start(

@@ -1,9 +1,10 @@
 """Time range model for coworking module."""
 
 from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
-from pydantic import BaseModel, field_validator, ValidationInfo
 from typing import Self
+from zoneinfo import ZoneInfo
+
+from pydantic import BaseModel, ValidationInfo, field_validator
 
 __authors__ = ["Kris Jordan, Yuvraj Jain"]
 __copyright__ = "Copyright 2023"
@@ -16,20 +17,18 @@ class TimeRange(BaseModel):
     start: datetime
     end: datetime
 
-    @field_validator("start", "end", mode="before")
+    @field_validator("start", "end")
     @classmethod
     def remove_timezone(cls, value: datetime):
-        if type(value) == str:
-            dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
-            dt = dt.astimezone(ZoneInfo("America/New_York"))
-            dt = dt.replace(tzinfo=None)
-            return dt
+        """Store Eastern wall time; naive inputs already represent facility time."""
+        if value.tzinfo is not None:
+            return value.astimezone(ZoneInfo("America/New_York")).replace(tzinfo=None)
         return value
 
     @field_validator("end")
     @classmethod
     def check_end_greater_than_start(cls, v: datetime, info: ValidationInfo):
-        if v <= info.data["start"]:
+        if "start" in info.data and v <= info.data["start"]:
             raise ValueError("end must be greater than start")
         return v
 

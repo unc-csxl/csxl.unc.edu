@@ -2,10 +2,9 @@
 
 import pytest
 from sqlalchemy.orm import Session
+
 from ...entities.permission_entity import PermissionEntity
-
 from ...models.permission import Permission
-
 from . import role_data
 from .reset_table_id_seq import reset_table_id_seq
 
@@ -22,6 +21,21 @@ permissions = [
     root_role_permission,
     ambassador_permission,
     ambassador_permission_coworking_reservation,
+    Permission(
+        id=4,
+        action="coworking.operating_hours.create",
+        resource="coworking/operating_hours",
+    ),
+    Permission(
+        id=5,
+        action="coworking.operating_hours.update",
+        resource="coworking/operating_hours/*",
+    ),
+    Permission(
+        id=6,
+        action="coworking.operating_hours.delete",
+        resource="coworking/operating_hours/*",
+    ),
 ]
 
 

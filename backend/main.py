@@ -1,43 +1,45 @@
 """Entrypoint of backend API exposing the FastAPI `app` to be served by an application server such as uvicorn."""
 
 from pathlib import Path
+
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import JSONResponse
 
 from backend.services.coworking.reservation import ReservationException
 
-from .api.events import events
-
 from .api import (
-    health,
-    organizations,
-    static_files,
-    profile,
-    authentication,
-    user,
-    room,
     application,
     article,
+    authentication,
+    health,
+    organizations,
+    profile,
+    room,
     signage,
+    static_files,
+    user,
     websocket,
 )
-from .api.coworking import status, reservation, ambassador, operating_hours
-from .api.academics import section_member, term, course, section, my_courses, hiring
+from .api.academics import course, hiring, my_courses, section, section_member, term
+from .api.admin import facts as admin_facts
+from .api.admin import roles as admin_roles
+from .api.admin import users as admin_users
+from .api.coworking import ambassador, operating_hours, reservation, status
+from .api.events import events
+from .api.events import exception_handlers as event_exception_handlers
 from .api.office_hours import (
     office_hours as office_hours_event,
+)
+from .api.office_hours import (
     ticket as office_hours_ticket,
 )
-from .api.admin import users as admin_users
-from .api.admin import roles as admin_roles
-from .api.admin import facts as admin_facts
-
 from .services.exceptions import (
-    RecurringOfficeHourEventException,
-    UserPermissionException,
-    ResourceNotFoundException,
-    CoursePermissionException,
     CourseDataScrapingException,
+    CoursePermissionException,
+    RecurringOfficeHourEventException,
+    ResourceNotFoundException,
+    UserPermissionException,
 )
 
 __authors__ = ["Kris Jordan"]
@@ -113,9 +115,6 @@ for feature_api in feature_apis:
 # Static file mount used for serving Angular front-end in production, as well as static assets
 app.mount("/", static_files.StaticFileMiddleware(directory=Path("./static")))
 
-# Register WebSocket middleware
-app.mount("/", websocket.WebSocketMiddleware)
-
 
 # Add application-wide exception handling middleware for commonly encountered API Exceptions
 @app.exception_handler(UserPermissionException)
@@ -153,13 +152,11 @@ def recurring_office_hour_event_exception(
 
 
 # Add feature-specific exception handling middleware
-from .api import events
-
-feature_exception_handlers = [events.exception_handlers]
+feature_exception_handlers = [
+    event_exception_handlers,
+    operating_hours.exception_handlers,
+]
 
 for feature_exception_handler in feature_exception_handlers:
     for exception, handler in feature_exception_handler:
-
-        @app.exception_handler(exception)
-        def _handler_wrapper(request: Request, e: Exception):
-            return handler(request, e)
+        app.add_exception_handler(exception, handler)

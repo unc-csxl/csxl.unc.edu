@@ -1,24 +1,24 @@
 """Tests for the UserService class."""
 
+from unittest.mock import Mock
+
 import pytest
 
-# Tested Dependencies
-from ...models.user import User, NewUser
 from ...models.pagination import PaginationParams
-from ...services import UserService, PermissionService
+
+# Tested Dependencies
+from ...models.user import NewUser, User
+from ...services import UserService
 from ...services.exceptions import ResourceNotFoundException
+from . import user_data
 
 # Data Setup and Injected Service Fixtures
 from .core_data import setup_insert_data_fixture
-from .fixtures import user_svc, user_svc_integration, permission_svc_mock
+from .fixtures import permission_svc_mock, user_svc, user_svc_integration
+from .permission_data import permissions
 
 # Data Models for Fake Data Inserted in Setup
-from .user_data import root, ambassador, user
-from . import user_data
-from .permission_data import (
-    ambassador_permission,
-    ambassador_permission_coworking_reservation,
-)
+from .user_data import ambassador, root, user
 
 __authors__ = ["Kris Jordan"]
 __copyright__ = "Copyright 2023"
@@ -33,10 +33,7 @@ def test_get(user_svc_integration: UserService):
     assert user.pid == ambassador.pid
     assert user.onyen == ambassador.onyen
     assert user.email == ambassador.email
-    assert user.permissions == [
-        ambassador_permission,
-        ambassador_permission_coworking_reservation,
-    ]
+    assert user.permissions == permissions[1:]
 
 
 def test_get_nonexistent(user_svc_integration: UserService):
@@ -179,9 +176,7 @@ def test_list_filter(user_svc: UserService):
     assert users.items[0].id == ambassador.id
 
 
-def test_list_enforces_permission(
-    user_svc: UserService, permission_svc_mock: PermissionService
-):
+def test_list_enforces_permission(user_svc: UserService, permission_svc_mock: Mock):
     """Test that user.list on user/ is enforced by the list method"""
     pagination_params = PaginationParams(page=0, page_size=3, order_by="id", filter="")
     user_svc.list(ambassador, pagination_params)
@@ -205,7 +200,7 @@ def test_create_user_as_root(user_svc: UserService):
 
 
 def test_create_user_enforces_permission(
-    user_svc: UserService, permission_svc_mock: PermissionService
+    user_svc: UserService, permission_svc_mock: Mock
 ):
     """Test that user.create on user/ is enforced by the create method"""
     new_user = NewUser(pid=123456789, onyen="new_user", email="new_user@unc.edu")
@@ -213,9 +208,7 @@ def test_create_user_enforces_permission(
     permission_svc_mock.enforce.assert_called_with(root, "user.create", "user/")
 
 
-def test_update_user_as_user(
-    user_svc: UserService, permission_svc_mock: PermissionService
-):
+def test_update_user_as_user(user_svc: UserService, permission_svc_mock: Mock):
     """Test that a user can update their own information."""
     permission_svc_mock.get_permissions.return_value = []
     user = user_svc.get(ambassador.pid)
@@ -229,9 +222,7 @@ def test_update_user_as_user(
     assert updated_user.last_name == "Ambassy"
 
 
-def test_update_user_as_root(
-    user_svc: UserService, permission_svc_mock: PermissionService
-):
+def test_update_user_as_root(user_svc: UserService, permission_svc_mock: Mock):
     """Test that a user can be updated by a root user as an administrator."""
     permission_svc_mock.get_permissions.return_value = []
     user = user_svc.get(ambassador.pid)
@@ -246,7 +237,7 @@ def test_update_user_as_root(
 
 
 def test_update_user_enforces_permission(
-    user_svc: UserService, permission_svc_mock: PermissionService
+    user_svc: UserService, permission_svc_mock: Mock
 ):
     """Test that user.update on user/ is enforced by the update method"""
     permission_svc_mock.get_permissions.return_value = []

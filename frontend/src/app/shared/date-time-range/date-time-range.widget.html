@@ -1,0 +1,16 @@
+<div class="flex flex-col gap-3 sm:flex-row">
+  <mat-form-field appearance="outline" color="accent" class="w-full">
+    <mat-label>{{ startLabel }}</mat-label>
+    <input
+      matInput
+      type="datetime-local"
+      [formControl]="startControl"
+      required />
+    <mat-error>Enter a start date and time.</mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline" color="accent" class="w-full">
+    <mat-label>{{ endLabel }}</mat-label>
+    <input matInput type="datetime-local" [formControl]="endControl" required />
+    <mat-error>Enter an end date and time.</mat-error>
+  </mat-form-field>
+</div>

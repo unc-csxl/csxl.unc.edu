@@ -36,3 +36,12 @@
   flex-grow: 1;
   height: 64px;
 }
+
+.local-tab-card {
+  width: calc(100% - 32px) !important;
+  overflow: hidden;
+}
+
+.local-tab-card .mat-mdc-tab-link {
+  height: 64px;
+}

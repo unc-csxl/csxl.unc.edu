@@ -1,0 +1,93 @@
+<div class="mr-8" [attr.aria-busy]="loading()">
+  @if (loading()) {
+    <mat-progress-bar
+      mode="indeterminate"
+      aria-label="Loading operating hours" />
+  }
+  @if (error()) {
+    <mat-card appearance="outlined" class="max-w-full! border-transparent!">
+      <mat-card-content>
+        <p role="alert">{{ error() }}</p>
+        <button mat-stroked-button (click)="retry()" [disabled]="loading()">
+          Retry
+        </button>
+      </mat-card-content>
+    </mat-card>
+  }
+  @if (loadedEnd()) {
+    @if (activeHours().length) {
+      <mat-card appearance="outlined" class="max-w-full! border-transparent!">
+        <mat-card-header class="mb-4!"
+          ><mat-card-title>Active Hours</mat-card-title></mat-card-header
+        >
+        <mat-card-content>
+          <p class="mb-3">Open now · All times are Eastern Time.</p>
+          <operating-hours-list
+            [hours]="activeHours()"
+            (editHours)="edit($event)" />
+        </mat-card-content>
+      </mat-card>
+    } @else {
+      <p class="my-4 px-4" role="status">Coworking is currently closed.</p>
+    }
+  }
+  <mat-card appearance="outlined" class="max-w-full! border-transparent!">
+    <mat-card-header class="mb-4! flex-wrap gap-3">
+      <mat-card-title>Future Hours</mat-card-title>
+      @if (canCreate()) {
+        <button
+          #addHoursButton
+          mat-flat-button
+          class="ml-auto"
+          [disabled]="!loadedEnd() || loading()"
+          (click)="edit()">
+          <mat-icon>add</mat-icon>Add Hours
+        </button>
+      }
+    </mat-card-header>
+    <mat-card-content>
+      <p class="mb-3">All times are Eastern Time (America/New_York).</p>
+      @if (loadedEnd(); as end) {
+        <p class="mb-3">
+          Showing upcoming hours through {{ formatDate(end) }}.
+        </p>
+        @if (futureHours().length) {
+          <operating-hours-list
+            [hours]="futureHours()"
+            [allowDelete]="true"
+            [deletingId]="deletingId()"
+            (editHours)="edit($event)"
+            (deleteHours)="delete($event)" />
+        } @else {
+          <p>No upcoming hours in this date range.</p>
+        }
+        <button
+          mat-stroked-button
+          class="mt-4"
+          (click)="loadMore()"
+          [disabled]="loading()">
+          Load more
+        </button>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<ng-template #confirmDelete let-hours>
+  <h2 mat-dialog-title>Delete Operating Hours?</h2>
+  <mat-dialog-content>
+    <p>
+      Delete {{ formatDate(hours.start) }}, {{ formatTime(hours.start) }} to
+      @if (formatDate(hours.start) !== formatDate(hours.end)) {
+        {{ formatDate(hours.end) }},
+      }
+      {{ formatTime(hours.end) }} Eastern Time?
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button mat-dialog-close data-cancel>Cancel</button>
+    <button mat-flat-button class="tertiary-button" [mat-dialog-close]="true">
+      Delete
+    </button>
+  </mat-dialog-actions>
+</ng-template>

@@ -7,7 +7,8 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PermissionService } from 'src/app/permission.service';
 
 @Component({
   selector: 'app-coworking-ambassador-home',
@@ -28,10 +29,23 @@ export class AmbassadorPageComponent implements OnInit {
     }
   ];
 
-  constructor(private router: Router) {}
+  public hoursTab = { label: 'Operating Hours', icon: 'schedule' };
+  public ambassadorPermission$;
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    permission: PermissionService
+  ) {
+    this.ambassadorPermission$ = permission.check(
+      'coworking.reservation.*',
+      '*'
+    );
+  }
 
   ngOnInit(): void {
-    // Find the default link and navigate to it
-    this.router.navigate(['/coworking/ambassador/xl']);
+    if (!this.route.firstChild) {
+      this.router.navigate(['/coworking/ambassador/xl'], { replaceUrl: true });
+    }
   }
 }

@@ -1,0 +1,59 @@
+<div class="table-responsive">
+  <table mat-table [dataSource]="hours">
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>Date</th>
+      <td mat-cell *matCellDef="let hours">{{ formatDate(hours.start) }}</td>
+    </ng-container>
+    <ng-container matColumnDef="start">
+      <th mat-header-cell *matHeaderCellDef>Start</th>
+      <td mat-cell *matCellDef="let hours">{{ formatTime(hours.start) }}</td>
+    </ng-container>
+    <ng-container matColumnDef="end">
+      <th mat-header-cell *matHeaderCellDef>End</th>
+      <td mat-cell *matCellDef="let hours">
+        @if (formatDate(hours.start) !== formatDate(hours.end)) {
+          {{ formatDate(hours.end) + ', ' }}
+        }
+        {{ formatTime(hours.end) }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let hours">
+        <div class="flex gap-2">
+          @if (canChange('update', hours)) {
+            <button
+              mat-stroked-button
+              [disabled]="deletingId === hours.id"
+              (click)="editHours.emit(hours)"
+              [attr.aria-label]="
+                'Edit hours for ' +
+                formatDate(hours.start) +
+                ' at ' +
+                formatTime(hours.start)
+              ">
+              Edit
+            </button>
+          }
+          @if (allowDelete && canChange('delete', hours)) {
+            <button
+              mat-button
+              class="tertiary-button"
+              [disabled]="deletingId !== null"
+              (click)="deleteHours.emit(hours)"
+              [attr.aria-label]="
+                'Delete hours for ' +
+                formatDate(hours.start) +
+                ' at ' +
+                formatTime(hours.start)
+              ">
+              {{ deletingId === hours.id ? 'Deleting…' : 'Delete' }}
+            </button>
+          }
+        </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns"></tr>
+  </table>
+</div>

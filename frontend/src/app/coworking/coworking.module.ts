@@ -33,6 +33,11 @@ import { AmbassadorRoomComponent } from './ambassador-home/ambassador-room/ambas
 import { ReservationFactsWidget } from './widgets/reservation-facts/reservation-facts.widget';
 import { DialogModule } from '@angular/cdk/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { AmbassadorHoursComponent } from './ambassador-home/ambassador-hours/ambassador-hours.component';
+import { OperatingHoursListWidget } from './widgets/operating-hours-list/operating-hours-list.widget';
+import { OperatingHoursEditorDialog } from './widgets/operating-hours-editor/operating-hours-editor.dialog';
 
 @NgModule({
   declarations: [
@@ -43,6 +48,9 @@ import { MatDialogModule } from '@angular/material/dialog';
     AmbassadorPageComponent,
     AmbassadorXLComponent,
     AmbassadorRoomComponent,
+    AmbassadorHoursComponent,
+    OperatingHoursListWidget,
+    OperatingHoursEditorDialog,
     CoworkingDropInCard,
     CoworkingReservationCard,
     ConfirmReservationComponent,
@@ -77,7 +85,10 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatFormFieldModule,
     MatTooltipModule,
     MatTabsModule,
-    MatDialogModule
+    MatDialogModule,
+    ReactiveFormsModule,
+    MatProgressBarModule,
+    MatSnackBarModule
   ]
 })
 export class CoworkingModule {}

@@ -16,9 +16,9 @@ export class PermissionService {
   }
 
   checkSignal(action: string, resource: string): boolean {
+    const profile = this.profile();
     return (
-      this.profile &&
-      this.hasPermission(this.profile()!.permissions, action, resource)
+      !!profile && this.hasPermission(profile.permissions, action, resource)
     );
   }
 

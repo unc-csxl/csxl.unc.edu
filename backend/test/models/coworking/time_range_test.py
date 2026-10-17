@@ -1,7 +1,10 @@
 """Unit tests for the TimeRange utility class."""
 
-import pytest, json
+import json
+
+import pytest
 from pydantic import ValidationError
+
 from ....models.coworking import TimeRange
 from ...services.coworking.time import *
 
@@ -22,6 +25,30 @@ def test_initialization_from_json_utc():
     time_range = TimeRange(**data)
     assert time_range.start.tzinfo is None
     assert time_range.start.hour == 18
+
+
+@pytest.mark.parametrize(
+    "start,end,hour",
+    [
+        ("2030-01-01T12:00:00", "2030-01-01T13:00:00", 12),
+        ("2030-01-01T12:00:00Z", "2030-01-01T13:00:00Z", 7),
+        ("2030-07-01T12:00:00Z", "2030-07-01T13:00:00Z", 8),
+    ],
+)
+def test_timezone_normalization(start: str, end: str, hour: int):
+    result = TimeRange.model_validate({"start": start, "end": end})
+    assert result.start.hour == hour
+    assert result.start.tzinfo is None
+    if start.endswith("Z"):
+        aware = TimeRange(
+            start=datetime.fromisoformat(start), end=datetime.fromisoformat(end)
+        )
+        assert aware == result
+
+
+def test_invalid_start_is_validation_error():
+    with pytest.raises(ValidationError):
+        TimeRange.model_validate({"start": "invalid", "end": "2030-01-01T13:00:00"})
 
 
 def test_validation_failure(time: dict[str, datetime]):

@@ -1,1 +1,7 @@
-<tab-container [links]="links" />
+<tab-container
+  [links]="links"
+  [localTab]="(ambassadorPermission$ | async) ? hoursTab : null"
+  [localContent]="hoursContent" />
+<ng-template #hoursContent>
+  <app-ambassador-hours />
+</ng-template>

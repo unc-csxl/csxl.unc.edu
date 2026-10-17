@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>
+  {{ data.hours ? 'Edit Operating Hours' : 'Add Operating Hours' }}
+</h2>
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content>
+    <p class="mb-4!">All times are Eastern Time (America/New_York).</p>
+    <date-time-range
+      [startControl]="form.controls.start"
+      [endControl]="form.controls.end" />
+    @if (form.hasError('dateRangeInvalid')) {
+      <mat-error role="alert"
+        >The end time must be after the start time.</mat-error
+      >
+    } @else if (form.hasError('pastDate')) {
+      <mat-error role="alert"
+        >New operating hours must start today or later.</mat-error
+      >
+    } @else if (form.hasError('overlap')) {
+      <mat-error role="alert"
+        >These times conflict with other operating hours.</mat-error
+      >
+    }
+    @if (error()) {
+      <p role="alert">{{ error() }}</p>
+    }
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button type="button" mat-dialog-close>Cancel</button>
+    <button mat-flat-button type="submit" [disabled]="form.invalid || saving()">
+      {{ saving() ? 'Saving…' : 'Save' }}
+    </button>
+  </mat-dialog-actions>
+</form>

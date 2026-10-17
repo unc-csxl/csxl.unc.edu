@@ -7,6 +7,7 @@
  */
 
 import { Component, ElementRef, ViewChild } from '@angular/core';
+import { dateTimeRangeValidator } from 'src/app/shared/date-time-range/date-time-range.widget';
 import { courseSitePageGuard } from '../office-hours.guard';
 import { officeHoursResolver } from '../office-hours.resolver';
 import {
@@ -68,26 +69,6 @@ export class OfficeHoursEditorComponent {
 
   public updateRecurrencePattern: boolean = false;
 
-  /** Custom date range validator. */
-  dateRangeValidator: ValidatorFn = (
-    control: AbstractControl
-  ): ValidationErrors | null => {
-    const startDateControl = control.get('start_time');
-    const endDateControl = control.get('end_time');
-
-    if (
-      startDateControl &&
-      startDateControl.value &&
-      endDateControl &&
-      endDateControl.value &&
-      startDateControl.value >= endDateControl.value
-    ) {
-      return { dateRangeInvalid: true };
-    }
-
-    return null;
-  };
-
   /** Custom parameterized date range validator. */
   genericDateRangeValidator = (
     startDateLabel: string,
@@ -138,7 +119,7 @@ export class OfficeHoursEditorComponent {
     },
     {
       validators: [
-        this.genericDateRangeValidator('start_time', 'end_time'),
+        dateTimeRangeValidator('start_time', 'end_time'),
         this.genericDateRangeValidator('end_time', 'recur_end')
       ]
     }

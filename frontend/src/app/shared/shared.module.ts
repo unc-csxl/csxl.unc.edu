@@ -36,6 +36,7 @@ import { BannerCardComponent } from './banner-card/banner-card.component';
 import { GroupEventsPipe } from '../event/pipes/group-events.pipe';
 import { AdminFabComponent } from './admin-fab/admin-fab.component';
 import { TabContainerWidget } from './tab-container/tab-container.widget';
+import { DateTimeRangeWidget } from './date-time-range/date-time-range.widget';
 
 import { YouTubePlayer } from '@angular/youtube-player';
 import {
@@ -61,6 +62,7 @@ import { MatFilterChipDialog } from './mat/filter-chip/dialog/filter-chip-dialog
     BannerCardComponent,
     AdminFabComponent,
     TabContainerWidget,
+    DateTimeRangeWidget,
     CoworkingHoursCard,
     OperatingHoursCapitalizationPipe,
     MarkdownDirective,
@@ -103,6 +105,7 @@ import { MatFilterChipDialog } from './mat/filter-chip/dialog/filter-chip-dialog
     BannerCardComponent,
     AdminFabComponent,
     TabContainerWidget,
+    DateTimeRangeWidget,
     CoworkingHoursCard,
     MarkdownDirective,
     EventRegistrationCardWidget,
