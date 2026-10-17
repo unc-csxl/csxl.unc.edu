@@ -3,7 +3,7 @@ name = "csxl-backend"
 version = "0.1.0"
 requires-python = "~=3.11.0"
 dependencies = [
-    "alembic>=1.13.1,<1.14.0",
+    "alembic>=1.20.0,<1.21.0",
     "bs4>=0.0.2",
     "fastapi[all]>=0.115.0,<1",
     "uvicorn>=0.30,<1",
