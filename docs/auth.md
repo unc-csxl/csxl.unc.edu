@@ -21,6 +21,52 @@ Authentication in `csxl.unc.edu` is integrated with UNC's Single Sign-on (SSO) S
 
 Authentication is verifying *who* the "subject" accessing a system is. The term "subject" is chosen intentionally in the security lexicon. A subject may be a person, but alternatively an automated program accessing a system on behalf of a person, group, or organization. The CSXL application is, for now, foremost a user-facing application that serves the people of the computer science department at UNC. Thus, a "subject" is a person and user of the CSXL application for our concerns.
 
+### Delegated authentication and deployment configuration
+
+XL supports delegated login for student development and approved services. The `origin`
+query parameter is a callback in `host[:port]/path` form, without a scheme. Defaults allow
+any valid `.unc.edu` subdomain over HTTPS, including nested subdomains, and `/auth` or
+`/api/auth` on `localhost`, `127.0.0.1`, or `[::1]` over HTTP on any valid port. Existing
+delegated clients can continue using token-only verification. UNC callbacks must have
+valid DNS labels and end at the `.unc.edu` domain boundary; `unc.edu.evil.example` and
+`evilunc.edu` do not qualify. The bare `unc.edu` domain is not a subdomain. Loopback
+exceptions match the hostname exactly, never a prefix such as `localhost.example.com`.
+
+On the production authentication server, `AUTH_ALLOWED_ORIGINS` adds comma-separated,
+exact callback destinations outside the default policies. For example:
+
+```dotenv
+AUTH_ALLOWED_ORIGINS=approved-stage.example.edu/auth
+```
+
+UNC services and student development instances hosted under `.unc.edu` need no individual
+entries. Add approved callbacks on other hosted domains explicitly. Set
+`AUTH_ALLOW_UNC_SUBDOMAINS=false` to require exact entries for UNC callbacks and
+`AUTH_ALLOW_LOOPBACK=false` to disable automatic loopback callbacks. Setting both flags
+to `false` and an empty `AUTH_ALLOWED_ORIGINS` disables all delegated redirects. The UNC
+domain policy trusts every valid subdomain as a destination for delegated handoffs.
+Callback routes must not forward their credentials to another destination.
+
+An approved redirect carries a **five-minute handoff JWT**, not a production XL API
+session. The receiving service calls `GET https://csxl.unc.edu/verify?token=...`, reads
+`uid` and `pid`, and issues its own local session as before. Optionally pass `origin`
+to require a match with the callback signed into the handoff. The verification service
+checks signature, expiry, audience, and whether the signed callback remains allowed.
+The handoff cannot authenticate XL API requests. Clients that previously saved this
+token for later verification or used it directly against XL APIs must migrate to the
+immediate verification and local-session flow. Normal XL sessions remain unchanged.
+
+Production still requires the UNC SSO proxy to authenticate `/auth` requests, remove
+caller-provided `uid`/`pid` headers, and supply the verified identity headers. The backend
+port must not be reachable around that proxy. `HOST` is application configuration, not
+proof that a request passed through SSO. Keep `MODE=production` on production and never
+enable development authentication on a public deployment. Both the development query
+flag and `/auth/as/{uid}/{pid}` are rejected unless `MODE=development`.
+
+Thanks to [Santosh Kumar Puppala](https://github.com/Santoshkumarpuppala) for responsibly
+reporting the authentication vulnerabilities addressed by these protections and the
+bootstrap-page regression tests in `backend/test/authentication_test.py`.
+
 ## Authorization
 
 Authorization is verifying a subject/user *has permission* to carry out an *action* on a *resource* within the system. For example, the leader of a workshop may have permission to edit a workshop's details, whereas a registered participant of a workshop would not. Additionally, a site administrator may every permission possible, whereas a newly registered user does not.

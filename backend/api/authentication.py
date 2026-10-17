@@ -4,7 +4,7 @@ This module provides a `registered_user` dependency injection function for other
 to use to both ensure a user is authenticated and resolve to the logged in User's model.
 Further, this module provides the routes and logic for backend authentication.
 
-The router is mounted at `/auth` and provides the following endpoints:
+The router provides the following authentication endpoints:
 
     /auth
         Redirects to the authentication server to authenticate the user.
@@ -13,8 +13,8 @@ The router is mounted at `/auth` and provides the following endpoints:
         Redirects to the authentication server to authenticate the user as
         another user. This route is only available in development mode.
 
-    /auth/verify
-        Verifies the validity of a JWT token and returns the decoded token. This is
+    /verify
+        Verifies a delegated handoff JWT and returns the decoded token. This is
         the end-point a development/staging server requests of the production server
         to verify the legitimacy of delegated authentication.
 
@@ -39,14 +39,16 @@ In development, the proxy is not present. Instead, there are two options for aut
 
 1. If an unauthenticated user visits /auth in development, or staging, they are redirected
    to the production `csxl.unc.edu/auth` route with an additional query parameter `origin`.
-    A. The production server authentication works as usual, but if the `origin` parameter is
-       detected alongside the SSO headers, the user will be redirected back to the `origin`
-       server with a JWT `token` query parameter. This token is signed by the production server.
+    A. The production server authentication works as usual, but if an approved `origin`
+       is supplied alongside the SSO headers, the user is redirected there with a five-minute
+       handoff JWT. It is signed by production but cannot authenticate production API calls.
     B. Back on the development/staging server, we need to verify that the token given to the route
        was actually signed by the production server. If we did not do this, a malicious user could
        simply generate a token and pass it to the development server to gain access. Thus, an HTTP
-       request from the development/stage server is made to the production server's `/auth/verify` route
-       to verify the token's validity. If the token is valid, the development/staging server then
+       request from the development/stage server is made to the production server's `/verify` route
+       to verify the token's validity. Existing clients may send just `token`; clients may
+       also send `origin` to check that it matches the signed callback. If the token is valid,
+       the development/staging server then
        issues a new `token` to the client that is signed by the development/staging server.
        This token is then used for all subsequent requests.
 2. If an unauthenticated user visits /auth/as/{uid}/{pid} in development, they are authenticated
@@ -58,11 +60,15 @@ but does not require that the user be registered in the database. This is only r
 for routes used in the process of registering a user.
 """
 
+import json
+import os
+import re
+import secrets
 import jwt
 import requests
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+from urllib.parse import urlencode, urlsplit
 from fastapi import APIRouter, Header, HTTPException, Request, Response, Depends
-from fastapi.exceptions import HTTPException
 from fastapi.security import HTTPBearer
 from fastapi.security.http import HTTPAuthorizationCredentials
 from fastapi.responses import RedirectResponse
@@ -81,6 +87,7 @@ HOST = getenv("HOST")
 AUTH_SERVER_HOST = "csxl.unc.edu"
 _JWT_SECRET = getenv("JWT_SECRET")
 _JST_ALGORITHM = "HS256"
+_DELEGATION_AUDIENCE = "csxl-delegated-auth"
 
 
 def registered_user(
@@ -111,13 +118,13 @@ def authenticated_pid(
                 token.credentials, _JWT_SECRET, algorithms=[_JST_ALGORITHM]
             )
             return int(auth_info["pid"]), auth_info["uid"]
-        except jwt.exceptions.InvalidSignatureError:
+        except jwt.InvalidTokenError:
             ...
     raise HTTPException(status_code=401, detail="Unauthorized")
 
 
 @api.get("/verify", include_in_schema=False)
-def auth_verify(token: str, continue_to: str = "/"):
+def auth_verify(token: str, origin: str | None = None):
     """Verify the legitimacy of a token for delegated authentication purposes.
 
     This endpoint is used to facilitate SSO authentication in development and staging environments.
@@ -126,12 +133,24 @@ def auth_verify(token: str, continue_to: str = "/"):
     The staging environment will ultimately dispatch to the production environment's verify
     route, here, in order to verify the token (and then reissue using its own signing).
     """
-    return jwt.decode(
-        token,
-        _JWT_SECRET,
-        algorithms=[_JST_ALGORITHM],
-        options={"verify_signature": True},
-    )
+    try:
+        claims = jwt.decode(
+            token,
+            _JWT_SECRET,
+            algorithms=[_JST_ALGORITHM],
+            audience=_DELEGATION_AUDIENCE,
+            options={"require": ["exp", "uid", "pid", "origin", "aud"]},
+        )
+        _delegated_auth_target(claims["origin"])
+        if origin is not None and claims["origin"] != origin:
+            raise HTTPException(status_code=401, detail="Invalid delegated login.")
+        return Response(
+            content=json.dumps(claims),
+            media_type="application/json",
+            headers={"Cache-Control": "no-store"},
+        )
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid delegated login.")
 
 
 @api.get("/auth", include_in_schema=False)
@@ -143,8 +162,13 @@ def bearer_token_bootstrap(
     token: str | None = None,
     development_authentication: bool = False,
 ):
+    if development_authentication and getenv("MODE") != "development":
+        raise HTTPException(
+            status_code=400, detail="Development authentication is disabled."
+        )
     if HOST == AUTH_SERVER_HOST or development_authentication:
-        # Production App Request
+        # Production headers must be supplied by the trusted SSO proxy. Direct
+        # access to this backend must be blocked by the deployment (see docs/auth.md).
         if uid is not None and pid is not None:
             return _handle_auth_in_production(uid, pid, continue_to, origin)
         else:
@@ -170,9 +194,8 @@ def bearer_token_impersonate(
     if getenv("MODE") == "development":
         return bearer_token_bootstrap(uid, pid, continue_to, origin, token, True)
     else:
-        onyen = request.headers["uid"]
         raise HTTPException(
-            status_code=400, detail=f"Tsk, tsk. That is a naughty request {onyen}."
+            status_code=400, detail="Development authentication is disabled."
         )
 
 
@@ -221,14 +244,18 @@ def github_unlink(
 
 def _delegate_to_auth_server(continue_to: str):
     host_origin = f"{HOST}/auth"
+    query = urlencode({"origin": host_origin, "continue_to": continue_to})
     return RedirectResponse(
-        f"https://{AUTH_SERVER_HOST}/auth?origin={host_origin}&continue_to={continue_to}"
+        f"https://{AUTH_SERVER_HOST}/auth?{query}",
+        headers={"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"},
     )
 
 
 def _verify_delegated_auth_token(continue_to: str, token: str):
-    params = {"token": token}
-    response = requests.get(f"https://{AUTH_SERVER_HOST}/verify", params=params)
+    params = {"token": token, "origin": f"{HOST}/auth"}
+    response = requests.get(
+        f"https://{AUTH_SERVER_HOST}/verify", params=params, timeout=10
+    )
     if response.status_code == requests.codes.ok:
         # Generate a token for development app based on verified information
         body = response.json()
@@ -240,25 +267,86 @@ def _verify_delegated_auth_token(continue_to: str, token: str):
         raise HTTPException(status_code=401, detail="You are not authenticated.")
 
 
+def _delegated_auth_target(origin: str) -> str:
+    """Resolve a callback approved by domain policy or an exact allowlist entry.
+
+    Entries use the existing host[:port]/path format. Loopback development
+    callbacks may use HTTP on any valid port; hosted callbacks require HTTPS.
+    """
+    allowed = {
+        entry.strip()
+        for entry in os.getenv("AUTH_ALLOWED_ORIGINS", "").split(",")
+        if entry.strip()
+    }
+    try:
+        parsed = urlsplit(f"https://{origin}")
+        port = parsed.port
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid authentication origin.")
+    if (
+        not parsed.hostname
+        or parsed.username is not None
+        or parsed.password is not None
+        or not parsed.path.startswith("/")
+        or any(part in (".", "..") for part in parsed.path.split("/"))
+        or parsed.query
+        or parsed.fragment
+        or origin != f"{parsed.netloc}{parsed.path}"
+        or any(character in origin for character in "\\%\r\n\t ")
+        or port == 0
+    ):
+        raise HTTPException(status_code=400, detail="Invalid authentication origin.")
+    loopback = parsed.hostname in ("localhost", "127.0.0.1", "::1")
+    development_callback = (
+        loopback
+        and parsed.path in ("/auth", "/api/auth")
+        and os.getenv("AUTH_ALLOW_LOOPBACK", "true").lower() == "true"
+    )
+    # Match complete DNS labels and the domain boundary, not a URL substring.
+    # urlsplit normalizes hostname case; the bare unc.edu domain is not a subdomain.
+    unc_callback = (
+        os.getenv("AUTH_ALLOW_UNC_SUBDOMAINS", "true").lower() == "true"
+        and len(parsed.hostname) <= 253
+        and re.fullmatch(
+            r"(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+unc\.edu",
+            parsed.hostname,
+        )
+        is not None
+    )
+    if origin not in allowed and not development_callback and not unc_callback:
+        raise HTTPException(status_code=400, detail="Unapproved authentication origin.")
+    protocol = "http" if loopback else "https"
+    return f"{protocol}://{origin}"
+
+
 def _handle_auth_in_production(
     uid: str | None = Header(None),
     pid: int | None = Header(None),
     continue_to: str = "/",
     origin: str | None = None,
 ):
-    token = _generate_token(uid, pid)
     if origin is None:
         # Production Authentication Request
-        return _set_client_token(token, continue_to)
+        return _set_client_token(_generate_token(uid, pid), continue_to)
     else:
-        # Development Authentication Request (origin is app in development)
-        if origin.startswith("localhost"):
-            target = f"http://{origin}"  # TODO: Make this port an env variable
-        else:
-            target = f"https://{origin}"
+        target = _delegated_auth_target(origin)
+        # This handoff is deliberately not a production API bearer token. The
+        # audience makes ordinary session decoding reject it, even before expiry.
+        token = jwt.encode(
+            {
+                "uid": uid,
+                "pid": pid,
+                "exp": datetime.now(timezone.utc) + timedelta(minutes=5),
+                "aud": _DELEGATION_AUDIENCE,
+                "origin": origin,
+            },
+            _JWT_SECRET,
+            algorithm=_JST_ALGORITHM,
+        )
+        query = urlencode({"token": token, "continue_to": continue_to})
         return RedirectResponse(
-            f"{target}?token={token}&continue_to={continue_to}",
-            headers={"Cache-Control": "no-cache"},
+            f"{target}?{query}",
+            headers={"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"},
         )
 
 
@@ -280,46 +368,35 @@ def _github_oauth_redirect_uri():
     return f"{redirect_protocol}://{HOST}/oauth/github"
 
 
-def _set_client_token(token: str, continue_to: str):
-    data = f"""
-    <html>
-        <head>
-            <title>CS Experience Labs at The University of North Carolina at Chapel Hill</title>
-            <style>
-                html {{
-                    background: #303030;
-                    color: white;
-                    font: 400 14px/20px 'Helvetica Neue', sans-serif;
-                    letter-spacing: normal;
-                    text-align: center;
-                    margin: 1em;
-                }}
-            </style>
-        </head>
-        <body>
-            <h1 id='header'>Loading CSXL ...</h1>
-            <p id='message'>One sec while we load the CSXL app!</p>
-            <script type='application/javascript'>
-                localStorage.setItem('bearerToken', '{token}');
-                window.location.href = '/gate?continue_to={continue_to}';
-            </script>
-        </body>
-    </html>
-    """
+def _bootstrap_response(data: str, nonce: str) -> Response:
+    """Allow only this response's bootstrap script and same-origin API calls."""
     return Response(
         content=data,
         media_type="text/html",
-        headers={"Cache-Control": "no-cache"},
+        headers={
+            "Cache-Control": "no-store",
+            "Referrer-Policy": "no-referrer",
+            "X-Content-Type-Options": "nosniff",
+            "Content-Security-Policy": (
+                f"default-src 'none'; script-src 'nonce-{nonce}'; "
+                f"style-src 'nonce-{nonce}'; connect-src 'self'; "
+                "base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+            ),
+        },
     )
 
 
 def _link_github_html(code: str):
     current_time = datetime.today().strftime("%d-%m-%Y-%H-%M-%S")
+    nonce = secrets.token_urlsafe(32)
+    # URL encoding handles HTML delimiters as well as quotes and query separators.
+    # JSON encoding then produces a complete JavaScript string literal.
+    link_url = json.dumps("/oauth/github?" + urlencode({"code": code}))
     data = f"""
     <html>
         <head>
             <title>CS Experience Labs at The University of North Carolina at Chapel Hill</title>
-            <style>
+            <style nonce='{nonce}'>
                 html {{
                     background: #303030;
                     color: white;
@@ -333,9 +410,9 @@ def _link_github_html(code: str):
         <body>
             <h1 id='header'>Linking your GitHub account with CSXL ...</h1>
             <p id='message'>One sec while we associate your GitHub account with CSXL!</p>
-            <script type='application/javascript'>
+            <script type='application/javascript' nonce='{nonce}'>
                 let token = localStorage.getItem('bearerToken');
-                fetch('/oauth/github?code={code}', {{
+                fetch({link_url}, {{
                     method: 'POST',
                     headers: {{
                         'Content-Type': 'application/json',
@@ -352,20 +429,20 @@ def _link_github_html(code: str):
         </body>
     </html>
     """
-    return Response(
-        content=data,
-        media_type="text/html",
-        headers={"Cache-Control": "no-cache"},
-    )
+    return _bootstrap_response(data, nonce)
 
 
 def _set_client_token(token: str, continue_to: str):
     current_time = datetime.today().strftime("%d-%m-%Y-%H-%M-%S")
+    nonce = secrets.token_urlsafe(32)
+    gate_url = json.dumps(
+        "/gate?" + urlencode({"continue_to": continue_to, "time": current_time})
+    )
     data = f"""
     <html>
         <head>
             <title>CS Experience Labs at The University of North Carolina at Chapel Hill</title>
-            <style>
+            <style nonce='{nonce}'>
                 html {{
                     background: #303030;
                     color: white;
@@ -379,15 +456,11 @@ def _set_client_token(token: str, continue_to: str):
         <body>
             <h1 id='header'>Loading CSXL ...</h1>
             <p id='message'>One sec while we load the CSXL app!</p>
-            <script type='application/javascript'>
-                localStorage.setItem('bearerToken', '{token}');
-                window.location.href = '/gate?continue_to={continue_to}&time={current_time}';
+            <script type='application/javascript' nonce='{nonce}'>
+                localStorage.setItem('bearerToken', {json.dumps(token)});
+                window.location.href = {gate_url};
             </script>
         </body>
     </html>
     """
-    return Response(
-        content=data,
-        media_type="text/html",
-        headers={"Cache-Control": "no-cache"},
-    )
+    return _bootstrap_response(data, nonce)
