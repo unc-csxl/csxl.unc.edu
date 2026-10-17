@@ -42,13 +42,19 @@ Once the Dev Container begins, open a terminal and complete the following:
    1. `uv run --project backend python -m backend.script.create_database`
    2. `uv run --project backend python -m backend.script.reset_demo`
 4. Start dev server processes using the `honcho` process manager
-   1. `uv run honcho start`
+   1. `uv run --project backend honcho start`
       1. Wait until you see "frontend.1 | Compiled successfully" emitted from the Angular dev server.
    2. Open `localhost:1560` in a browser and you should see the XL site running locally in development.
    3. Try authorizing as Rhonda Root by visiting <http://localhost:1560/auth/as/rhonda/999999999> your browser.
    4. To stop the development servers, press `Ctrl+C` in the terminal running `honcho` and close VSCode.
 
 ## Development Data
+
+The backend uses Python 3.11 and `backend/uv.lock` as its dependency source of truth.
+Run `uv sync --project backend --locked --group dev` to reproduce the development
+environment. The legacy `backend/requirements.txt` has been removed; if another
+tool requires that format, generate it with
+`uv export --project backend --locked --no-dev --format requirements-txt --output-file /tmp/csxl-requirements.txt`.
 
 You will notice the users and roles in your system are different than the production system. This is because the `reset_demo` script creates a set of mock users and roles for development purposes. Production data, with all registered users, contains protected information and is not directly replicable in a development environment. As new features are developed, additional demo and testing data can be added to the `reset_demo` and `reset_testing` scripts, respectively.
 

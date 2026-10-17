@@ -51,6 +51,22 @@ def client(monkeypatch):
         yield test_client
 
 
+def test_existing_pyjwt_2_8_session_remains_valid(client):
+    """A previously issued session must survive the dependency upgrade.
+
+    Generated with PyJWT 2.8.0 and this module's synthetic secret, with a
+    fixed 2100 expiry to avoid wall-clock-dependent test failures.
+    """
+    token = (
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
+        "eyJ1aWQiOiJzeW50aGV0aWNfdXNlciIsInBpZCI6Ijk5OTk5OTk5OSIsImV4cCI6NDEwMjQ0NDgwMH0."
+        "0mKSwW3ilxTxlYb3D2lpWLQMZ8kAff8g7F9tWXUyaiM"
+    )
+    response = client.get("/protected", headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200
+    assert response.json() == [999999999, "synthetic_user"]
+
+
 def script_literal(response, pattern):
     """Inspect browser-parsed script text and recover one JSON string literal."""
     soup = BeautifulSoup(response.text, "html.parser")

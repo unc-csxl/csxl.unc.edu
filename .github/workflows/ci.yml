@@ -10,6 +10,21 @@ permissions:
   contents: read
 
 jobs:
+  dependency-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Reject new critical or high dependency vulnerabilities
+        uses: actions/dependency-review-action@v5
+        with:
+          fail-on-severity: high
+          license-check: false
+          comment-summary-in-pr: never
+
   backend-lint:
     runs-on: ubuntu-latest
 
@@ -20,7 +35,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v6
@@ -32,6 +47,9 @@ jobs:
 
       - name: Check backend formatting
         run: uv run --project backend ruff format --check backend
+
+      - name: Check development process manager
+        run: uv run --project backend honcho check
 
   frontend-lint:
     runs-on: ubuntu-latest
@@ -59,6 +77,16 @@ jobs:
       - name: Run frontend lint
         working-directory: frontend
         run: pnpm lint
+
+      - name: Audit frontend dependencies
+        working-directory: frontend
+        run: pnpm audit --audit-level high
+
+      - name: Install root tooling
+        run: pnpm install --frozen-lockfile
+
+      - name: Audit root tooling
+        run: pnpm audit --audit-level high
 
   backend-tests:
     runs-on: ubuntu-latest
@@ -97,7 +125,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v6
@@ -108,7 +136,7 @@ jobs:
         run: uv sync --project backend --locked --group dev
 
       - name: Run backend tests
-        run: uv run --project backend pytest
+        run: uv run --project backend pytest backend/test
 
   frontend-build:
     runs-on: ubuntu-latest
@@ -135,4 +163,19 @@ jobs:
 
       - name: Build frontend
         working-directory: frontend
-        run: pnpm build
+        run: pnpm exec ng build --configuration production --output-path /tmp/csxl-ci-build
+
+  production-image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build production image
+        run: docker build --tag csxl:ci .
+
+      - name: Check runtime dependencies
+        run: >-
+          docker run --rm --entrypoint python csxl:ci
+          -c 'import anyio, cryptography, github, jwt, multipart, starlette; print("Runtime imports passed")'

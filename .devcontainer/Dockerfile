@@ -49,19 +49,19 @@ RUN corepack enable \
 COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /uvx /usr/local/bin/
 
 # Install Angular CLI Globally
-RUN npm install -g @angular/cli
+RUN npm install -g @angular/cli@21.2.27
 
-# Install Python 3.12
+# Install Python 3.11
 RUN add-apt-repository ppa:deadsnakes/ppa \
     && apt update \
     && apt install --yes \
-        python3.12 \
+        python3.11 \
         libpq-dev \
-        python3.12-venv \
-        python3.12-dev \
+        python3.11-venv \
+        python3.11-dev \
     && rm -rf /var/lib/apt/lists* \
     && unlink /usr/bin/python3 \
-    && ln -s /usr/bin/python3.12 /usr/bin/python3
+    && ln -s /usr/bin/python3.11 /usr/bin/python3
 
 # Use a non-root user per https://code.visualstudio.com/remote/advancedcontainers/add-nonroot-user
 ARG USERNAME=vscode
