@@ -172,17 +172,20 @@ def test_bootstrap_pages_restrict_scripts_and_do_not_cache_credentials(client, p
         "service.unc.edu/auth#fragment",
         "service.unc.edu/auth/../redirect",
         "service.unc.edu/auth\n",
-        "https://service.unc.edu/auth",
         "//service.unc.edu/auth",
-        "https://stage.example.edu/auth",
         "//evil.example/auth",
         "",
     ],
 )
-def test_auth_rejects_untrusted_origins_before_minting(client, monkeypatch, origin):
+@pytest.mark.parametrize("prefix", ["", "https://", "http://"])
+def test_auth_rejects_untrusted_origins_before_minting(
+    client, monkeypatch, origin, prefix
+):
     mint = Mock(return_value="unexpected-session")
     monkeypatch.setattr(auth, "_generate_token", mint)
-    response = client.get("/auth", headers=IDENTITY, params={"origin": origin})
+    response = client.get(
+        "/auth", headers=IDENTITY, params={"origin": f"{prefix}{origin}"}
+    )
 
     assert response.status_code == 400
     assert "location" not in response.headers
@@ -260,10 +263,19 @@ def test_delegation_encodes_query_parameters(client, monkeypatch):
 
 
 @pytest.mark.parametrize(
-    ("origin", "scheme"),
-    [("localhost:1560/auth", "http"), ("stage.example.edu/auth", "https")],
+    ("origin", "expected_target"),
+    [
+        ("localhost:1560/auth", "http://localhost:1560/auth"),
+        ("stage.example.edu/auth", "https://stage.example.edu/auth"),
+        ("https://stage.example.edu/auth", "https://stage.example.edu/auth"),
+        ("http://localhost:1560/auth", "http://localhost:1560/auth"),
+        ("https://localhost:1560/auth", "https://localhost:1560/auth"),
+        ("http://[::1]:1560/auth", "http://[::1]:1560/auth"),
+    ],
 )
-def test_approved_delegation_uses_short_lived_non_session_token(client, origin, scheme):
+def test_approved_delegation_uses_short_lived_non_session_token(
+    client, origin, expected_target
+):
     continuation = "/events?term=fall&limit=10#details"
     response = client.get(
         "/auth",
@@ -273,8 +285,7 @@ def test_approved_delegation_uses_short_lived_non_session_token(client, origin, 
 
     assert response.status_code == 307
     target = urlsplit(response.headers["location"])
-    assert target.scheme == scheme
-    assert f"{target.netloc}{target.path}" == origin
+    assert f"{target.scheme}://{target.netloc}{target.path}" == expected_target
     assert target.fragment == ""
     query = parse_qs(target.query)
     assert query["continue_to"] == [continuation]
@@ -449,7 +460,7 @@ def test_loopback_exception_does_not_allow_arbitrary_paths(client, monkeypatch):
 
 
 @pytest.mark.parametrize(
-    "origin",
+    "callback",
     [
         "service.unc.edu/auth",
         "student.cs.unc.edu/auth",
@@ -457,11 +468,14 @@ def test_loopback_exception_does_not_allow_arbitrary_paths(client, monkeypatch):
         "MixedCase.UnC.EDU/api/auth",
         "service.unc.edu:8443/auth",
         "new-service.unc.edu/auth",
+        "learnwithai.unc.edu/api/auth/callback/test-state-123",
     ],
 )
+@pytest.mark.parametrize("prefix", ["", "https://"])
 def test_unc_subdomains_can_delegate_without_an_explicit_entry(
-    client, monkeypatch, origin
+    client, monkeypatch, callback, prefix
 ):
+    origin = f"{prefix}{callback}"
     monkeypatch.delenv("AUTH_ALLOWED_ORIGINS")
     monkeypatch.delenv("AUTH_ALLOW_UNC_SUBDOMAINS")
     response = client.get("/auth", headers=IDENTITY, params={"origin": origin})
@@ -469,7 +483,7 @@ def test_unc_subdomains_can_delegate_without_an_explicit_entry(
     assert response.status_code == 307
     target = urlsplit(response.headers["location"])
     assert target.scheme == "https"
-    assert f"{target.netloc}{target.path}" == origin
+    assert f"{target.netloc}{target.path}" == callback
     token = parse_qs(target.query)["token"][0]
     verified = client.get("/verify", params={"token": token})
     assert verified.status_code == 200
@@ -495,25 +509,49 @@ def test_unc_subdomain_policy_can_be_disabled(client, monkeypatch):
     )
 
 
+@pytest.mark.parametrize("prefix", ["", "https://"])
 def test_explicit_callback_remains_allowed_when_unc_subdomain_policy_is_disabled(
-    client, monkeypatch
+    client, monkeypatch, prefix
 ):
     monkeypatch.setenv("AUTH_ALLOW_UNC_SUBDOMAINS", "false")
     monkeypatch.setenv("AUTH_ALLOWED_ORIGINS", "service.unc.edu/auth")
     assert (
         client.get(
-            "/auth", headers=IDENTITY, params={"origin": "service.unc.edu/auth"}
+            "/auth",
+            headers=IDENTITY,
+            params={"origin": f"{prefix}service.unc.edu/auth"},
         ).status_code
         == 307
     )
 
 
-def test_disabled_unc_subdomain_policy_rejects_previous_handoffs(client, monkeypatch):
+@pytest.mark.parametrize("prefix", ["", "https://"])
+def test_disabled_unc_subdomain_policy_rejects_previous_handoffs(
+    client, monkeypatch, prefix
+):
     monkeypatch.delenv("AUTH_ALLOWED_ORIGINS")
     response = client.get(
-        "/auth", headers=IDENTITY, params={"origin": "service.unc.edu/auth"}
+        "/auth", headers=IDENTITY, params={"origin": f"{prefix}service.unc.edu/auth"}
     )
     assert response.status_code == 307
     token = parse_qs(urlsplit(response.headers["location"]).query)["token"][0]
     monkeypatch.setenv("AUTH_ALLOW_UNC_SUBDOMAINS", "false")
     assert client.get("/verify", params={"token": token}).status_code == 400
+
+
+@pytest.mark.parametrize(
+    "origin",
+    [
+        "http://learnwithai.unc.edu/api/auth/callback/test-state-123",
+        "http://stage.example.edu/auth",
+        "ftp://service.unc.edu/auth",
+        "javascript://service.unc.edu/auth",
+    ],
+)
+def test_hosted_callbacks_require_https_even_when_allowlisted(
+    client, monkeypatch, origin
+):
+    monkeypatch.setenv("AUTH_ALLOWED_ORIGINS", origin.split("://", 1)[1])
+    response = client.get("/auth", headers=IDENTITY, params={"origin": origin})
+    assert response.status_code == 400
+    assert "location" not in response.headers

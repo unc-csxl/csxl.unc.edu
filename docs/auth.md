@@ -24,16 +24,19 @@ Authentication is verifying *who* the "subject" accessing a system is. The term 
 ### Delegated authentication and deployment configuration
 
 XL supports delegated login for student development and approved services. The `origin`
-query parameter is a callback in `host[:port]/path` form, without a scheme. Defaults allow
-any valid `.unc.edu` subdomain over HTTPS, including nested subdomains, and `/auth` or
-`/api/auth` on `localhost`, `127.0.0.1`, or `[::1]` over HTTP on any valid port. Existing
+query parameter accepts an absolute callback URL or the existing `host[:port]/path`
+form without a scheme. Hosted callbacks require HTTPS. Defaults allow any valid
+`.unc.edu` subdomain over HTTPS, including nested subdomains, and `/auth` or `/api/auth`
+on `localhost`, `127.0.0.1`, or `[::1]` over HTTP or HTTPS on any valid port. Without an
+explicit scheme, hosted callbacks use HTTPS and loopback callbacks use HTTP. Existing
 delegated clients can continue using token-only verification. UNC callbacks must have
 valid DNS labels and end at the `.unc.edu` domain boundary; `unc.edu.evil.example` and
 `evilunc.edu` do not qualify. The bare `unc.edu` domain is not a subdomain. Loopback
 exceptions match the hostname exactly, never a prefix such as `localhost.example.com`.
 
 On the production authentication server, `AUTH_ALLOWED_ORIGINS` adds comma-separated,
-exact callback destinations outside the default policies. For example:
+exact callback destinations outside the default policies. Entries use the scheme-free
+`host[:port]/path` form and match either accepted `origin` format. For example:
 
 ```dotenv
 AUTH_ALLOWED_ORIGINS=approved-stage.example.edu/auth
@@ -47,10 +50,18 @@ to `false` and an empty `AUTH_ALLOWED_ORIGINS` disables all delegated redirects.
 domain policy trusts every valid subdomain as a destination for delegated handoffs.
 Callback routes must not forward their credentials to another destination.
 
+For example, `https://learnwithai.unc.edu/api/auth/callback/<state>` is accepted by
+the default UNC policy without an allowlist entry. URL-encode the complete callback
+when including it as the `origin` query parameter. Older deployments that accept only
+scheme-free callbacks need an update to support absolute URLs; clients can omit the
+`https://` prefix as a workaround. If `AUTH_ALLOW_UNC_SUBDOMAINS=false`, an exact entry
+must include the entire callback path; allowlist entries are not path-prefix patterns.
+
 An approved redirect carries a **five-minute handoff JWT**, not a production XL API
 session. The receiving service calls `GET https://csxl.unc.edu/verify?token=...`, reads
 `uid` and `pid`, and issues its own local session as before. Optionally pass `origin`
-to require a match with the callback signed into the handoff. The verification service
+to require an exact match with the original `origin` value signed into the handoff,
+including its scheme if one was supplied. The verification service
 checks signature, expiry, audience, and whether the signed callback remains allowed.
 The handoff cannot authenticate XL API requests. Clients that previously saved this
 token for later verification or used it directly against XL APIs must migrate to the

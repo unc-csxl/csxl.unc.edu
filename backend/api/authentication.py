@@ -270,19 +270,23 @@ def _verify_delegated_auth_token(continue_to: str, token: str):
 def _delegated_auth_target(origin: str) -> str:
     """Resolve a callback approved by domain policy or an exact allowlist entry.
 
-    Entries use the existing host[:port]/path format. Loopback development
-    callbacks may use HTTP on any valid port; hosted callbacks require HTTPS.
+    Callbacks accept absolute URLs or the existing host[:port]/path format.
+    Allowlist entries remain scheme-free. Loopback development callbacks may
+    use HTTP on any valid port; hosted callbacks require HTTPS.
     """
     allowed = {
         entry.strip()
         for entry in os.getenv("AUTH_ALLOWED_ORIGINS", "").split(",")
         if entry.strip()
     }
+    has_scheme = origin.startswith(("https://", "http://"))
     try:
-        parsed = urlsplit(f"https://{origin}")
+        parsed = urlsplit(origin if has_scheme else f"https://{origin}")
         port = parsed.port
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid authentication origin.")
+    callback = f"{parsed.netloc}{parsed.path}"
+    expected_origin = f"{parsed.scheme}://{callback}" if has_scheme else callback
     if (
         not parsed.hostname
         or parsed.username is not None
@@ -291,12 +295,14 @@ def _delegated_auth_target(origin: str) -> str:
         or any(part in (".", "..") for part in parsed.path.split("/"))
         or parsed.query
         or parsed.fragment
-        or origin != f"{parsed.netloc}{parsed.path}"
+        or origin != expected_origin
         or any(character in origin for character in "\\%\r\n\t ")
         or port == 0
     ):
         raise HTTPException(status_code=400, detail="Invalid authentication origin.")
     loopback = parsed.hostname in ("localhost", "127.0.0.1", "::1")
+    if has_scheme and parsed.scheme == "http" and not loopback:
+        raise HTTPException(status_code=400, detail="Invalid authentication origin.")
     development_callback = (
         loopback
         and parsed.path in ("/auth", "/api/auth")
@@ -313,10 +319,10 @@ def _delegated_auth_target(origin: str) -> str:
         )
         is not None
     )
-    if origin not in allowed and not development_callback and not unc_callback:
+    if callback not in allowed and not development_callback and not unc_callback:
         raise HTTPException(status_code=400, detail="Unapproved authentication origin.")
-    protocol = "http" if loopback else "https"
-    return f"{protocol}://{origin}"
+    protocol = parsed.scheme if has_scheme else ("http" if loopback else "https")
+    return f"{protocol}://{callback}"
 
 
 def _handle_auth_in_production(
