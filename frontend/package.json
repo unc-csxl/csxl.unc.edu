@@ -27,7 +27,7 @@
     "@tailwindcss/postcss": "^4.1.18",
     "dompurify": "~3.3.3",
     "file-saver": "~2.0.5",
-    "marked": "~14.0.0",
+    "marked": "~18.1.1",
     "openmeteo": "^1.1.4",
     "rxjs": "~7.8.1",
     "tailwindcss": "^4.1.18",
