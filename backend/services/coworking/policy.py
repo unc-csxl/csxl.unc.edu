@@ -46,6 +46,7 @@ OH_HOURS = {
         "SN139": [],
         "SN141": [
             (time(hour=10), time(hour=12)),
+            (time(hour=14), time(hour=15)),  # CSSG
             (time(hour=16), time(hour=18)),
         ],
         "SN144": [],
