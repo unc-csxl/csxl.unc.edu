@@ -22,6 +22,7 @@ export interface ApplicationSectionChoice {
   course_number: string;
   section_number: string;
   title: string;
+  instructor_last_names?: string[];
 }
 
 export interface Application {

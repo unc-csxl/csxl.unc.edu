@@ -91,12 +91,17 @@ export const UTA_APPLICATION_FORM: ApplicationFormField[] = [
     title: 'Introductory Video',
     description: `
 Record a video up to 2-minutes long using your laptop or phone's video recording functionality. Please do not go beyond 2-minutes!
+
 Upload it as an UNLISTED but not private (meaning the public cannot see it, just us) YouTube video. You should spend no more than 10 minutes on recording the video. We promise your first take is good enough and your second take is definitely good enough. Be sure your link works in an incognito window.
+
 This should not be overly formal or overproduced. You should take it lightly, be yourself, and have fun. A selfie-mode recording from your phone or laptop is expected.
+
 Please address:
+
 1. Introduce yourself. (Who are you? How long at UNC? Where are you from?)
 2. Why are you applying for a Computer Science Undergraduate Teaching Assistant position?
 3. What challenge(s) have you faced in your computer science career at UNC? What strategies or advice would you give to other students confronting similar challenges?
+
 Please add a link to your UNLISTED (NOT PRIVATE!) YouTube video below. Be sure that you can view this link in an Incognito Window or have a friend ensure they were able to view it from their machine. Videos uploaded such that we cannot view them will disqualify your application.    `,
     fieldType: FormFieldType.SHORT_TEXT,
     dropdownItems: undefined,

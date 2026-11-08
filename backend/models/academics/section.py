@@ -58,6 +58,7 @@ class CatalogSectionIdentity(BaseModel):
     course_number: str
     section_number: str
     title: str
+    instructor_last_names: list[str] = []
 
 
 class CatalogSection(CatalogSectionIdentity):

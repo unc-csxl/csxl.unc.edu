@@ -56,10 +56,37 @@
             [selectedSections]="selectedSections" />
         }
       </mat-card-content>
-      <mat-card-actions>
-        <button class="submit-button" mat-flat-button color="primary">
-          Submit Application
+      <mat-card-actions class="flex flex-col! items-start! gap-3">
+        <button
+          type="submit"
+          class="submit-button"
+          mat-flat-button
+          color="primary"
+          [disabled]="submissionState() === 'saving'">
+          @if (submissionState() === 'saving') {
+            Saving…
+          } @else {
+            {{
+              application.id === null ? 'Submit Application' : 'Save Changes'
+            }}
+          }
         </button>
+        <div role="status" aria-live="polite" aria-atomic="true">
+          @if (submissionState() === 'saved') {
+            <p>
+              <strong>Your application was successfully submitted.</strong>
+              Your responses have been saved. To save further edits, choose Save
+              Changes.
+            </p>
+          }
+        </div>
+        @if (submissionState() === 'error') {
+          <p role="alert">
+            We couldn't confirm that your application was saved. Your entries
+            are still here. Please check your connection and reload this page to
+            check your saved application before trying again.
+          </p>
+        }
       </mat-card-actions>
     </mat-pane>
   </form>

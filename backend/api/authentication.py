@@ -75,6 +75,7 @@ from fastapi.responses import RedirectResponse
 from ..env import getenv
 from ..services import UserService, GitHubService
 from ..models import User
+from ..services.exceptions import UserIdentityConflictException
 
 
 __authors__ = ["Kris Jordan"]
@@ -161,6 +162,7 @@ def bearer_token_bootstrap(
     origin: str | None = None,
     token: str | None = None,
     development_authentication: bool = False,
+    user_service: UserService = Depends(),  # noqa: B008 - FastAPI dependency
 ):
     if development_authentication and getenv("MODE") != "development":
         raise HTTPException(
@@ -170,7 +172,9 @@ def bearer_token_bootstrap(
         # Production headers must be supplied by the trusted SSO proxy. Direct
         # access to this backend must be blocked by the deployment (see docs/auth.md).
         if uid is not None and pid is not None:
-            return _handle_auth_in_production(uid, pid, continue_to, origin)
+            return _handle_auth_in_production(
+                uid, pid, continue_to, origin, user_service=user_service
+            )
         else:
             raise HTTPException(status_code=401, detail="You are not authenticated.")
     else:
@@ -178,7 +182,7 @@ def bearer_token_bootstrap(
         if not token:
             return _delegate_to_auth_server(continue_to)
         else:
-            return _verify_delegated_auth_token(continue_to, token)
+            return _verify_delegated_auth_token(continue_to, token, user_service)
 
 
 @api.get("/auth/as/{uid}/{pid}", include_in_schema=False)
@@ -189,10 +193,13 @@ def bearer_token_impersonate(
     continue_to: str = "/",
     origin: str | None = None,
     token: str | None = None,
+    user_service: UserService = Depends(),  # noqa: B008 - FastAPI dependency
 ):
     """Authenticate as another user in development mode only using this special route."""
     if getenv("MODE") == "development":
-        return bearer_token_bootstrap(uid, pid, continue_to, origin, token, True)
+        return bearer_token_bootstrap(
+            uid, pid, continue_to, origin, token, True, user_service
+        )
     else:
         raise HTTPException(
             status_code=400, detail="Development authentication is disabled."
@@ -251,7 +258,18 @@ def _delegate_to_auth_server(continue_to: str):
     )
 
 
-def _verify_delegated_auth_token(continue_to: str, token: str):
+def _sync_login_onyen(user_service: UserService, pid: int, uid: str) -> None:
+    try:
+        user_service.sync_login_onyen(pid, uid)
+    except UserIdentityConflictException as error:
+        raise HTTPException(status_code=409, detail=str(error)) from None
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from None
+
+
+def _verify_delegated_auth_token(
+    continue_to: str, token: str, user_service: UserService
+):
     params = {"token": token, "origin": f"{HOST}/auth"}
     response = requests.get(
         f"https://{AUTH_SERVER_HOST}/verify", params=params, timeout=10
@@ -261,6 +279,7 @@ def _verify_delegated_auth_token(continue_to: str, token: str):
         body = response.json()
         uid = body["uid"]
         pid = body["pid"]
+        _sync_login_onyen(user_service, int(pid), uid)
         new_token = _generate_token(uid, pid)
         return _set_client_token(new_token, continue_to)
     else:
@@ -330,9 +349,12 @@ def _handle_auth_in_production(
     pid: int | None = Header(None),
     continue_to: str = "/",
     origin: str | None = None,
+    *,
+    user_service: UserService,
 ):
     if origin is None:
         # Production Authentication Request
+        _sync_login_onyen(user_service, pid, uid)
         return _set_client_token(_generate_token(uid, pid), continue_to)
     else:
         target = _delegated_auth_target(origin)

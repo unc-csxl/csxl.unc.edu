@@ -29,7 +29,12 @@ PAYLOADS = [
 
 
 @pytest.fixture
-def client(monkeypatch):
+def user_service():
+    return Mock(spec=auth.UserService)
+
+
+@pytest.fixture
+def client(monkeypatch, user_service):
     monkeypatch.setattr(auth, "HOST", auth.AUTH_SERVER_HOST)
     monkeypatch.setattr(auth, "_JWT_SECRET", "synthetic-auth-regression-secret")
     monkeypatch.setenv("MODE", "production")
@@ -40,7 +45,7 @@ def client(monkeypatch):
     )
     app = FastAPI()
     app.include_router(auth.api)
-    app.dependency_overrides[auth.UserService] = lambda: object()
+    app.dependency_overrides[auth.UserService] = lambda: user_service
     app.dependency_overrides[auth.GitHubService] = lambda: object()
 
     @app.get("/protected")
@@ -311,7 +316,7 @@ def test_approved_delegation_uses_short_lived_non_session_token(
     assert verified.headers["cache-control"] == "no-store"
 
 
-def test_delegated_login_reissues_a_local_session(client, monkeypatch):
+def test_delegated_login_reissues_a_local_session(client, monkeypatch, user_service):
     origin = "localhost:1560/auth"
     response = client.get("/auth", headers=IDENTITY, params={"origin": origin})
     token = parse_qs(urlsplit(response.headers["location"]).query)["token"][0]
@@ -337,6 +342,9 @@ def test_delegated_login_reissues_a_local_session(client, monkeypatch):
     assert claims["uid"] == IDENTITY["uid"]
     assert claims["pid"] == int(IDENTITY["pid"])
     assert "aud" not in claims
+    user_service.sync_login_onyen.assert_called_once_with(
+        int(IDENTITY["pid"]), IDENTITY["uid"]
+    )
 
 
 @pytest.mark.parametrize("kind", ["session", "expired", "wrong-origin", "tampered"])
@@ -367,7 +375,9 @@ def test_delegated_verification_rejects_invalid_tokens(client, kind):
     assert response.status_code == 401
 
 
-def test_failed_delegated_verification_does_not_mint_session(client, monkeypatch):
+def test_failed_delegated_verification_does_not_mint_session(
+    client, monkeypatch, user_service
+):
     monkeypatch.setattr(auth, "HOST", "localhost:1560")
     monkeypatch.setattr(auth.requests, "get", Mock(return_value=Mock(status_code=401)))
     mint = Mock()
@@ -377,9 +387,10 @@ def test_failed_delegated_verification_does_not_mint_session(client, monkeypatch
 
     assert response.status_code == 401
     mint.assert_not_called()
+    user_service.sync_login_onyen.assert_not_called()
 
 
-def test_normal_production_session_still_authenticates(client):
+def test_normal_production_session_still_authenticates(client, user_service):
     response = client.get("/auth", headers=IDENTITY)
     token = script_literal(response, r"localStorage.setItem\('bearerToken', (.*)\);")
 
@@ -387,6 +398,19 @@ def test_normal_production_session_still_authenticates(client):
 
     assert response.status_code == 200
     assert response.json() == [int(IDENTITY["pid"]), IDENTITY["uid"]]
+    user_service.sync_login_onyen.assert_called_once_with(
+        int(IDENTITY["pid"]), IDENTITY["uid"]
+    )
+
+
+def test_login_identity_conflict_does_not_mint_session(client, user_service):
+    user_service.sync_login_onyen.side_effect = auth.UserIdentityConflictException(
+        "Please contact a CSXL administrator to resolve the account conflict."
+    )
+    response = client.get("/auth", headers=IDENTITY)
+    assert response.status_code == 409
+    assert "administrator" in response.json()["detail"]
+    assert "bearerToken" not in response.text
 
 
 def test_empty_allowlist_disables_delegation(client, monkeypatch):

@@ -6,7 +6,13 @@
  * @copyright 2024
  * @license MIT
  */
-import { AfterViewInit, Directive, ElementRef } from '@angular/core';
+import {
+  AfterViewInit,
+  Directive,
+  ElementRef,
+  Input,
+  OnChanges
+} from '@angular/core';
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 
@@ -14,8 +20,16 @@ import { marked } from 'marked';
   selector: '[markdown]',
   standalone: false
 })
-export class MarkdownDirective implements AfterViewInit {
+export class MarkdownDirective implements AfterViewInit, OnChanges {
+  @Input() markdownData?: string;
+
   constructor(private el: ElementRef) {}
+
+  ngOnChanges(): void {
+    if (this.markdownData !== undefined) {
+      this.markdownify();
+    }
+  }
 
   /**
    * Generates HTML from markdown after the view is initialized.
@@ -23,12 +37,16 @@ export class MarkdownDirective implements AfterViewInit {
    * the markdownify() method is run.
    */
   ngAfterViewInit(): void {
-    this.markdownify();
+    if (this.markdownData === undefined) {
+      this.markdownify();
+    }
   }
 
   markdownify() {
     this.el.nativeElement.innerHTML = DOMPurify.sanitize(
-      marked.parse(this.el.nativeElement.innerHTML) as string
+      marked.parse(
+        this.markdownData ?? this.el.nativeElement.innerHTML
+      ) as string
     );
   }
 }

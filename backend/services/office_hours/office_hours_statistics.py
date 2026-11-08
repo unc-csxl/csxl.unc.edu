@@ -149,13 +149,13 @@ class OfficeHoursStatisticsService:
         result = self._session.execute(length_statement).scalar()
         total_tickets = float(result) if result is not None else 0
 
-        # Total tickets per week
+        # Count from Sunday midnight, including tickets earlier today on Sundays.
         today = datetime.today()
         start_of_week = (
             today - timedelta(days=today.weekday() + 1)
             if today.weekday() != 6
             else today
-        )
+        ).replace(hour=0, minute=0, second=0, microsecond=0)
 
         week_tickets_statement = (
             select(func.count())

@@ -6,10 +6,11 @@ The User Service provides access to the User model and its associated database o
 from fastapi import Depends
 from sqlalchemy import select, or_, func, cast, String
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from ..database import db_session
 from ..models import User, UserDetails, Paginated, PaginationParams, PublicUser
 from ..entities import UserEntity
-from .exceptions import ResourceNotFoundException
+from .exceptions import ResourceNotFoundException, UserIdentityConflictException
 from .permission import PermissionService
 
 __authors__ = ["Kris Jordan"]
@@ -29,6 +30,28 @@ class UserService:
         """Initialize the User Service."""
         self._session = session
         self._permission = permission
+
+    def sync_login_onyen(self, pid: int, onyen: str) -> None:
+        """Reconcile an existing account after a fresh, verified SSO login.
+
+        Call only with identity from the trusted proxy or verified delegated login,
+        never from a profile form or a previously issued API bearer token.
+        Unknown PIDs still follow the normal registration flow.
+        """
+        if not onyen or onyen != onyen.strip() or len(onyen) > 32:
+            raise ValueError("Invalid authenticated onyen.")
+        entity = self._session.scalar(select(UserEntity).where(UserEntity.pid == pid))
+        if entity is None or entity.onyen == onyen:
+            return
+        try:
+            entity.onyen = onyen
+            self._session.commit()
+        except IntegrityError:
+            self._session.rollback()
+            raise UserIdentityConflictException(
+                "Your SSO onyen is associated with another CSXL account. "
+                "Please contact a CSXL administrator to resolve the account conflict."
+            ) from None
 
     def get(self, pid: int) -> UserDetails | None:
         """Get a User by PID.

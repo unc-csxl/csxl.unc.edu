@@ -76,7 +76,7 @@ def update_profile(
         user.last_name = profile.last_name
         user.email = profile.email
         user.pronouns = profile.pronouns
-        user.onyen = onyen
+        # Onyen is reconciled at fresh login, not from an older bearer token.
         user.accepted_community_agreement = profile.accepted_community_agreement
         user.bio = profile.bio
         user.linkedin = profile.linkedin

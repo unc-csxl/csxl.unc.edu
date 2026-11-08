@@ -17,12 +17,11 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormGroup } from '@angular/forms';
 import { ApplicationFormField } from './application-forms';
-import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Data, ParamMap } from '@angular/router';
 import { ApplicationsService } from '../applications.service';
 import { Application, ApplicationSectionChoice } from '../applications.model';
 import { profileResolver } from 'src/app/profile/profile.resolver';
 import { Profile } from 'src/app/models.module';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Term } from 'src/app/academics/academics.models';
 import { AcademicsService } from 'src/app/academics/academics.service';
 import { Observable, combineLatest, concat, of, timer } from 'rxjs';
@@ -55,6 +54,7 @@ export class ApplicationFormComponent {
   formGroup!: FormGroup;
   fields!: ApplicationFormField[];
   selectedSections: WritableSignal<ApplicationSectionChoice[]> = signal([]);
+  submissionState = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');
 
   application!: Application;
 
@@ -67,8 +67,6 @@ export class ApplicationFormComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
-    protected snackBar: MatSnackBar,
     protected applicationsService: ApplicationsService,
     protected academicsService: AcademicsService
   ) {
@@ -92,6 +90,7 @@ export class ApplicationFormComponent {
           this.application = this.buildEmptyApplication(profile, termId, type);
           this.formGroup.reset(this.application);
           this.selectedSections.set([]);
+          this.submissionState.set('idle');
 
           return this.applicationsService.getApplication(termId).pipe(
             map((application: Application | null) => ({
@@ -209,27 +208,27 @@ export class ApplicationFormComponent {
   }
 
   onSubmit() {
-    if (this.formGroup.valid) {
-      let applicationToSubmit = this.application;
-      Object.assign(applicationToSubmit, this.formGroup.value);
-      applicationToSubmit.preferred_sections = this.selectedSections();
+    if (this.formGroup.valid && this.submissionState() !== 'saving') {
+      const applicationToSubmit: Application = {
+        ...this.application,
+        ...this.formGroup.value,
+        preferred_sections: this.selectedSections()
+      };
+      this.submissionState.set('saving');
 
-      let result =
+      const result =
         this.application.id == null
-          ? this.applicationsService.createApplication(this.application)
-          : this.applicationsService.updateApplication(this.application);
+          ? this.applicationsService.createApplication(applicationToSubmit)
+          : this.applicationsService.updateApplication(applicationToSubmit);
 
-      result.subscribe({
-        next: (_: Application) => {
-          this.router.navigate(['/my-courses/']);
-          this.snackBar.open(`Thank you for submitting your application!`, '', {
-            duration: 2000
-          });
+      result.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+        next: (application: Application) => {
+          // Keep the returned ID so subsequent saves update this application.
+          this.application = application;
+          this.submissionState.set('saved');
         },
         error: (_: unknown) => {
-          this.snackBar.open(`Error: Application not submitted.`, '', {
-            duration: 2000
-          });
+          this.submissionState.set('error');
         }
       });
     }

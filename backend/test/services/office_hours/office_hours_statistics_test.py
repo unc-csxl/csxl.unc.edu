@@ -2,6 +2,10 @@
 
 import pytest
 from pytest import approx
+from datetime import datetime, timedelta
+
+from backend.entities.office_hours.ticket_entity import OfficeHoursTicketEntity
+from backend.services.office_hours import office_hours_statistics as statistics_module
 
 from ....services.exceptions import (
     CoursePermissionException,
@@ -68,6 +72,40 @@ def test_get_paginated_tickets_not_staff(
             office_hours_data.comp_110_site.id,
             ticket_params,
         )
+
+
+@pytest.mark.parametrize("now", [datetime(2026, 11, 8, 12), datetime(2026, 11, 11, 12)])
+def test_weekly_statistics_start_at_sunday_midnight(
+    oh_statistics_svc: OfficeHoursStatisticsService, session, monkeypatch, now
+):
+    class Clock(datetime):
+        @classmethod
+        def today(cls):
+            return now
+
+    monkeypatch.setattr(statistics_module, "datetime", Clock)
+    sunday = datetime(2026, 11, 8)
+    times = [sunday - timedelta(seconds=1), sunday, sunday + timedelta(hours=10)]
+    tickets = [
+        office_hours_data.comp_110_closed_ticket,
+        office_hours_data.ticket_cooldown_closed_ticket,
+        office_hours_data.ticket_maximum_closed_ticket,
+    ]
+    for ticket, created_at in zip(tickets, times):
+        entity = session.get(OfficeHoursTicketEntity, ticket.id)
+        entity.created_at = created_at
+        entity.called_at = created_at + timedelta(minutes=1)
+        entity.closed_at = created_at + timedelta(minutes=2)
+    session.commit()
+    statistics = oh_statistics_svc.get_statistics(
+        user_data.instructor,
+        office_hours_data.comp_110_site.id,
+        TicketPaginationParams(
+            range_start="", range_end="", student_ids=[], staff_ids=[]
+        ),
+    )
+    assert statistics.total_tickets == 3
+    assert statistics.total_tickets_weekly == 2
 
 
 def test_get_statistics(oh_statistics_svc: OfficeHoursStatisticsService):

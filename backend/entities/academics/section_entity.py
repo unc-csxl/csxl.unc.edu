@@ -240,6 +240,11 @@ class SectionEntity(EntityBase):
                 if len(self.override_title) > 0
                 else self.course.title
             ),
+            instructor_last_names=sorted(
+                member.user.last_name
+                for member in self.members
+                if member.member_role == RosterRole.INSTRUCTOR and member.user.last_name
+            ),
         )
 
     def to_catalog_model(self) -> CatalogSection:

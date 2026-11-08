@@ -12,6 +12,10 @@ class ResourceNotFoundException(Exception):
     ...
 
 
+class UserIdentityConflictException(Exception):
+    """A verified login's onyen is already assigned to a different account."""
+
+
 class UserPermissionException(Exception):
     """UserPermissionException is raised when a user attempts to perform an action they are not authorized to perform."""
 

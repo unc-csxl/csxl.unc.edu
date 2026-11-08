@@ -21,6 +21,19 @@ Authentication in `csxl.unc.edu` is integrated with UNC's Single Sign-on (SSO) S
 
 Authentication is verifying *who* the "subject" accessing a system is. The term "subject" is chosen intentionally in the security lexicon. A subject may be a person, but alternatively an automated program accessing a system on behalf of a person, group, or organization. The CSXL application is, for now, foremost a user-facing application that serves the people of the computer science department at UNC. Thus, a "subject" is a person and user of the CSXL application for our concerns.
 
+### Reconciling stored onyens
+
+A fresh XL login matches the verified SSO PID to an existing account and updates
+only its stored onyen before issuing the session token. This also runs locally
+after successful delegated verification. Unknown PIDs continue to registration;
+login does not create accounts. An onyen already owned by another account stops
+login with HTTP 409 and an instruction to contact an administrator. Neither
+account is changed in that case.
+
+Ordinary API requests and profile edits do not synchronize onyens from older
+bearer tokens. A handoff to a delegated client does not change the production
+account; the receiving XL instance reconciles its own account after verification.
+
 ### Delegated authentication and deployment configuration
 
 XL supports delegated login for student development and approved services. The `origin`

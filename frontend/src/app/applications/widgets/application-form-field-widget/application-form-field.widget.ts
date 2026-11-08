@@ -33,6 +33,12 @@ export class ApplicationFormFieldWidget {
 
   constructor(protected applicationsService: ApplicationsService) {}
 
+  sectionLabel(section: ApplicationSectionChoice): string {
+    const instructors = section.instructor_last_names?.join(', ');
+    const suffix = instructors ? ` (${instructors})` : '';
+    return `${section.subject_code} ${section.course_number}-${section.section_number}${suffix}: ${section.title}`;
+  }
+
   /**
    * Handles the selection of items from the autocomplete dropdown for sections.
    *

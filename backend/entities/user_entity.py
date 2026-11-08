@@ -30,7 +30,7 @@ class UserEntity(EntityBase):
     onyen: Mapped[str] = mapped_column(String(32), unique=True, index=True)
     # Email of the user
     email: Mapped[str] = mapped_column(
-        String(32), unique=True, index=True, nullable=False, default=""
+        String(254), unique=True, index=True, nullable=False, default=""
     )
     # First name of the user
     first_name: Mapped[str] = mapped_column(String(64), nullable=False, default="")
