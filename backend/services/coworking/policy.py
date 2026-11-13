@@ -20,8 +20,8 @@ SUNDAY = 6
 
 OH_HOURS = {
     MONDAY: {
-        "SN135": [],
-        "SN137": [],
+        "SN135": [(time(hour=11, minute=30), time(hour=18))],  # COMP211
+        "SN137": [(time(hour=11, minute=30), time(hour=18))],  # COMP211
         "SN139": [],
         "SN141": [
             (time(hour=10), time(hour=12)),
@@ -29,20 +29,31 @@ OH_HOURS = {
         ],
         "SN144": [],
         "SN146": [],
-        "SN147": [(time(hour=13), time(hour=14))],
+        "SN147": [
+            (time(hour=11, minute=30), time(hour=13)),  # COMP211
+            (time(hour=13), time(hour=14)),
+            (time(hour=14), time(hour=18)),  # COMP211
+        ],
     },
     TUESDAY: {
-        "SN135": [(time(hour=12), time(hour=16))],  # COMP520
-        "SN137": [],
+        "SN135": [
+            (time(hour=11, minute=30), time(hour=12)),  # COMP211
+            (time(hour=12), time(hour=16)),  # COMP520
+            (time(hour=16), time(hour=18)),  # COMP211
+        ],
+        "SN137": [(time(hour=11, minute=30), time(hour=18))],  # COMP211
         "SN139": [],
         "SN141": [],
         "SN144": [],
         "SN146": [],
-        "SN147": [],
+        "SN147": [(time(hour=11, minute=30), time(hour=18))],  # COMP211
     },
     WEDNESDAY: {
-        "SN135": [],
-        "SN137": [(time(hour=11), time(hour=13))],  # COMP435: 11am–1pm
+        "SN135": [(time(hour=11, minute=30), time(hour=18))],  # COMP211
+        "SN137": [
+            (time(hour=11), time(hour=13)),  # COMP435: 11am–1pm
+            (time(hour=13), time(hour=18)),  # COMP211
+        ],
         "SN139": [],
         "SN141": [
             (time(hour=10), time(hour=12)),
@@ -52,20 +63,30 @@ OH_HOURS = {
         "SN144": [],
         "SN146": [],
         "SN147": [
+            (time(hour=11, minute=30), time(hour=14)),  # COMP211
             (time(hour=14), time(hour=15)),
+            (time(hour=15), time(hour=18)),  # COMP211
         ],
     },
     THURSDAY: {
-        "SN135": [(time(hour=12), time(hour=17))],  # COMP520
-        "SN137": [(time(hour=14), time(hour=17))],  # COMP435: 2pm–5pm
+        "SN135": [
+            (time(hour=11, minute=30), time(hour=12)),  # COMP211
+            (time(hour=12), time(hour=17)),  # COMP520
+            (time(hour=17), time(hour=18)),  # COMP211
+        ],
+        "SN137": [
+            (time(hour=11, minute=30), time(hour=14)),  # COMP211
+            (time(hour=14), time(hour=17)),  # COMP435: 2pm–5pm
+            (time(hour=17), time(hour=18)),  # COMP211
+        ],
         "SN139": [],
         "SN141": [],
         "SN144": [],
         "SN146": [],
-        "SN147": [],
+        "SN147": [(time(hour=11, minute=30), time(hour=18))],  # COMP211
     },
     FRIDAY: {
-        "SN135": [],
+        "SN135": [(time(hour=10), time(hour=18))],
         "SN137": [],
         "SN139": [],
         "SN141": [
